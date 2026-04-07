@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { AdamChatWidget } from "@/components/adam-chat-widget";
 import { FadeIn } from "@/components/fade-in";
-import { researchTracks, services } from "@/lib/site-content";
+import { ParallelismHeroVisual } from "@/components/parallelism-hero-visual";
+import { services } from "@/lib/site-content";
 
 export default function Home() {
   return (
@@ -12,31 +13,52 @@ export default function Home() {
             className="pointer-events-none absolute -right-14 top-[-8rem] h-60 w-60 rounded-full bg-[color:var(--accent-soft)] blur-2xl"
             aria-hidden
           />
-          <div className="relative space-y-7">
-            <p className="eyebrow">Tokyo, Japan</p>
-            <h1 className="max-w-5xl text-5xl leading-[1.03] md:text-7xl">
-              Enterprise AI systems with research depth and delivery discipline.
-            </h1>
-            <p className="max-w-3xl text-lg leading-8 text-[color:var(--muted-ink)] md:text-xl">
-              BitLabs helps organizations design, build, and deploy practical AI across agents, model systems, and
-              secure cloud environments.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <AdamChatWidget />
-              <Link
-                href="/services"
-                className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-strong)] px-6 py-3 text-sm font-medium transition-colors hover:bg-[color:var(--accent-soft)]"
-              >
-                Explore Services
-              </Link>
+          <div className="relative grid items-center gap-8 lg:grid-cols-[1.15fr_1fr]">
+            <div className="space-y-7">
+              <p className="eyebrow">Tokyo, Japan</p>
+              <h1 className="max-w-5xl text-5xl leading-[1.03] md:text-7xl">
+                Enterprise AI systems with research depth and delivery discipline.
+              </h1>
+              <p className="max-w-3xl text-lg leading-8 text-[color:var(--muted-ink)] md:text-xl">
+                BitLabs helps organizations design, build, and deploy practical AI across agents, model systems, and
+                secure cloud environments.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <AdamChatWidget />
+                <Link
+                  href="/services"
+                  className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-strong)] px-6 py-3 text-sm font-medium transition-colors hover:bg-[color:var(--accent-soft)]"
+                >
+                  Explore Services
+                </Link>
+              </div>
             </div>
-            <p className="text-sm text-[color:var(--muted-ink)]">Adam is our Agentic RAG chatbot for user enquiries.</p>
+            <div className="overflow-hidden rounded-[1.75rem] border border-[color:var(--line)] bg-[color:var(--surface-strong)] shadow-[0_30px_70px_-45px_rgba(16,23,20,0.72)]">
+              <ParallelismHeroVisual />
+            </div>
           </div>
         </section>
       </FadeIn>
 
-      <FadeIn delay={0.1}>
+      <FadeIn delay={0.15}>
         <section className="space-y-6">
+          <div className="grid gap-4 lg:grid-cols-[1.1fr_1fr]">
+            <article className="surface-card space-y-3 p-6 md:p-7">
+              <p className="eyebrow">Mission</p>
+              <p className="book-display max-w-2xl text-2xl leading-tight md:text-3xl">
+                To translate advanced AI research into secure, dependable systems that create tangible business value.
+              </p>
+              <p className="text-sm italic text-[color:var(--muted-ink)]">- by David Bong, CEO of BitLabs</p>
+            </article>
+            <article className="surface-card space-y-3 p-6 md:p-7">
+              <p className="eyebrow">Vision</p>
+              <p className="book-display max-w-2xl text-2xl leading-tight md:text-3xl">
+                To shape a future where robust, advanced, and secure LLM systems are built on serious research and
+                delivered with real-world discipline.
+              </p>
+              <p className="text-sm italic text-[color:var(--muted-ink)]">- by David Bong, CEO of BitLabs</p>
+            </article>
+          </div>
           <div className="flex items-end justify-between gap-4">
             <div className="space-y-2">
               <p className="eyebrow">Capabilities</p>
@@ -54,7 +76,7 @@ export default function Home() {
         </section>
       </FadeIn>
 
-      <FadeIn delay={0.15}>
+      <FadeIn delay={0.2}>
         <section className="surface-card grid gap-6 p-7 md:grid-cols-[1.15fr_1fr] md:p-10">
           <div className="space-y-3">
             <p className="eyebrow">Security and Deployment</p>
@@ -78,27 +100,6 @@ export default function Home() {
         </section>
       </FadeIn>
 
-      <FadeIn delay={0.2}>
-        <section className="space-y-6">
-          <div className="space-y-2">
-            <p className="eyebrow">Research Highlight</p>
-            <h2 className="text-4xl md:text-5xl">Research tracks connected to production reliability.</h2>
-          </div>
-          <ul className="grid gap-4 md:grid-cols-2">
-            {researchTracks.map((track) => (
-              <li key={track} className="surface-card p-5 text-sm leading-7">
-                {track}
-              </li>
-            ))}
-          </ul>
-          <Link
-            href="/research"
-            className="inline-flex rounded-full border border-[color:var(--line)] bg-[color:var(--surface-strong)] px-5 py-2.5 text-sm font-medium transition-colors hover:bg-[color:var(--accent-soft)]"
-          >
-            View Research
-          </Link>
-        </section>
-      </FadeIn>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navLinks } from "@/lib/site-content";
 import { motion } from "framer-motion";
+import { BitLabsLogo } from "@/components/bitlabs-logo";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -11,9 +12,8 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-[color:var(--line)]/70 bg-[color:var(--surface)]/90 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-[1180px] flex-wrap items-center justify-between gap-4 px-5 py-4 md:px-8">
-        <Link href="/" className="inline-flex items-center gap-2 font-serif text-[1.36rem] tracking-[-0.03em] text-[color:var(--ink)]">
-          <span className="h-2.5 w-2.5 rounded-full bg-[color:var(--accent)]" aria-hidden />
-          BitLabs
+        <Link href="/" aria-label="BitLabs home" className="inline-flex items-center">
+          <BitLabsLogo />
         </Link>
         <nav className="relative flex items-center gap-1 rounded-full border border-[color:var(--line)] bg-[color:var(--surface-strong)]/60 p-1.5 text-sm">
           {navLinks.map((item) => {
