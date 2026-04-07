@@ -1,36 +1,169 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BitLabs Website (`bitlabs.site`)
+
+Corporate website for BitLabs, a Tokyo-based AI R&D and consulting company.
+
+## Overview
+
+This project is the production website codebase for **bitlabs.site**. It is designed to communicate:
+- Technical depth
+- Research credibility
+- Enterprise readiness
+- Delivery reliability
+
+The site content and UI follow a factual, enterprise-appropriate tone and avoid hype or unverified claims.
+
+## Tech Stack
+
+- Next.js 16 (App Router)
+- React 19
+- TypeScript 5
+- Tailwind CSS 4
+- Framer Motion
+- React Hook Form + Zod (contact form validation)
+- ESLint 9
+
+## Routes
+
+- `/` Home
+- `/services`
+- `/research`
+- `/about`
+- `/contact`
+
+## Key Features
+
+- Editorial, minimal visual design with subtle motion
+- Shared site shell (header/footer) and centralized content constants
+- SEO baseline metadata configured in the root layout
+- Contact form with:
+  - Required fields and schema validation
+  - Honeypot anti-spam field
+  - Client-side submission state feedback
+
+## Project Structure
+
+```text
+src/
+  app/
+    about/page.tsx
+    contact/page.tsx
+    research/page.tsx
+    services/page.tsx
+    page.tsx
+    layout.tsx
+    globals.css
+  components/
+    contact-form.tsx
+    site-header.tsx
+    site-footer.tsx
+    fade-in.tsx
+    adam-chat-widget.tsx
+  lib/
+    site-content.ts
+```
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install dependencies
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Start development server
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open `http://localhost:3000`.
 
-## Learn More
+### 3. Lint
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm lint
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4. Build for production
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+pnpm build
+```
 
-## Deploy on Vercel
+### 5. Run production server locally
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+pnpm start
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Environment Variables
+
+No secrets are required for the current static/contact-flow implementation.
+
+If/when backend integrations are added (email delivery, CRM, anti-bot verification, analytics), all secrets must be provided through environment variables and **must not** be hardcoded in client code.
+
+Example pattern:
+
+```bash
+# .env.local (example only)
+API_BASE_URL=https://api.example.com
+TURNSTILE_SECRET_KEY=...
+```
+
+## Security and Privacy Rules
+
+This repository follows strict security/privacy constraints:
+
+- No secrets, keys, or tokens in frontend source
+- No private endpoint leakage
+- No confidential client names unless explicitly approved
+- No private research artifacts or internal data exposure
+- Use least-privilege integration patterns
+
+Current contact form anti-spam protection uses a hidden honeypot field. For production hardening, add server-side validation plus Turnstile/hCaptcha and rate limiting.
+
+## SEO Baseline
+
+Configured metadata includes:
+
+- Brand: BitLabs
+- Domain: `https://bitlabs.site`
+- Location: Tokyo, Japan
+- Keywords: AI consulting, AI R&D, AI agents, LLM fine-tuning, SLM development, enterprise AI
+
+Primary metadata is defined in `src/app/layout.tsx`.
+
+## Deployment (Vercel)
+
+Recommended deployment target is Vercel.
+
+### Standard flow
+
+1. Push to GitHub (`main` branch)
+2. Import repo in Vercel
+3. Configure required environment variables
+4. Build command: `pnpm build`
+5. Output: handled by Next.js default
+
+## Content and Brand Constraints
+
+- Keep tone clear, factual, and technically grounded
+- Do not copy external brand assets, logos, proprietary visuals, or protected copy
+- Keep claims auditable and enterprise-appropriate
+
+## Git Workflow
+
+Typical commands:
+
+```bash
+git add -A
+git commit -m "feat: ..."
+git push origin main
+```
+
+## Notes for Future Work
+
+- Add server action or API route for real contact delivery
+- Add bot protection (Turnstile/hCaptcha) and rate limiting
+- Add analytics with privacy-aware consent handling
+- Add automated tests for page rendering and form behavior
