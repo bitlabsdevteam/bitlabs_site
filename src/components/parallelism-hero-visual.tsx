@@ -11,7 +11,7 @@ function DataParallelRow() {
 
   return (
     <div className="parallel-row">
-      <div className="parallel-row-label">Data</div>
+      <div className="parallel-row-label">データ</div>
       <div className="parallel-row-canvas">
         <div className="parallel-lanes">
           {gpus.map((gpu, lane) => (
@@ -57,7 +57,7 @@ function TensorParallelRow() {
 
   return (
     <div className="parallel-row">
-      <div className="parallel-row-label">Tensor</div>
+      <div className="parallel-row-label">テンソル</div>
       <div className="parallel-row-canvas parallel-row-canvas-tensor">
         <div className="parallel-tensor-grid">
           {gpus.map((gpu, index) => (
@@ -68,7 +68,7 @@ function TensorParallelRow() {
                 <span className="parallel-shard" />
                 <span className="parallel-shard" />
               </div>
-              <span className="parallel-shard-tag">shard {index}</span>
+              <span className="parallel-shard-tag">シャード {index}</span>
             </div>
           ))}
         </div>
@@ -89,18 +89,18 @@ function TensorParallelRow() {
   );
 }
 
-function PipelineParallelRow({ mode }: { mode: "Pre-training" | "Inference" }) {
+function PipelineParallelRow({ mode }: { mode: "事前学習" | "推論" }) {
   const reduceMotion = useReducedMotion();
-  const forwardDelay = mode === "Pre-training" ? 0 : 0.2;
+  const forwardDelay = mode === "事前学習" ? 0 : 0.2;
 
   return (
     <div className="parallel-row">
-      <div className="parallel-row-label">Pipeline</div>
+      <div className="parallel-row-label">パイプライン</div>
       <div className="parallel-row-canvas parallel-row-canvas-pipeline">
         <div className="parallel-stages">
           {gpus.map((gpu, i) => (
             <div key={gpu} className="parallel-stage">
-              <span>Stage {i}</span>
+              <span>ステージ {i}</span>
             </div>
           ))}
         </div>
@@ -118,7 +118,7 @@ function PipelineParallelRow({ mode }: { mode: "Pre-training" | "Inference" }) {
             aria-hidden
           />
         ))}
-        {mode === "Pre-training" &&
+        {mode === "事前学習" &&
           Array.from({ length: 4 }).map((_, i) => (
             <motion.span
               key={`b-${i}`}
@@ -143,7 +143,7 @@ function SequenceParallelRow() {
 
   return (
     <div className="parallel-row">
-      <div className="parallel-row-label">Sequence</div>
+      <div className="parallel-row-label">シーケンス</div>
       <div className="parallel-row-canvas parallel-row-canvas-sequence">
         <div className="parallel-seq-chunks">
           {gpus.map((gpu) => (
@@ -180,9 +180,9 @@ function ExpertParallelRow() {
 
   return (
     <div className="parallel-row">
-      <div className="parallel-row-label">Expert</div>
+      <div className="parallel-row-label">エキスパート</div>
       <div className="parallel-row-canvas parallel-row-canvas-expert">
-        <span className="parallel-router">router</span>
+        <span className="parallel-router">ルーター</span>
         <div className="parallel-experts">
           {gpus.map((gpu, i) => (
             <span key={gpu} className="parallel-expert-node" style={{ top: `${expertY[i]}%` }}>
@@ -255,12 +255,12 @@ function ExpertParallelRow() {
   );
 }
 
-function Panel({ mode }: { mode: "Pre-training" | "Inference" }) {
+function Panel({ mode }: { mode: "事前学習" | "推論" }) {
   return (
     <section className="parallel-panel">
       <header className="parallel-panel-header">
         <span>{mode}</span>
-        <span className="parallel-chip">5D x 4 GPUs</span>
+        <span className="parallel-chip">5D x GPU 4基</span>
       </header>
       <div className="parallel-row-stack">
         <DataParallelRow />
@@ -275,7 +275,7 @@ function Panel({ mode }: { mode: "Pre-training" | "Inference" }) {
 
 export function ParallelismHeroVisual() {
   const reduceMotion = useReducedMotion();
-  const [mode, setMode] = useState<"Pre-training" | "Inference">("Pre-training");
+  const [mode, setMode] = useState<"事前学習" | "推論">("事前学習");
 
   useEffect(() => {
     if (reduceMotion) {
@@ -283,21 +283,21 @@ export function ParallelismHeroVisual() {
     }
 
     const timer = window.setInterval(() => {
-      setMode((current) => (current === "Pre-training" ? "Inference" : "Pre-training"));
+      setMode((current) => (current === "事前学習" ? "推論" : "事前学習"));
     }, 4200);
 
     return () => window.clearInterval(timer);
   }, [reduceMotion]);
 
   return (
-    <div className="parallel-hero" aria-label="Animated 5D parallelism diagram with distinct data, tensor, pipeline, sequence, and expert communication patterns over 4 GPUs.">
+    <div className="parallel-hero" aria-label="4基のGPU上で、データ、テンソル、パイプライン、シーケンス、エキスパートの通信パターンを示す5D並列化アニメーション図。">
       <div className="parallel-background" aria-hidden />
       <div className="parallel-axis-row" aria-hidden>
-        <span className="parallel-axis-pill">Data: replica + all-reduce</span>
-        <span className="parallel-axis-pill">Tensor: shard + gather/scatter</span>
-        <span className="parallel-axis-pill">Pipeline: micro-batch stages</span>
-        <span className="parallel-axis-pill">Sequence: token partitions</span>
-        <span className="parallel-axis-pill">Expert: routed MoE tokens</span>
+        <span className="parallel-axis-pill">データ: 複製 + all-reduce</span>
+        <span className="parallel-axis-pill">テンソル: シャード + gather/scatter</span>
+        <span className="parallel-axis-pill">パイプライン: マイクロバッチ段階</span>
+        <span className="parallel-axis-pill">シーケンス: トークン分割</span>
+        <span className="parallel-axis-pill">エキスパート: ルーティングされたMoEトークン</span>
       </div>
 
       <div className="parallel-panels">

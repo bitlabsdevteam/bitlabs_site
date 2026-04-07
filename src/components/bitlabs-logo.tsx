@@ -30,7 +30,7 @@ export function BitLabsLogo({ compact = false, className = "" }: BitLabsLogoProp
       {!compact ? (
         <span className="inline-flex flex-col gap-0.5 leading-none text-[color:var(--ink)]">
           <span className="text-[1.05rem] font-semibold tracking-[0.04em]">BITLABS</span>
-          <span className="text-[0.54rem] font-medium tracking-[0.18em] text-[color:var(--muted-ink)]">TOKYO AI R&D</span>
+          <span className="text-[0.54rem] font-medium tracking-[0.18em] text-[color:var(--muted-ink)]">東京 AI研究開発</span>
         </span>
       ) : null}
     </span>

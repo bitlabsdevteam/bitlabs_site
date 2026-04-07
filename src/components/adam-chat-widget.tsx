@@ -1,43 +1,71 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
+import { useLanguage } from "@/components/language-provider";
+import { chatContent, type Language } from "@/lib/site-content";
 
 type Message = {
   role: "adam" | "user";
   text: string;
 };
 
-const quickReplies = [
-  "Tell me about BitLabs services",
-  "How does enterprise deployment work?",
-  "I need an AI agent for internal operations",
-];
-
-function createAdamReply(input: string) {
+function createAdamReply(input: string, language: Language) {
   const text = input.toLowerCase();
 
-  if (text.includes("price") || text.includes("cost") || text.includes("budget")) {
-    return "I can help scope the project first, then our team can provide a pricing estimate based on your requirements.";
+  if (
+    text.includes("price") ||
+    text.includes("cost") ||
+    text.includes("budget") ||
+    text.includes("料金") ||
+    text.includes("費用") ||
+    text.includes("予算")
+  ) {
+    return language === "en"
+      ? "We usually start by clarifying scope, constraints, and success criteria, then provide a cost range based on that shape."
+      : "まずは要件整理を行い、その内容に応じて概算費用の目安をご案内します。";
   }
 
-  if (text.includes("deploy") || text.includes("security") || text.includes("cloud")) {
-    return "BitLabs designs secure deployment paths with access controls, governance checkpoints, and private infrastructure options.";
+  if (
+    text.includes("deploy") ||
+    text.includes("security") ||
+    text.includes("cloud") ||
+    text.includes("導入") ||
+    text.includes("デプロイ") ||
+    text.includes("セキュリティ") ||
+    text.includes("クラウド")
+  ) {
+    return language === "en"
+      ? "BitLabs plans secure deployment with access control, governance checkpoints, and private infrastructure options when required."
+      : "BitLabsは、アクセス制御、ガバナンス確認、プライベート基盤の選択肢を含む安全な導入設計を行います。";
   }
 
-  if (text.includes("agent") || text.includes("rag")) {
-    return "We build agentic and RAG systems with evaluation-first workflows, retrieval quality controls, and production monitoring.";
+  if (
+    text.includes("agent") ||
+    text.includes("rag") ||
+    text.includes("workflow") ||
+    text.includes("internal") ||
+    text.includes("エージェント") ||
+    text.includes("検索") ||
+    text.includes("社内")
+  ) {
+    return language === "en"
+      ? "We build agentic systems and RAG workflows with evaluation, retrieval controls, and production monitoring built in."
+      : "評価を前提としたワークフロー、検索品質の制御、本番監視を組み込んだエージェント型システムとRAGを構築します。";
   }
 
-  return "I can help with AI agents, LLM and SLM development, secure deployment, and project planning. Share your goal and timeline.";
+  return language === "en"
+    ? "I can help with AI agents, LLM or SLM development, secure deployment, and project planning. Share your goal and target timeline."
+    : "AIエージェント、LLM/SLM開発、セキュアな導入設計、プロジェクト計画についてご案内できます。目的と希望時期を教えてください。";
 }
 
-export function AdamChatWidget() {
+function LocalizedAdamChatWidget({ language }: { language: Language }) {
+  const copy = chatContent[language];
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "adam",
-      text: "Hi, I am Adam. Ask me anything about BitLabs services or your AI project.",
+      text: copy.intro,
     },
   ]);
 
@@ -48,13 +76,13 @@ export function AdamChatWidget() {
     const next = input.trim();
     if (!next) return;
 
-    const reply = createAdamReply(next);
+    const reply = createAdamReply(next, language);
     setMessages((current) => [...current, { role: "user", text: next }, { role: "adam", text: reply }]);
     setInput("");
   };
 
   const sendQuickReply = (value: string) => {
-    const reply = createAdamReply(value);
+    const reply = createAdamReply(value, language);
     setMessages((current) => [...current, { role: "user", text: value }, { role: "adam", text: reply }]);
     setInput("");
   };
@@ -68,7 +96,7 @@ export function AdamChatWidget() {
         aria-haspopup="dialog"
         aria-expanded={isOpen}
       >
-        Talk to Adam
+        {copy.openLabel}
       </button>
 
       {isOpen ? (
@@ -76,19 +104,19 @@ export function AdamChatWidget() {
           <div
             role="dialog"
             aria-modal="true"
-            aria-label="Talk to Adam chatbot"
+            aria-label={copy.dialogLabel}
             className="flex h-[74vh] w-full max-w-md flex-col overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[color:var(--surface-strong)] shadow-[0_30px_90px_-35px_rgba(0,0,0,0.55)]"
           >
             <div className="flex items-center justify-between border-b border-[color:var(--line)] px-5 py-4">
               <div>
-                <p className="text-sm font-semibold text-[color:var(--ink)]">Talk to Adam</p>
-                <p className="text-xs text-[color:var(--muted-ink)]">Agentic RAG assistant</p>
+                <p className="text-sm font-semibold text-[color:var(--ink)]">{copy.title}</p>
+                <p className="text-xs text-[color:var(--muted-ink)]">{copy.subtitle}</p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
                 className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--line)] text-[color:var(--muted-ink)] transition-colors hover:bg-[color:var(--accent-soft)]"
-                aria-label="Close chat"
+                aria-label={copy.closeLabel}
               >
                 x
               </button>
@@ -111,7 +139,7 @@ export function AdamChatWidget() {
 
             <div className="border-t border-[color:var(--line)] px-4 py-3">
               <div className="mb-2 flex flex-wrap gap-2">
-                {quickReplies.map((reply) => (
+                {copy.quickReplies.map((reply) => (
                   <button
                     key={reply}
                     type="button"
@@ -126,7 +154,7 @@ export function AdamChatWidget() {
                 <input
                   value={input}
                   onChange={(event) => setInput(event.target.value)}
-                  placeholder="Type your question..."
+                  placeholder={copy.inputPlaceholder}
                   className="h-11 w-full rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] px-3 text-sm outline-none transition-colors focus:border-[color:var(--accent)]"
                 />
                 <button
@@ -134,7 +162,7 @@ export function AdamChatWidget() {
                   disabled={!canSend}
                   className="h-11 rounded-xl bg-[color:var(--ink)] px-4 text-sm font-medium text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-45"
                 >
-                  Send
+                  {copy.sendLabel}
                 </button>
               </form>
             </div>
@@ -143,4 +171,10 @@ export function AdamChatWidget() {
       ) : null}
     </>
   );
+}
+
+export function AdamChatWidget() {
+  const { language } = useLanguage();
+
+  return <LocalizedAdamChatWidget key={language} language={language} />;
 }

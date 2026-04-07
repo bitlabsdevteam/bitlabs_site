@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { useLanguage } from "@/components/language-provider";
+import { footerContent } from "@/lib/site-content";
 
 const socialLinks = [
   {
@@ -31,14 +35,15 @@ const socialLinks = [
 ];
 
 export function SiteFooter() {
+  const { language } = useLanguage();
+  const copy = footerContent[language];
+
   return (
     <footer className="mt-24 border-t border-[color:var(--line)] bg-[color:var(--surface)]/85">
       <div className="mx-auto grid w-full max-w-[1180px] gap-7 px-5 py-12 text-sm text-[color:var(--muted-ink)] md:grid-cols-[1fr_auto] md:items-end md:px-8">
         <div className="space-y-3">
           <p className="font-serif text-2xl tracking-[-0.03em] text-[color:var(--ink)]">BitLabs</p>
-          <p className="max-w-xl leading-7">
-            Tokyo-based AI R&D and consulting. We build secure, practical systems for enterprise outcomes.
-          </p>
+          <p className="max-w-xl leading-7">{copy.summary}</p>
           <div className="flex items-center gap-2">
             {socialLinks.map((social) => (
               <Link
@@ -46,7 +51,7 @@ export function SiteFooter() {
                 href={social.href}
                 target="_blank"
                 rel="noreferrer"
-                aria-label={`Visit BitLabs on ${social.name}`}
+                aria-label={copy.socialAriaLabel(social.name)}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--line)] bg-[color:var(--surface-strong)] text-[color:var(--muted-ink)] transition-colors hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--ink)]"
               >
                 {social.icon}
@@ -55,9 +60,11 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="space-y-2 md:text-right">
-          <p>Tokyo, Japan</p>
-          <p>hello@bitlabs.site</p>
-          <p>{new Date().getFullYear()} BitLabs. All rights reserved.</p>
+          <p>{copy.location}</p>
+          <p>{copy.email}</p>
+          <p>
+            {new Date().getFullYear()} BitLabs. {copy.copyright}
+          </p>
         </div>
       </div>
     </footer>
