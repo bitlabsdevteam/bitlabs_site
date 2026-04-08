@@ -221,13 +221,13 @@ export const services: Record<Language, Service[]> = {
 export const researchTracks: Record<Language, string[]> = {
   en: [
     "SLM architecture design and training-efficiency research for constrained deployment environments.",
-    "Fine-tuning methods focused on domain adaptation and controllability for real operations.",
+    "Research on detecting implicit bias in LLM outputs, with mitigation strategies including FairSteer and hook-based interventions.",
     "Research on orchestration, memory design, and reliability boundaries for agentic systems.",
     "Evaluation, robustness, and lifecycle governance for production-grade model systems.",
   ],
   ja: [
     "制約の大きい配備環境を前提にしたSLMアーキテクチャ設計と学習効率の研究",
-    "実運用で使えるドメイン適応と制御性を目的としたファインチューニング手法",
+    "LLM出力に潜む暗黙的バイアスの検出と、FairSteerやフック介入を含む緩和手法の研究",
     "エージェント型システムのオーケストレーション、メモリ設計、信頼性境界の研究",
     "本番品質のモデルシステムに向けた評価、堅牢性、ライフサイクルガバナンス",
   ],
@@ -452,9 +452,9 @@ export const researchContent: Record<Language, ResearchContent> = {
     metadataDescription:
       "Research areas at BitLabs across SLMs, fine-tuning methods, and reliability for agentic systems.",
     eyebrow: "Research",
-    title: "Applied research shaped by real production constraints.",
+    title: "Research built for the point where models meet operational reality.",
     body:
-      "Our research program focuses on methods that translate directly into safe, reliable enterprise AI systems.",
+      "We study the control surfaces, failure modes, and evaluation methods that determine whether modern AI systems can be trusted in production, with active work in bias detection, steerability, and enterprise-grade reliability.",
     reliabilityLabel: "Reliability",
     reliabilityTitle: "Evaluation and guardrails are built into every research cycle.",
     reliabilityPoints: [
