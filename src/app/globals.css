@@ -92,6 +92,33 @@ a {
   background: linear-gradient(90deg, transparent, var(--line), transparent);
 }
 
+.hero-statement-card {
+  position: relative;
+  padding: 1.3rem 1.4rem 1.45rem 1.6rem;
+  border: 1px solid rgba(31, 78, 69, 0.14);
+  border-radius: 1.5rem;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(212, 232, 225, 0.36)),
+    rgba(255, 255, 255, 0.72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.hero-statement-card::before {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  bottom: 1rem;
+  width: 1px;
+  background: linear-gradient(180deg, rgba(31, 78, 69, 0.08), rgba(31, 78, 69, 0.45), rgba(31, 78, 69, 0.08));
+}
+
+.hero-statement-card > * {
+  position: relative;
+  z-index: 1;
+  padding-left: 0.85rem;
+}
+
 .parallel-hero {
   position: relative;
   min-height: 28rem;

@@ -29,6 +29,8 @@ type HomeContent = {
   location: string;
   heroTitle: string;
   heroBody: string;
+  heroStatementLabel: string;
+  heroStatement: string;
   primaryCta: string;
   secondaryCta: string;
   missionLabel: string;
@@ -171,13 +173,6 @@ export const services: Record<Language, Service[]> = {
         "We build custom React + AI applications covering prompt design, context architecture, and evaluation harnesses.",
       outcome: "Users get AI experiences that fit actual operating workflows.",
     },
-    {
-      title: "Secure Cloud Deployment",
-      problem: "Security and compliance concerns often block adoption.",
-      delivery:
-        "We implement cloud deployment architectures with strict boundaries, access control, and policy-based operations.",
-      outcome: "Sensitive systems can go live without exposing confidential data or infrastructure unnecessarily.",
-    },
   ],
   ja: [
     {
@@ -207,13 +202,6 @@ export const services: Record<Language, Service[]> = {
       delivery:
         "ReactとAIを組み合わせ、プロンプト設計、コンテキスト設計、評価ハーネスまで含めた専用アプリを開発します。",
       outcome: "業務プロセスに適合した、実利用可能なAI体験を提供します。",
-    },
-    {
-      title: "セキュアなクラウドAIデプロイ",
-      problem: "セキュリティやコンプライアンスの懸念が導入の障壁になるケースがあります。",
-      delivery:
-        "厳格な境界設計、ポリシー制御、アクセス管理を前提にしたクラウド配備アーキテクチャを構築します。",
-      outcome: "機密システムや機密データを不用意に露出させずに本番展開できます。",
     },
   ],
 };
@@ -331,6 +319,8 @@ export const homeContent: Record<Language, HomeContent> = {
     heroTitle: "From research depth to production discipline for enterprise AI.",
     heroBody:
       "BitLabs designs, builds, and deploys practical AI systems across agent workflows, model systems, and secure cloud environments.",
+    heroStatementLabel: "No hype",
+    heroStatement: "We cut through AI hype and build AI systems that actually work in the real world.",
     primaryCta: "Talk to Adam",
     secondaryCta: "View services",
     missionLabel: "Mission",
@@ -358,6 +348,9 @@ export const homeContent: Record<Language, HomeContent> = {
     heroTitle: "研究の深さと実装の規律で、企業向けAIを本番品質へ導く。",
     heroBody:
       "BitLabsは、AIエージェント、モデルシステム、セキュアなクラウド環境にまたがる実用的なAIの設計・開発・導入を支援します。",
+    heroStatementLabel: "誇張ではなく実装",
+    heroStatement:
+      "AI hypeに振り回されず、現実の現場で本当に機能するAIシステムを構築します。",
     primaryCta: "Adamに相談する",
     secondaryCta: "サービスを見る",
     missionLabel: "ミッション",

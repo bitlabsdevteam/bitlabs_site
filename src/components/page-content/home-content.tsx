@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { AdamChatWidget } from "@/components/adam-chat-widget";
+import { AnimatedHeroTitle } from "@/components/animated-hero-title";
 import { LandingScrollFade } from "@/components/landing-scroll-fade";
 import { ParallelismHeroVisual } from "@/components/parallelism-hero-visual";
 import { useLanguage } from "@/components/language-provider";
@@ -23,8 +24,17 @@ export function HomeContent() {
           <div className="relative grid items-center gap-8 lg:grid-cols-[1.15fr_1fr]">
             <div className="space-y-7">
               <p className="eyebrow">{copy.location}</p>
-              <h1 className="max-w-5xl text-5xl leading-[1.03] md:text-7xl">{copy.heroTitle}</h1>
+              <AnimatedHeroTitle
+                text={copy.heroTitle}
+                className="max-w-5xl text-5xl leading-[1.03] md:text-7xl"
+              />
               <p className="max-w-3xl text-lg leading-8 text-[color:var(--muted-ink)] md:text-xl">{copy.heroBody}</p>
+              <div className="hero-statement-card max-w-3xl">
+                <p className="eyebrow">{copy.heroStatementLabel}</p>
+                <p className="book-display mt-3 text-2xl leading-tight md:text-[2rem]">
+                  {copy.heroStatement}
+                </p>
+              </div>
               <div className="flex flex-wrap gap-3">
                 <AdamChatWidget />
                 <Link
