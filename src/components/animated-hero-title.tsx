@@ -8,10 +8,62 @@ type AnimatedHeroTitleProps = {
   className?: string;
 };
 
+type TitleSegment = {
+  text: string;
+  preserveWhitespace?: boolean;
+  keepTogether?: boolean;
+};
+
+function splitTitleSegments(text: string): TitleSegment[] {
+  const characters = Array.from(text);
+  const segments: TitleSegment[] = [];
+  let index = 0;
+
+  while (index < characters.length) {
+    const character = characters[index];
+
+    if (/\s/u.test(character)) {
+      let whitespace = character;
+      index += 1;
+
+      while (index < characters.length && /\s/u.test(characters[index])) {
+        whitespace += characters[index];
+        index += 1;
+      }
+
+      segments.push({ text: whitespace, preserveWhitespace: true });
+      continue;
+    }
+
+    if (/[\p{Script=Latin}\p{N}]/u.test(character)) {
+      let word = character;
+      index += 1;
+
+      while (index < characters.length && /[\p{Script=Latin}\p{N}'’-]/u.test(characters[index])) {
+        word += characters[index];
+        index += 1;
+      }
+
+      while (index < characters.length && /[.,;:!?)]/u.test(characters[index])) {
+        word += characters[index];
+        index += 1;
+      }
+
+      segments.push({ text: word, keepTogether: true });
+      continue;
+    }
+
+    segments.push({ text: character });
+    index += 1;
+  }
+
+  return segments;
+}
+
 export function AnimatedHeroTitle({ text, className }: AnimatedHeroTitleProps) {
   const prefersReducedMotion = useReducedMotion();
   const [activeIndices, setActiveIndices] = useState<number[]>([]);
-  const tokens = text.split(/(\s+)/);
+  const segments = splitTitleSegments(text);
   const animationKey = `${prefersReducedMotion ? "reduced" : "full"}:${text}`;
 
   useEffect(() => {
@@ -75,19 +127,21 @@ export function AnimatedHeroTitle({ text, className }: AnimatedHeroTitleProps) {
         {(() => {
           let characterIndex = 0;
 
-          return tokens.map((token, tokenIndex) => {
-            if (/^\s+$/u.test(token)) {
-              characterIndex += token.length;
+          return segments.map((segment, segmentIndex) => {
+            if (segment.preserveWhitespace) {
+              characterIndex += Array.from(segment.text).length;
               return (
-                <span key={`space-${tokenIndex}`} className="whitespace-pre">
-                  {token}
+                <span key={`space-${segmentIndex}`} className="whitespace-pre">
+                  {segment.text}
                 </span>
               );
             }
 
-            const wordCharacters = Array.from(token);
-            const renderedWord = (
-              <span key={`word-${tokenIndex}`} className="inline-block whitespace-nowrap">
+            const wordCharacters = Array.from(segment.text);
+            const wrapperClassName = segment.keepTogether ? "inline-block whitespace-nowrap" : undefined;
+
+            return (
+              <span key={`segment-${segmentIndex}`} className={wrapperClassName}>
                 {wordCharacters.map((character) => {
                   const index = characterIndex;
                   characterIndex += 1;
@@ -105,8 +159,6 @@ export function AnimatedHeroTitle({ text, className }: AnimatedHeroTitleProps) {
                 })}
               </span>
             );
-
-            return renderedWord;
           });
         })()}
       </span>
