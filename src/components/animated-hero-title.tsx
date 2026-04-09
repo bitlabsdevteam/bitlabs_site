@@ -11,7 +11,7 @@ type AnimatedHeroTitleProps = {
 export function AnimatedHeroTitle({ text, className }: AnimatedHeroTitleProps) {
   const prefersReducedMotion = useReducedMotion();
   const [activeIndices, setActiveIndices] = useState<number[]>([]);
-  const characters = Array.from(text);
+  const tokens = text.split(/(\s+)/);
   const animationKey = `${prefersReducedMotion ? "reduced" : "full"}:${text}`;
 
   useEffect(() => {
@@ -72,22 +72,43 @@ export function AnimatedHeroTitle({ text, className }: AnimatedHeroTitleProps) {
     <h1 className={className} aria-label={text}>
       <span className="sr-only">{text}</span>
       <span aria-hidden="true">
-        {characters.map((character, index) => {
-          if (character === " ") {
-            return <span key={`space-${index}`} className="inline-block w-[0.28em]" />;
-          }
+        {(() => {
+          let characterIndex = 0;
 
-          return (
-            <motion.span
-              key={`${character}-${index}`}
-              className="inline-block will-change-[opacity]"
-              animate={{ opacity: activeIndices.includes(index) ? 0.16 : 1 }}
-              transition={{ duration: 0.28, ease: "easeInOut" }}
-            >
-              {character}
-            </motion.span>
-          );
-        })}
+          return tokens.map((token, tokenIndex) => {
+            if (/^\s+$/u.test(token)) {
+              characterIndex += token.length;
+              return (
+                <span key={`space-${tokenIndex}`} className="whitespace-pre">
+                  {token}
+                </span>
+              );
+            }
+
+            const wordCharacters = Array.from(token);
+            const renderedWord = (
+              <span key={`word-${tokenIndex}`} className="inline-block whitespace-nowrap">
+                {wordCharacters.map((character) => {
+                  const index = characterIndex;
+                  characterIndex += 1;
+
+                  return (
+                    <motion.span
+                      key={`${character}-${index}`}
+                      className="inline-block will-change-[opacity]"
+                      animate={{ opacity: activeIndices.includes(index) ? 0.16 : 1 }}
+                      transition={{ duration: 0.28, ease: "easeInOut" }}
+                    >
+                      {character}
+                    </motion.span>
+                  );
+                })}
+              </span>
+            );
+
+            return renderedWord;
+          });
+        })()}
       </span>
     </h1>
   );
