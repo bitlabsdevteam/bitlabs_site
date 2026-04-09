@@ -37,12 +37,7 @@ export function AboutContent() {
       </FadeIn>
 
       <FadeIn delay={0.14}>
-        <section className="grid gap-5 md:grid-cols-2">
-          <article className="surface-card p-7 md:p-8">
-            <p className="eyebrow">{copy.missionLabel}</p>
-            <h2 className="mt-3 text-4xl">{copy.missionTitle}</h2>
-            <p className="mt-4 leading-8 text-[color:var(--muted-ink)]">{copy.missionBody}</p>
-          </article>
+        <section>
           <article className="surface-card p-7 md:p-8">
             <p className="eyebrow">{copy.principlesLabel}</p>
             <ul className="mt-4 space-y-2 text-sm leading-7 text-[color:var(--muted-ink)]">

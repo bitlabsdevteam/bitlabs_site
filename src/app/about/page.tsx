@@ -3,7 +3,7 @@ import { AboutContent } from "@/components/page-content/about-content";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Company profile, mission, and operating principles for BitLabs.",
+  description: "Company profile, team strengths, and operating principles for BitLabs.",
 };
 
 export default function AboutPage() {

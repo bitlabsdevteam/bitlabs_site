@@ -55,9 +55,6 @@ type AboutContent = {
   body: string;
   strengthsLabel: string;
   strengthsTitle: string;
-  missionLabel: string;
-  missionTitle: string;
-  missionBody: string;
   principlesLabel: string;
 };
 
@@ -378,32 +375,24 @@ export const homeContent: Record<Language, HomeContent> = {
 export const aboutContent: Record<Language, AboutContent> = {
   en: {
     metadataTitle: "About",
-    metadataDescription: "Company profile, mission, and operating principles for BitLabs.",
+    metadataDescription: "Company profile, team strengths, and operating principles for BitLabs.",
     eyebrow: "About",
     title: "A Tokyo-based AI team built for critical enterprise work.",
     body:
       "BitLabs is an AI R&D and consulting company focused on agentic solutions, model systems, and secure production deployment.",
     strengthsLabel: "Team Strengths",
     strengthsTitle: "Technical depth with the discipline to deliver.",
-    missionLabel: "Mission",
-    missionTitle: "Deliver practical AI that solves everyday business problems.",
-    missionBody:
-      "We help people and businesses solve daily challenges with secure, dependable AI systems that lead to measurable growth.",
     principlesLabel: "Working Principles",
   },
   ja: {
     metadataTitle: "会社情報",
-    metadataDescription: "BitLabsの会社概要、ミッション、行動原則について。",
+    metadataDescription: "BitLabsの会社概要、チームの強み、行動原則について。",
     eyebrow: "会社情報",
     title: "企業の重要業務を支える、東京発のAI開発チーム。",
     body:
       "BitLabsは、エージェントソリューション、モデルシステム、そして本番環境向けの安全な導入に強みを持つAI研究開発・コンサルティング企業です。",
     strengthsLabel: "チームの強み",
     strengthsTitle: "技術の深さと、やり切る実装力。",
-    missionLabel: "ミッション",
-    missionTitle: "日々の業務を前に進める、実用的なAIを届ける。",
-    missionBody:
-      "人と企業が直面する日常的な課題を、安全で信頼できるAIシステムによって解決し、測定可能な成長につなげます。",
     principlesLabel: "行動原則",
   },
 };
