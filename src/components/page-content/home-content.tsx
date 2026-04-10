@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AdamChatWidget } from "@/components/adam-chat-widget";
 import { AnimatedHeroTitle } from "@/components/animated-hero-title";
 import { LandingScrollFade } from "@/components/landing-scroll-fade";
 import { ParallelismHeroVisual } from "@/components/parallelism-hero-visual";
@@ -35,6 +36,7 @@ export function HomeContent() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">
+                <AdamChatWidget launcherLabel={copy.primaryCta} />
                 <Link
                   href="/services"
                   className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-strong)] px-6 py-3 text-sm font-medium transition-colors hover:bg-[color:var(--accent-soft)]"

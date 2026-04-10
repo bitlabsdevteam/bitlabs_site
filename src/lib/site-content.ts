@@ -530,10 +530,10 @@ export const contactFormContent: Record<Language, ContactFormContent> = {
 
 export const chatContent: Record<Language, ChatContent> = {
   en: {
-    openLabel: "Talk to Adam",
+    openLabel: "Adam Consultant",
     dialogLabel: "Adam chat",
-    title: "Talk to Adam",
-    subtitle: "Agentic RAG assistant",
+    title: "Adam Consultant",
+    subtitle: "",
     closeLabel: "Close chat",
     intro: "Hi, I’m Adam. Ask about BitLabs services or your AI project.",
     quickReplies: [
@@ -545,10 +545,10 @@ export const chatContent: Record<Language, ChatContent> = {
     sendLabel: "Send",
   },
   ja: {
-    openLabel: "Adamに相談する",
+    openLabel: "Adamコンサルタント",
     dialogLabel: "Adamチャット",
-    title: "Adamに相談する",
-    subtitle: "エージェント型RAGアシスタント",
+    title: "Adamコンサルタント",
+    subtitle: "",
     closeLabel: "チャットを閉じる",
     intro: "こんにちは、Adamです。BitLabsのサービスやAIプロジェクトについてお気軽にご相談ください。",
     quickReplies: [

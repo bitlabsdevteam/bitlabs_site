@@ -98,16 +98,13 @@ pnpm start
 
 ## Environment Variables
 
-No secrets are required for the current static/contact-flow implementation.
-
-If/when backend integrations are added (email delivery, CRM, anti-bot verification, analytics), all secrets must be provided through environment variables and **must not** be hardcoded in client code.
-
-Example pattern:
+The Adam chat integration requires server-side Dify credentials. These values must be provided through environment variables and **must not** be hardcoded in client code.
 
 ```bash
-# .env.local (example only)
-API_BASE_URL=https://api.example.com
-TURNSTILE_SECRET_KEY=...
+# .env.local
+DIFY_API_KEY=your_dify_api_key
+# Optional. Defaults to the hosted Dify API shown in the studio UI.
+DIFY_API_BASE_URL=https://api.dify.ai/v1
 ```
 
 ## Security and Privacy Rules
