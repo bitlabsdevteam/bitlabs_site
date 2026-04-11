@@ -59,9 +59,18 @@ type AboutContent = {
   eyebrow: string;
   title: string;
   body: string;
-  strengthsLabel: string;
-  strengthsTitle: string;
-  principlesLabel: string;
+  profileLabel: string;
+  profileTitle: string;
+  companyNameLabel: string;
+  companyName: string;
+  ceoLabel: string;
+  ceo: string;
+  establishedLabel: string;
+  established: string;
+  addressLabel: string;
+  address: string;
+  capitalLabel: string;
+  capital: string;
 };
 
 type ServicesPageContent = {
@@ -450,25 +459,43 @@ export const homeContent: Record<Language, HomeContent> = {
 export const aboutContent: Record<Language, AboutContent> = {
   en: {
     metadataTitle: "About",
-    metadataDescription: "Company profile, team strengths, and operating principles for BitLabs.",
+    metadataDescription: "Company profile and registration details for BitLabs.",
     eyebrow: "About",
-    title: "A Tokyo-based AI team built for critical enterprise work.",
+    title: "Company profile for BitLabs.",
     body:
-      "BitLabs is an AI R&D and consulting company focused on agentic solutions, model systems, and secure production deployment.",
-    strengthsLabel: "Team Strengths",
-    strengthsTitle: "Technical depth with the discipline to deliver.",
-    principlesLabel: "Working Principles",
+      "BitLabs is a Tokyo-based AI R&D and consulting company focused on practical AI systems, enterprise delivery, and production-grade model infrastructure.",
+    profileLabel: "Corporate Information",
+    profileTitle: "Registered company details.",
+    companyNameLabel: "Company Name",
+    companyName: "Bit Labs株式会社",
+    ceoLabel: "CEO",
+    ceo: "David Bong",
+    establishedLabel: "Company Established Date",
+    established: "April 3, 2024",
+    addressLabel: "Company Address",
+    address: "東京都渋谷区道玄坂一丁目10番8号渋谷道玄坂東急ビル2F-C",
+    capitalLabel: "Startup Capital",
+    capital: "300万円",
   },
   ja: {
     metadataTitle: "会社情報",
-    metadataDescription: "BitLabsの会社概要、チームの強み、行動原則について。",
+    metadataDescription: "BitLabsの会社概要および登記情報です。",
     eyebrow: "会社情報",
-    title: "企業の重要業務を支える、東京発のAI開発チーム。",
+    title: "BitLabsの会社概要。",
     body:
-      "BitLabsは、エージェントソリューション、モデルシステム、そして本番環境向けの安全な導入に強みを持つAI研究開発・コンサルティング企業です。",
-    strengthsLabel: "チームの強み",
-    strengthsTitle: "技術の深さと、やり切る実装力。",
-    principlesLabel: "行動原則",
+      "BitLabsは、実用的なAIシステム、エンタープライズ導入、そして本番品質のモデル基盤に取り組む東京拠点のAI研究開発・コンサルティング企業です。",
+    profileLabel: "会社情報",
+    profileTitle: "登記情報に基づく会社プロフィール。",
+    companyNameLabel: "会社名",
+    companyName: "Bit Labs株式会社",
+    ceoLabel: "CEO",
+    ceo: "David Bong",
+    establishedLabel: "設立日",
+    established: "令和6年4月3日",
+    addressLabel: "会社住所",
+    address: "東京都渋谷区道玄坂一丁目10番8号渋谷道玄坂東急ビル2F-C",
+    capitalLabel: "資本金",
+    capital: "300万円",
   },
 };
 
