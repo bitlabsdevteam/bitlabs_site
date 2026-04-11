@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useSyncExternalStore } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { Language } from "@/lib/site-content";
 
 type LanguageContextValue = {
@@ -9,31 +9,35 @@ type LanguageContextValue = {
 };
 
 const LANGUAGE_STORAGE_KEY = "bitlabs-language";
-const LANGUAGE_CHANGE_EVENT = "bitlabs-language-change";
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
-function readLanguageFromStorage(): Language {
-  const storedLanguage = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
-  return storedLanguage === "ja" ? "ja" : "en";
-}
-
-function subscribeToLanguageChange(onStoreChange: () => void): () => void {
-  window.addEventListener("storage", onStoreChange);
-  window.addEventListener(LANGUAGE_CHANGE_EVENT, onStoreChange);
-
-  return () => {
-    window.removeEventListener("storage", onStoreChange);
-    window.removeEventListener(LANGUAGE_CHANGE_EVENT, onStoreChange);
-  };
-}
-
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const language = useSyncExternalStore<Language>(subscribeToLanguageChange, readLanguageFromStorage, () => "en");
+  const [language, setLanguageState] = useState<Language>("en");
 
   const setLanguage = useCallback((nextLanguage: Language) => {
     window.localStorage.setItem(LANGUAGE_STORAGE_KEY, nextLanguage);
-    window.dispatchEvent(new Event(LANGUAGE_CHANGE_EVENT));
+    setLanguageState(nextLanguage);
+  }, []);
+
+  useEffect(() => {
+    const storedLanguage = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+
+    if (storedLanguage === "ja") {
+      setLanguageState("ja");
+    }
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === LANGUAGE_STORAGE_KEY) {
+        setLanguageState(event.newValue === "ja" ? "ja" : "en");
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+    };
   }, []);
 
   useEffect(() => {
