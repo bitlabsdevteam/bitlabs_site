@@ -17,6 +17,12 @@ type DeliveryStep = {
   detail: string;
 };
 
+type ExpertiseArea = {
+  title: string;
+  summary: string;
+  points: string[];
+};
+
 type FooterContent = {
   summary: string;
   location: string;
@@ -69,6 +75,24 @@ type ServicesPageContent = {
   outcomeLabel: string;
   processLabel: string;
   processTitle: string;
+};
+
+type ExpertisePageContent = {
+  metadataTitle: string;
+  metadataDescription: string;
+  eyebrow: string;
+  title: string;
+  body: string;
+  advisoryLabel: string;
+  advisoryTitle: string;
+  advisoryBody: string;
+  parallelismLabel: string;
+  parallelismTitle: string;
+  parallelismBody: string;
+  frameworkLabel: string;
+  frameworkTitle: string;
+  frameworkBody: string;
+  frameworkPoints: string[];
 };
 
 type ResearchContent = {
@@ -126,6 +150,7 @@ type ChatContent = {
 export const navLinks: Record<Language, NavLink[]> = {
   en: [
     { href: "/", label: "Home" },
+    { href: "/expertises", label: "Expertises" },
     { href: "/services", label: "Services" },
     { href: "/research", label: "Research" },
     { href: "/about", label: "About" },
@@ -133,6 +158,7 @@ export const navLinks: Record<Language, NavLink[]> = {
   ],
   ja: [
     { href: "/", label: "ホーム" },
+    { href: "/expertises", label: "専門領域" },
     { href: "/services", label: "サービス" },
     { href: "/research", label: "研究" },
     { href: "/about", label: "会社情報" },
@@ -150,11 +176,13 @@ export const services: Record<Language, Service[]> = {
       outcome: "Teams move faster, reduce operational friction, and improve consistency in execution.",
     },
     {
-      title: "Enterprise AI Solutions",
-      problem: "In regulated environments, many proofs of concept never make it into production.",
+      title: "AI Consulting Services",
+      problem:
+        "Many small and mid-sized companies see the promise of AI, yet struggle to translate it into a commercially sound and operationally realistic transformation plan.",
       delivery:
-        "We architect and implement enterprise AI platforms designed from the start for governance, resilience, and production use.",
-      outcome: "Organizations can scale AI across functions under clear operational controls.",
+        "We advise leadership teams on where AI can create measurable leverage, then shape the roadmap, operating model, and implementation priorities needed to move from experimentation to disciplined adoption.",
+      outcome:
+        "SMEs gain a clear path to practical AI transformation, with investments aligned to business value, execution capacity, and long-term competitiveness.",
     },
     {
       title: "LLM / SLM Pre-training & Fine-tuning",
@@ -199,6 +227,53 @@ export const services: Record<Language, Service[]> = {
       delivery:
         "ReactとAIを組み合わせ、プロンプト設計、コンテキスト設計、評価ハーネスまで含めた専用アプリを開発します。",
       outcome: "業務プロセスに適合した、実利用可能なAI体験を提供します。",
+    },
+  ],
+};
+
+export const expertiseAreas: Record<Language, ExpertiseArea[]> = {
+  en: [
+    {
+      title: "AI for sophisticated business problems",
+      summary:
+        "We help business owners turn ambiguous operational bottlenecks into scoped AI systems with clear commercial intent.",
+      points: [
+        "Translate complex business constraints into an implementation roadmap.",
+        "Prioritize use cases that improve decision speed, cost structure, or service quality.",
+        "Design delivery plans that fit existing teams, systems, and governance limits.",
+      ],
+    },
+    {
+      title: "Pre-training and inference with 5D parallelism",
+      summary:
+        "We design high-throughput training and serving stacks that coordinate data, tensor, pipeline, sequence, and expert parallelism across GPU clusters.",
+      points: [
+        "Balance throughput, memory pressure, and communication overhead across distributed topologies.",
+        "Adapt parallelism strategy for both pre-training workloads and low-latency inference paths.",
+        "Build deployment plans that remain observable, secure, and operationally maintainable.",
+      ],
+    },
+  ],
+  ja: [
+    {
+      title: "高度な経営課題に向けたAI活用",
+      summary:
+        "複雑で曖昧な事業課題を、実行可能なAIシステムへ落とし込めるように、経営者の意思決定を支援します。",
+      points: [
+        "複雑な事業制約を整理し、実装可能なロードマップへ変換します。",
+        "意思決定速度、コスト構造、サービス品質に効くユースケースを優先します。",
+        "既存組織、既存システム、ガバナンス制約に合う導入計画を設計します。",
+      ],
+    },
+    {
+      title: "5D並列化による事前学習と推論",
+      summary:
+        "データ並列、テンソル並列、パイプライン並列、シーケンス並列、エキスパート並列を組み合わせ、GPUクラスタ上の学習・推論基盤を設計します。",
+      points: [
+        "分散トポロジーごとの通信負荷、メモリ制約、スループットを最適化します。",
+        "事前学習と低遅延推論の両方に合わせて並列化戦略を調整します。",
+        "可観測性と安全性を確保しながら、運用可能な配備設計に落とし込みます。",
+      ],
     },
   ],
 };
@@ -401,11 +476,11 @@ export const servicesPageContent: Record<Language, ServicesPageContent> = {
   en: {
     metadataTitle: "Services",
     metadataDescription:
-      "BitLabs services across AI agents, enterprise AI, model training, and secure cloud deployment.",
+      "BitLabs services across AI agents, AI consulting for SMEs, model training, and secure cloud deployment.",
     eyebrow: "Services",
     title: "From strategy and architecture through production rollout.",
     body:
-      "BitLabs combines research methods, enterprise implementation, and deployment discipline to support AI initiatives end to end.",
+      "BitLabs combines research discipline, technical implementation, and pragmatic advisory work to help organizations turn AI ambition into reliable operational capability.",
     problemLabel: "Problem",
     deliveryLabel: "What We Deliver",
     outcomeLabel: "Outcome",
@@ -425,6 +500,61 @@ export const servicesPageContent: Record<Language, ServicesPageContent> = {
     outcomeLabel: "期待効果",
     processLabel: "提供プロセス",
     processTitle: "測定可能な成果につなげるための実行フレームワーク。",
+  },
+};
+
+export const expertisePageContent: Record<Language, ExpertisePageContent> = {
+  en: {
+    metadataTitle: "Expertises",
+    metadataDescription:
+      "BitLabs expertise in solving sophisticated business problems with AI and designing 5D-parallel model systems.",
+    eyebrow: "Expertises",
+    title: "Applied AI expertise for business complexity and model-scale systems.",
+    body:
+      "BitLabs combines executive-level problem framing with deep systems engineering, helping organizations define the right AI intervention and build the infrastructure needed to run it reliably.",
+    advisoryLabel: "Business Advisory",
+    advisoryTitle: "Help business owners solve sophisticated problems using AI technologies.",
+    advisoryBody:
+      "We work from business constraints outward, shaping AI programs that make operational sense instead of forcing generic tooling into complex environments.",
+    parallelismLabel: "Model Systems",
+    parallelismTitle: "Pre-training and inference with 5D parallelism.",
+    parallelismBody:
+      "For teams pushing large-model workloads, we design distributed training and inference patterns that coordinate multiple forms of parallelism without losing sight of reliability, cost, or deployment discipline.",
+    frameworkLabel: "Agentic Solutions",
+    frameworkTitle: "Design and implement advanced AI agentic solutions with compliance.",
+    frameworkBody:
+      "We architect agentic systems for regulated and high-accountability environments, aligning orchestration, tool access, and decision boundaries with enterprise compliance requirements.",
+    frameworkPoints: [
+      "Policy-aware agent design with explicit permissions, escalation paths, and auditability.",
+      "Secure integration patterns for internal data, external tools, and human-in-the-loop controls.",
+      "Operational governance covering traceability, risk boundaries, and production readiness.",
+    ],
+  },
+  ja: {
+    metadataTitle: "専門領域",
+    metadataDescription:
+      "BitLabsの専門領域。高度な事業課題を解くAI活用と、5D並列化によるモデルシステム設計。",
+    eyebrow: "専門領域",
+    title: "事業の複雑性と大規模モデル基盤の双方に対応するAI実装力。",
+    body:
+      "BitLabsは、経営課題の整理から分散モデル基盤の設計までを一気通貫で捉え、正しいAI施策とそれを支える実装基盤を設計します。",
+    advisoryLabel: "事業課題への適用",
+    advisoryTitle: "AI技術で高度な経営課題を解くための支援。",
+    advisoryBody:
+      "既存業務、制約条件、投資対効果を踏まえ、複雑な現場に対して実際に機能するAI導入方針を組み立てます。",
+    parallelismLabel: "モデルシステム",
+    parallelismTitle: "5D並列化による事前学習と推論。",
+    parallelismBody:
+      "大規模モデルの学習・推論に向けて、複数の並列化手法を組み合わせた分散実行基盤を設計し、性能・安定性・運用性のバランスを取ります。",
+    frameworkLabel: "エージェントソリューション",
+    frameworkTitle: "コンプライアンスを踏まえた高度なAIエージェントソリューションの設計と実装。",
+    frameworkBody:
+      "BitLabsは、規制対応や説明責任が求められる環境において、オーケストレーション、ツール権限、判断境界を統制要件に合わせて設計します。",
+    frameworkPoints: [
+      "権限管理、承認フロー、監査可能性を備えたポリシー対応型エージェント設計。",
+      "社内データ、外部ツール、人の確認工程を安全につなぐ統合設計。",
+      "トレーサビリティ、リスク境界、本番運用基準を含む運用ガバナンス設計。",
+    ],
   },
 };
 
