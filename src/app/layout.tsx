@@ -6,11 +6,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "BitLabs | AI R&D and Consulting",
+    default: "BitLabs | AI R&D and Engineering",
     template: "%s | BitLabs",
   },
   description:
-    "BitLabs is a Tokyo-based AI R&D and consulting company delivering AI agents, enterprise AI systems, LLM or SLM training, and secure cloud deployment.",
+    "BitLabs is a Tokyo-based AI R&D and engineering company delivering AI agents, enterprise AI architecture, LLM or SLM training, and secure production deployment.",
   metadataBase: new URL("https://bitlabs.site"),
   keywords: [
     "BitLabs",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "BitLabs",
-    description: "Secure, production-ready AI systems designed for measurable business value.",
+    description: "Technically strong AI systems for agents, model infrastructure, and secure production deployment.",
     url: "https://bitlabs.site",
     siteName: "BitLabs",
     locale: "en_US",

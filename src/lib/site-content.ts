@@ -31,6 +31,13 @@ type FooterContent = {
   socialAriaLabel: (name: string) => string;
 };
 
+type HomeApproachStep = {
+  phase: string;
+  title: string;
+  body: string;
+  marker: string;
+};
+
 type HomeContent = {
   location: string;
   heroTitle: string;
@@ -47,6 +54,15 @@ type HomeContent = {
   visionAttribution: string;
   capabilitiesLabel: string;
   capabilitiesTitle: string;
+  approachLabel: string;
+  approachTitle: string;
+  approachBody: string;
+  approachSteps: HomeApproachStep[];
+  approachVisualLabel: string;
+  approachVisualValue: string;
+  approachOutcomeLabel: string;
+  approachOutcomeTitle: string;
+  approachOutcomeBody: string;
   securityLabel: string;
   securityTitle: string;
   securityBody: string;
@@ -179,63 +195,77 @@ export const services: Record<Language, Service[]> = {
   en: [
     {
       title: "AI Agent Solutions",
-      problem: "Manual workflows and disconnected systems slow down decision-making.",
+      problem:
+        "Enterprise teams need AI agents that can act across real systems without losing control over permissions, data boundaries, or review flows.",
       delivery:
-        "We design and implement agentic workflows that connect internal knowledge, tools, and policy-aware execution paths.",
-      outcome: "Teams move faster, reduce operational friction, and improve consistency in execution.",
+        "We design agent architectures with orchestration, memory strategy, tool permissions, retrieval layers, and human checkpoints built into the execution path from day one.",
+      outcome:
+        "Organizations gain agent workflows that are useful in production, auditable in operation, and aligned with how real teams make decisions.",
     },
     {
-      title: "AI Consulting Services",
+      title: "Enterprise AI Architecture",
       problem:
-        "Many small and mid-sized companies see the promise of AI, yet struggle to translate it into a commercially sound and operationally realistic transformation plan.",
+        "Many organizations can identify promising use cases, but struggle to turn AI ambition into a system architecture that can survive integration, governance, and rollout pressure.",
       delivery:
-        "We advise leadership teams on where AI can create measurable leverage, then shape the roadmap, operating model, and implementation priorities needed to move from experimentation to disciplined adoption.",
+        "We define the target architecture, integration shape, operating model, and control boundaries required to move from fragmented experiments to dependable enterprise AI capability.",
       outcome:
-        "SMEs gain a clear path to practical AI transformation, with investments aligned to business value, execution capacity, and long-term competitiveness.",
+        "Leadership teams get a technically coherent roadmap that connects business priorities to an implementation path teams can actually operate.",
     },
     {
       title: "LLM / SLM Pre-training & Fine-tuning",
-      problem: "General-purpose models do not always fit domain-specific requirements or control needs.",
+      problem:
+        "General-purpose models often miss domain nuance, latency targets, controllability requirements, or deployment constraints that matter in production.",
       delivery:
-        "We build training strategy, data design, and fine-tuning infrastructure aligned to the demands of your domain.",
-      outcome: "Production systems gain stronger relevance, accuracy, and controllability.",
+        "We build model adaptation programs spanning data design, training strategy, fine-tuning pipelines, evaluation suites, and infrastructure for repeatable iteration.",
+      outcome:
+        "Teams get model systems that are more relevant to their domain, easier to steer, and better suited to production-grade reliability targets.",
     },
     {
       title: "Custom AI Applications",
-      problem: "Teams need products embedded into real work, not isolated demos.",
+      problem:
+        "Most AI demos break when they meet real workflows, real users, and the operational edge cases that product teams have to own.",
       delivery:
-        "We build custom React + AI applications covering prompt design, context architecture, and evaluation harnesses.",
-      outcome: "Users get AI experiences that fit actual operating workflows.",
+        "We build custom React + AI applications with prompt design, context architecture, evaluation harnesses, and backend integration patterns shaped for daily use.",
+      outcome:
+        "Users get AI products that fit real operating workflows instead of isolated prototypes that cannot survive production use.",
     },
   ],
   ja: [
     {
       title: "AIエージェントソリューション",
-      problem: "手作業の多い業務フローや分断されたシステムが意思決定の速度を落としています。",
+      problem:
+        "企業でAIエージェントを実用化するには、ツール権限、データ境界、承認フローを保ったまま業務システムと接続できる設計が必要です。",
       delivery:
-        "社内データ、各種ツール、ポリシーを踏まえた実行手順をつなぐエージェント型ワークフローを設計・実装します。",
-      outcome: "実行速度を高め、運用摩擦を減らし、業務品質の一貫性を向上させます。",
+        "BitLabsは、オーケストレーション、メモリ設計、検索基盤、ツール権限、人による確認工程まで含めたAIエージェント基盤を設計・実装します。",
+      outcome:
+        "本番運用で使える有用性と、監査や統制に耐える運用性を両立したエージェント活用を実現します。",
     },
     {
       title: "エンタープライズAIソリューション",
-      problem: "規制や統制が厳しい環境では、PoCが本番展開まで進まないことが少なくありません。",
+      problem:
+        "多くの企業では、AIの活用可能性は見えていても、既存システム連携、統制、運用責任を見据えた設計まで落とし込めずPoCで止まります。",
       delivery:
-        "本番運用を前提としたエンタープライズAI基盤のアーキテクチャ設計と実装を提供します。",
-      outcome: "ガバナンスに対応した統制のもとで、複数部門への確実な展開を実現します。",
+        "BitLabsは、本番運用を前提に、システム連携、権限境界、可観測性、ガバナンスを含むエンタープライズAIアーキテクチャを設計します。",
+      outcome:
+        "事業要件と技術要件が分断されない導入計画をつくり、複数部門に展開可能なAI基盤へつなげます。",
     },
     {
       title: "LLM/SLMの事前学習・ファインチューニング",
-      problem: "汎用モデルでは業務ドメイン固有の要求に十分対応できない場合があります。",
+      problem:
+        "汎用モデルでは、業務固有の知識、応答制御、遅延要件、配備制約に十分対応できない場合があります。",
       delivery:
-        "ドメイン特性に合わせた学習戦略、データ設計、ファインチューニング基盤を構築します。",
-      outcome: "実運用における関連性、精度、制御性を高い水準で引き上げます。",
+        "ドメイン特性に合わせて、学習戦略、データ設計、ファインチューニング基盤、評価スイート、継続改善の実験基盤を構築します。",
+      outcome:
+        "業務に適した関連性、制御性、運用品質を備えたモデルシステムへ段階的に高めていきます。",
     },
     {
       title: "カスタムAIアプリケーション",
-      problem: "現場が必要としているのは単発のデモではなく、業務に組み込めるプロダクトです。",
+      problem:
+        "AIの価値は単発デモでは定着せず、現場の業務フロー、例外処理、既存システムに組み込まれて初めて継続利用されます。",
       delivery:
-        "ReactとAIを組み合わせ、プロンプト設計、コンテキスト設計、評価ハーネスまで含めた専用アプリを開発します。",
-      outcome: "業務プロセスに適合した、実利用可能なAI体験を提供します。",
+        "ReactとAIを組み合わせ、プロンプト設計、コンテキスト設計、評価ハーネス、バックエンド連携まで含めた専用アプリケーションを開発します。",
+      outcome:
+        "業務に適合し、継続運用しやすいAIプロダクトとして現場定着を支援します。",
     },
   ],
 };
@@ -243,45 +273,45 @@ export const services: Record<Language, Service[]> = {
 export const expertiseAreas: Record<Language, ExpertiseArea[]> = {
   en: [
     {
-      title: "AI for sophisticated business problems",
+      title: "AI system design for business-critical environments",
       summary:
-        "We help business owners turn ambiguous operational bottlenecks into scoped AI systems with clear commercial intent.",
+        "We translate messy operational realities into system designs that make technical sense, commercial sense, and governance sense at the same time.",
       points: [
-        "Translate complex business constraints into an implementation roadmap.",
-        "Prioritize use cases that improve decision speed, cost structure, or service quality.",
-        "Design delivery plans that fit existing teams, systems, and governance limits.",
+        "Map business constraints into architectures that teams can implement and sustain.",
+        "Prioritize AI interventions that improve throughput, quality, risk control, or decision speed.",
+        "Design delivery around existing systems, approval paths, and operational ownership.",
       ],
     },
     {
       title: "Pre-training and inference with 5D parallelism",
       summary:
-        "We design high-throughput training and serving stacks that coordinate data, tensor, pipeline, sequence, and expert parallelism across GPU clusters.",
+        "We design high-throughput model systems that coordinate data, tensor, pipeline, sequence, and expert parallelism across distributed GPU environments.",
       points: [
         "Balance throughput, memory pressure, and communication overhead across distributed topologies.",
-        "Adapt parallelism strategy for both pre-training workloads and low-latency inference paths.",
-        "Build deployment plans that remain observable, secure, and operationally maintainable.",
+        "Tune parallelism strategy for both training workloads and low-latency serving paths.",
+        "Carry model-system decisions forward into observability, security, and maintainable operations.",
       ],
     },
   ],
   ja: [
     {
-      title: "高度な経営課題に向けたAI活用",
+      title: "重要業務を前提にしたAIシステム設計",
       summary:
-        "複雑で曖昧な事業課題を、実行可能なAIシステムへ落とし込めるように、経営者の意思決定を支援します。",
+        "複雑な事業課題を、技術的にも事業的にも無理のないAIシステム設計へ落とし込み、実装と運用の両立を支援します。",
       points: [
-        "複雑な事業制約を整理し、実装可能なロードマップへ変換します。",
-        "意思決定速度、コスト構造、サービス品質に効くユースケースを優先します。",
-        "既存組織、既存システム、ガバナンス制約に合う導入計画を設計します。",
+        "事業制約を整理し、実装と運用まで見据えたアーキテクチャに変換します。",
+        "意思決定速度、品質、リスク管理、コスト構造に効く適用領域を見極めます。",
+        "既存組織、既存システム、承認フローに合う導入計画を設計します。",
       ],
     },
     {
       title: "5D並列化による事前学習と推論",
       summary:
-        "データ並列、テンソル並列、パイプライン並列、シーケンス並列、エキスパート並列を組み合わせ、GPUクラスタ上の学習・推論基盤を設計します。",
+        "データ並列、テンソル並列、パイプライン並列、シーケンス並列、エキスパート並列を組み合わせ、分散GPU環境における学習・推論基盤を設計します。",
       points: [
         "分散トポロジーごとの通信負荷、メモリ制約、スループットを最適化します。",
         "事前学習と低遅延推論の両方に合わせて並列化戦略を調整します。",
-        "可観測性と安全性を確保しながら、運用可能な配備設計に落とし込みます。",
+        "モデル基盤の判断を、可観測性や安全性を含む運用設計まで接続します。",
       ],
     },
   ],
@@ -289,50 +319,52 @@ export const expertiseAreas: Record<Language, ExpertiseArea[]> = {
 
 export const researchTracks: Record<Language, string[]> = {
   en: [
-    "SLM architecture design and training-efficiency research for constrained deployment environments.",
-    "Research on detecting implicit bias in LLM outputs, with mitigation strategies including FairSteer and hook-based interventions.",
-    "Research on orchestration, memory design, and reliability boundaries for agentic systems.",
+    "SLM architecture design and training-efficiency research for deployment-constrained environments.",
+    "Fine-tuning and domain-adaptation methods for model behavior that needs tighter control in production.",
+    "Bias detection, steerability, and intervention methods for safer and more predictable model behavior.",
+    "Orchestration, memory design, and reliability boundaries for agentic systems operating across tools and human review.",
     "Evaluation, robustness, and lifecycle governance for production-grade model systems.",
   ],
   ja: [
-    "制約の大きい配備環境を前提にしたSLMアーキテクチャ設計と学習効率の研究",
-    "LLM出力に潜む暗黙的バイアスの検出と、FairSteerやフック介入を含む緩和手法の研究",
-    "エージェント型システムのオーケストレーション、メモリ設計、信頼性境界の研究",
+    "配備制約の大きい環境を前提にしたSLMアーキテクチャ設計と学習効率の研究",
+    "本番環境での制御性を高めるためのファインチューニングとドメイン適応の研究",
+    "LLM出力の暗黙的バイアス検出と、挙動をより予測可能にする介入手法の研究",
+    "ツール実行や人の確認を含むエージェント型システムのオーケストレーション、メモリ設計、信頼性境界の研究",
     "本番品質のモデルシステムに向けた評価、堅牢性、ライフサイクルガバナンス",
   ],
 };
 
 export const principles: Record<Language, string[]> = {
   en: [
-    "Practical outcomes over inflated claims",
-    "Security by design",
-    "Research that converts into production value",
-    "Long-term partnership anchored in measurable results",
+    "Technical rigor over AI theater",
+    "Security and control designed in from the first architecture pass",
+    "Research translated into deployable systems",
+    "Measured outcomes over inflated claims",
   ],
   ja: [
-    "誇張より実用性を重視する",
-    "セキュリティを前提に設計する",
-    "研究を本番価値につなげる",
-    "測定可能な成果を軸に長期で伴走する",
+    "流行語より技術的な整合性を重視する",
+    "セキュリティと統制を最初の設計から組み込む",
+    "研究を実装可能な価値へ変換する",
+    "誇張ではなく測定可能な成果で示す",
   ],
 };
 
 export const teamStrengths: Record<Language, string[]> = {
   en: [
-    "AI architecture design and enterprise delivery execution",
-    "LLM pre-training and fine-tuning infrastructure",
+    "AI system architecture for enterprise environments",
+    "LLM pre-training, fine-tuning, and evaluation infrastructure",
     "SLM design and training from scratch",
-    "Prompt design, context engineering, and evaluation harnesses",
-    "Secure cloud deployment for LLM systems",
-    "OpenClaw custom solution implementation",
+    "Prompt design, context engineering, and agent orchestration",
+    "Secure cloud deployment patterns for model systems",
+    "Custom implementation across OpenClaw and adjacent AI stacks",
   ],
   ja: [
-    "エンタープライズ環境におけるAIアーキテクチャ設計と導入実行",
-    "LLMの事前学習およびファインチューニング基盤",
+    "エンタープライズ環境におけるAIシステムアーキテクチャ設計",
+    "LLMの事前学習、ファインチューニング、評価基盤の構築",
     "SLMのゼロからの設計と学習",
-    "プロンプト設計、コンテキスト設計、評価ハーネス構築",
-    "LLMシステム向けのセキュアなクラウドデプロイ",
-    "OpenClawカスタムソリューション実装",
+    "プロンプト設計、コンテキスト設計、エージェントオーケストレーション",
+    "モデルシステム向けのセキュアなクラウドデプロイ設計",
+    "OpenClawを含むAIスタックのカスタム実装",
   ],
 };
 
@@ -340,33 +372,33 @@ export const deliverySteps: Record<Language, DeliveryStep[]> = {
   en: [
     {
       phase: "01. Discovery",
-      detail: "We align on operational constraints, data boundaries, and the target metrics that matter.",
+      detail: "We align on operating constraints, data boundaries, failure tolerance, and the metrics that will define success.",
     },
     {
       phase: "02. Design",
-      detail: "We define the model approach, orchestration, security controls, and integration shape.",
+      detail: "We define model approach, orchestration, evaluation strategy, security controls, and integration shape as one system.",
     },
     {
       phase: "03. Implementation",
-      detail: "We build iteratively with evaluation loops and enterprise controls integrated from the start.",
+      detail: "We build iteratively with evaluation loops, traceability, and enterprise controls integrated from the start.",
     },
     {
       phase: "04. Operations",
-      detail: "We move into production with observability, governance checks, and a continuous improvement path.",
+      detail: "We move into production with observability, governance checks, and a continuous path for model and workflow improvement.",
     },
   ],
   ja: [
     {
       phase: "01. 現状整理",
-      detail: "業務上の制約、データ境界、目標となる運用指標を明確化します。",
+      detail: "業務制約、データ境界、許容できる失敗範囲、評価指標を明確化します。",
     },
     {
       phase: "02. 設計",
-      detail: "モデル、オーケストレーション、セキュリティ、連携構成を定義します。",
+      detail: "モデル方針、オーケストレーション、評価設計、セキュリティ、連携構成を一体で定義します。",
     },
     {
       phase: "03. 実装",
-      detail: "評価ループとエンタープライズ統制を組み込みながら段階的に構築します。",
+      detail: "評価ループ、トレーサビリティ、エンタープライズ統制を組み込みながら段階的に構築します。",
     },
     {
       phase: "04. 運用",
@@ -378,7 +410,7 @@ export const deliverySteps: Record<Language, DeliveryStep[]> = {
 export const footerContent: Record<Language, FooterContent> = {
   en: {
     summary:
-      "Tokyo-based AI R&D and consulting company building practical, secure systems for enterprise use.",
+      "Tokyo-based AI R&D and engineering company building agent systems, model infrastructure, and secure production deployments.",
     location: "Tokyo, Japan",
     email: "hello@bitlabs.site",
     copyright: "All rights reserved.",
@@ -386,7 +418,7 @@ export const footerContent: Record<Language, FooterContent> = {
   },
   ja: {
     summary:
-      "東京を拠点とするAI研究開発・コンサルティング企業。実用性と安全性を備えたシステムを企業向けに構築します。",
+      "東京を拠点とするAI研究開発・エンジニアリング企業。AIエージェント、モデル基盤、セキュアな本番導入を設計・実装します。",
     location: "東京、日本",
     email: "hello@bitlabs.site",
     copyright: "無断転載・無断使用を禁じます。",
@@ -397,61 +429,122 @@ export const footerContent: Record<Language, FooterContent> = {
 export const homeContent: Record<Language, HomeContent> = {
   en: {
     location: "Tokyo, Japan",
-    heroTitle: "From research depth to production discipline for enterprise AI.",
+    heroTitle: "Technically strong AI systems, built for production.",
     heroBody:
-      "BitLabs designs, builds, and deploys practical AI systems across agent workflows, model systems, and secure cloud environments.",
-    heroStatementLabel: "No hype",
-    heroStatement: "We cut through AI hype and build AI systems that actually work in the real world.",
+      "BitLabs is a Tokyo-based AI R&D and engineering company designing AI agents, model systems, fine-tuning pipelines, and secure deployment architectures for real operating environments.",
+    heroStatementLabel: "Technical strength",
+    heroStatement:
+      "We combine research depth, system design, evaluation discipline, and production engineering to build AI that can survive real constraints.",
     primaryCta: "Talk to Adam",
     secondaryCta: "View services",
     missionLabel: "Mission",
     missionBody:
-      "Turn advanced AI research into secure, dependable systems that create concrete business value.",
+      "Turn serious AI research into dependable systems that create measurable business value under real operational constraints.",
     missionAttribution: "- BitLabs CEO David Bong",
     visionLabel: "Vision",
     visionBody:
-      "Build a future where serious research and rigorous operations deliver robust, safe LLM systems into real production environments.",
+      "Build a future where technically rigorous AI systems can be deployed with the same discipline expected of critical production infrastructure.",
     visionAttribution: "- BitLabs CEO David Bong",
     capabilitiesLabel: "Capabilities",
-    capabilitiesTitle: "Design and delivery that holds up under real operating conditions.",
+    capabilitiesTitle: "Engineering depth across agents, model systems, and production deployment.",
+    approachLabel: "Approach",
+    approachTitle: "We start with the problem, then design the right path to an MVP.",
+    approachBody:
+      "BitLabs does not force a prepackaged AI solution onto client teams. We begin with a working session to understand pain points, systems, constraints, and success criteria. From there, we curate the best-fit approach and move into focused MVP development.",
+    approachSteps: [
+      {
+        phase: "01. Workshop",
+        title: "Understand the pain points in operational detail.",
+        body: "We map business friction, system dependencies, data boundaries, and the failure tolerance that will shape the solution.",
+        marker: "Pain points",
+      },
+      {
+        phase: "02. Solution Design",
+        title: "Curate the best-fit solution before building.",
+        body: "We define the right architecture, model approach, workflow design, and control boundaries instead of defaulting to generic AI patterns.",
+        marker: "Best-fit proposal",
+      },
+      {
+        phase: "03. MVP Development",
+        title: "Build a focused MVP with clear learning goals.",
+        body: "We implement the smallest credible system that can validate technical fit, user value, and the path toward production deployment.",
+        marker: "Focused MVP",
+      },
+    ],
+    approachVisualLabel: "BitLabs flow",
+    approachVisualValue: "Workshop to MVP",
+    approachOutcomeLabel: "Outcome",
+    approachOutcomeTitle: "A clearer, lower-risk path from pain point to production-ready AI.",
+    approachOutcomeBody:
+      "Clients move forward with a solution shaped around their environment, not around hype or generic demos.",
     securityLabel: "Security & Deployment",
-    securityTitle: "Security architecture belongs in the first blueprint, not as a retrofit.",
+    securityTitle: "Production AI starts with architecture, control boundaries, and evaluation.",
     securityBody:
-      "BitLabs designs deployment models with access boundaries, controlled integrations, and governance checkpoints aligned to enterprise risk requirements.",
+      "BitLabs treats security, access control, data handling, and release evaluation as core parts of system design, not cleanup work after a prototype is already built.",
     securityPoints: [
-      "Solution architecture designed for private infrastructure options",
-      "Policy-led deployment plans and data handling boundaries",
-      "Model deployment patterns built for regulated environments",
+      "Deployment architectures designed with private infrastructure options and explicit trust boundaries",
+      "Policy-led integration patterns for model access, tool use, and data handling",
+      "Evaluation and release criteria shaped for regulated or high-accountability environments",
     ],
   },
   ja: {
     location: "東京、日本",
-    heroTitle: "研究の深さと実装の規律で、企業向けAIを本番品質へ導く。",
+    heroTitle: "技術的に強いAIシステムを、本番運用まで設計する。",
     heroBody:
-      "BitLabsは、AIエージェント、モデルシステム、セキュアなクラウド環境にまたがる実用的なAIの設計・開発・導入を支援します。",
-    heroStatementLabel: "誇張ではなく実装",
+      "BitLabsは、AIエージェント、モデル基盤、ファインチューニング、評価設計、セキュアな導入アーキテクチャまで一貫して手がける東京拠点のAI研究開発・エンジニアリング企業です。",
+    heroStatementLabel: "技術で支える実装",
     heroStatement:
-      "AI hypeに振り回されず、現実の現場で本当に機能するAIシステムを構築します。",
+      "研究の深さ、システム設計、評価規律、本番実装を切り離さず、現実の制約下で機能するAIを構築します。",
     primaryCta: "Adamに相談する",
     secondaryCta: "サービスを見る",
     missionLabel: "ミッション",
     missionBody:
-      "高度なAI研究を、具体的な事業価値を生む安全で信頼できるシステムへ変換すること。",
+      "高度なAI研究を、現場で継続運用できる安全で信頼性の高いシステムへ変換すること。",
     missionAttribution: "- BitLabs CEO David Bong",
     visionLabel: "ビジョン",
     visionBody:
-      "真剣な研究にもとづく高度で堅牢かつ安全なLLMシステムが、現実の運用規律とともに届けられる未来を形にすること。",
+      "技術的に高度なAIシステムが、厳格な運用規律とともに社会実装される状態を当たり前にすること。",
     visionAttribution: "- BitLabs CEO David Bong",
     capabilitiesLabel: "対応領域",
-    capabilitiesTitle: "実際の運用条件に耐える設計と実装。",
+    capabilitiesTitle: "エージェント、モデル基盤、本番導入を横断する実装力。",
+    approachLabel: "進め方",
+    approachTitle: "まず課題を正しく捉え、そのうえで最適なMVPへ落とし込みます。",
+    approachBody:
+      "BitLabsは、最初から特定のAI手法を押しつけません。まずワークショップを通じて、お客様の課題、業務の流れ、既存システム、制約条件、成功指標を整理し、その内容にもとづいて最適な解決策を設計したうえでMVP開発へ進みます。",
+    approachSteps: [
+      {
+        phase: "01. ワークショップ",
+        title: "現場の痛みと制約を具体的に把握する。",
+        body: "業務上のボトルネック、既存システムとの関係、データ境界、許容できる失敗範囲まで含めて整理します。",
+        marker: "課題整理",
+      },
+      {
+        phase: "02. 解決策の設計",
+        title: "最適なアプローチを選定して提案する。",
+        body: "汎用的なAI導入パターンに当てはめるのではなく、お客様の状況に合うアーキテクチャ、モデル方針、運用境界を設計します。",
+        marker: "最適提案",
+      },
+      {
+        phase: "03. MVP開発",
+        title: "価値検証に必要なMVPを絞って構築する。",
+        body: "技術的成立性、利用価値、本番展開への見通しを確認できる最小構成のシステムを実装します。",
+        marker: "MVP開発",
+      },
+    ],
+    approachVisualLabel: "進行フロー",
+    approachVisualValue: "課題整理からMVPへ",
+    approachOutcomeLabel: "進行結果",
+    approachOutcomeTitle: "課題から本番導入につながる現実的な道筋を明確にする。",
+    approachOutcomeBody:
+      "お客様の環境に合った形で、過剰な投資や遠回りを避けながら次の開発判断へ進めます。",
     securityLabel: "セキュリティと配備",
-    securityTitle: "セキュリティ設計は後付けではなく、最初の設計図に含めます。",
+    securityTitle: "本番品質のAIは、設計段階から統制と評価を組み込みます。",
     securityBody:
-      "BitLabsは、アクセス境界、統制された連携、ガバナンスの確認ポイントを組み込んだ配備モデルを設計し、企業のリスク基準に整合させます。",
+      "BitLabsは、アクセス境界、データ取り扱い、ツール権限、評価基準をアーキテクチャの初期段階から設計し、企業のリスク要件に合わせた導入を行います。",
     securityPoints: [
-      "プライベート基盤を前提にしたソリューション設計",
-      "ポリシー主導の展開計画とデータ取り扱い境界",
-      "規制環境に適したモデル配備パターン",
+      "プライベート基盤を含む配備構成と明確な信頼境界の設計",
+      "モデル利用、ツール実行、データ取り扱いを統制する連携設計",
+      "規制対応や説明責任が求められる環境を前提にした評価とリリース設計",
     ],
   },
 };
@@ -459,11 +552,11 @@ export const homeContent: Record<Language, HomeContent> = {
 export const aboutContent: Record<Language, AboutContent> = {
   en: {
     metadataTitle: "About",
-    metadataDescription: "Company profile and registration details for BitLabs.",
+    metadataDescription: "Company profile for BitLabs, a Tokyo-based AI R&D and engineering company.",
     eyebrow: "About",
-    title: "Company profile for BitLabs.",
+    title: "A Tokyo-based AI R&D and engineering company.",
     body:
-      "BitLabs is a Tokyo-based AI R&D and consulting company focused on practical AI systems, enterprise delivery, and production-grade model infrastructure.",
+      "BitLabs works at the intersection of model research, agent architecture, application engineering, and secure deployment. We help organizations that need technical depth, disciplined implementation, and systems that can hold up in production.",
     profileLabel: "Corporate Information",
     profileTitle: "Registered company details.",
     companyNameLabel: "Company Name",
@@ -479,11 +572,11 @@ export const aboutContent: Record<Language, AboutContent> = {
   },
   ja: {
     metadataTitle: "会社情報",
-    metadataDescription: "BitLabsの会社概要および登記情報です。",
+    metadataDescription: "東京拠点のAI研究開発・エンジニアリング企業、BitLabsの会社概要です。",
     eyebrow: "会社情報",
-    title: "BitLabsの会社概要。",
+    title: "東京を拠点に、AIの研究開発と実装を行う会社です。",
     body:
-      "BitLabsは、実用的なAIシステム、エンタープライズ導入、そして本番品質のモデル基盤に取り組む東京拠点のAI研究開発・コンサルティング企業です。",
+      "BitLabsは、モデル研究、エージェント設計、AIアプリケーション開発、セキュアな導入アーキテクチャを横断して扱うAI研究開発・エンジニアリング企業です。技術的な深さと、継続運用できる実装規律の両立を重視しています。",
     profileLabel: "会社情報",
     profileTitle: "登記情報に基づく会社プロフィール。",
     companyNameLabel: "会社名",
@@ -503,30 +596,30 @@ export const servicesPageContent: Record<Language, ServicesPageContent> = {
   en: {
     metadataTitle: "Services",
     metadataDescription:
-      "BitLabs services across AI agents, AI consulting for SMEs, model training, and secure cloud deployment.",
+      "BitLabs services across AI agents, enterprise AI architecture, model training, and secure deployment.",
     eyebrow: "Services",
-    title: "From strategy and architecture through production rollout.",
+    title: "Technical AI delivery from architecture through production operation.",
     body:
-      "BitLabs combines research discipline, technical implementation, and pragmatic advisory work to help organizations turn AI ambition into reliable operational capability.",
+      "BitLabs provides engineering-led AI services for teams that need more than a prototype: agent systems, enterprise architecture, model adaptation, and custom applications built for real operating conditions.",
     problemLabel: "Problem",
     deliveryLabel: "What We Deliver",
     outcomeLabel: "Outcome",
     processLabel: "Delivery Process",
-    processTitle: "An execution framework built around measurable outcomes.",
+    processTitle: "An execution model built around architecture quality, evaluation, and measurable outcomes.",
   },
   ja: {
     metadataTitle: "サービス",
     metadataDescription:
-      "BitLabsのAIエージェント、エンタープライズAI、モデル学習、セキュアなクラウド配備に関するサービス紹介。",
+      "BitLabsのAIエージェント、エンタープライズAI設計、モデル学習、セキュアな導入に関するサービス紹介。",
     eyebrow: "サービス",
-    title: "構想設計から本番運用まで、一気通貫で支援します。",
+    title: "AIアーキテクチャ設計から本番運用まで、技術主導で支援します。",
     body:
-      "BitLabsは、研究手法とエンタープライズ実装、安定した配備設計を組み合わせ、AI導入をエンドツーエンドで支援します。",
+      "BitLabsは、研究知見、システム設計、評価設計、本番導入の各工程を分断せず、実運用に耐えるAIシステムの構築を支援します。",
     problemLabel: "課題",
     deliveryLabel: "提供内容",
     outcomeLabel: "期待効果",
     processLabel: "提供プロセス",
-    processTitle: "測定可能な成果につなげるための実行フレームワーク。",
+    processTitle: "アーキテクチャ品質、評価設計、測定可能な成果に基づく実行フレームワーク。",
   },
 };
 
@@ -534,23 +627,23 @@ export const expertisePageContent: Record<Language, ExpertisePageContent> = {
   en: {
     metadataTitle: "Expertises",
     metadataDescription:
-      "BitLabs expertise in solving sophisticated business problems with AI and designing 5D-parallel model systems.",
+      "BitLabs expertise across AI system design, agent architecture, and 5D-parallel model systems.",
     eyebrow: "Expertises",
-    title: "Applied AI expertise for business complexity and model-scale systems.",
+    title: "AI engineering expertise across business systems and model-scale infrastructure.",
     body:
-      "BitLabs combines executive-level problem framing with deep systems engineering, helping organizations define the right AI intervention and build the infrastructure needed to run it reliably.",
+      "BitLabs combines technical architecture, model-system engineering, and production discipline to help organizations build AI that is both advanced and operationally credible.",
     advisoryLabel: "Business Advisory",
-    advisoryTitle: "Help business owners solve sophisticated problems using AI technologies.",
+    advisoryTitle: "Design AI systems that fit real business constraints.",
     advisoryBody:
-      "We work from business constraints outward, shaping AI programs that make operational sense instead of forcing generic tooling into complex environments.",
+      "We work from operational constraints outward, shaping AI systems that can fit the existing business, approval, and systems landscape instead of forcing generic tooling into it.",
     parallelismLabel: "Model Systems",
     parallelismTitle: "Pre-training and inference with 5D parallelism.",
     parallelismBody:
-      "For teams pushing large-model workloads, we design distributed training and inference patterns that coordinate multiple forms of parallelism without losing sight of reliability, cost, or deployment discipline.",
+      "For teams running demanding model workloads, we design distributed training and inference patterns that coordinate multiple forms of parallelism without losing sight of reliability, cost, or maintainability.",
     frameworkLabel: "Agentic Solutions",
-    frameworkTitle: "Design and implement advanced AI agentic solutions with compliance.",
+    frameworkTitle: "Design advanced agentic systems with control, traceability, and operational clarity.",
     frameworkBody:
-      "We architect agentic systems for regulated and high-accountability environments, aligning orchestration, tool access, and decision boundaries with enterprise compliance requirements.",
+      "We architect agentic systems for high-accountability environments, aligning orchestration, tool access, escalation paths, and decision boundaries with operational control requirements.",
     frameworkPoints: [
       "Policy-aware agent design with explicit permissions, escalation paths, and auditability.",
       "Secure integration patterns for internal data, external tools, and human-in-the-loop controls.",
@@ -560,23 +653,23 @@ export const expertisePageContent: Record<Language, ExpertisePageContent> = {
   ja: {
     metadataTitle: "専門領域",
     metadataDescription:
-      "BitLabsの専門領域。高度な事業課題を解くAI活用と、5D並列化によるモデルシステム設計。",
+      "BitLabsの専門領域。AIシステム設計、エージェントアーキテクチャ、5D並列化によるモデル基盤設計。",
     eyebrow: "専門領域",
-    title: "事業の複雑性と大規模モデル基盤の双方に対応するAI実装力。",
+    title: "事業システムから大規模モデル基盤まで扱うAIエンジニアリング力。",
     body:
-      "BitLabsは、経営課題の整理から分散モデル基盤の設計までを一気通貫で捉え、正しいAI施策とそれを支える実装基盤を設計します。",
+      "BitLabsは、AIアーキテクチャ、モデル基盤、アプリケーション実装、本番運用設計を一体として捉え、技術的に成立するAIシステムを構築します。",
     advisoryLabel: "事業課題への適用",
-    advisoryTitle: "AI技術で高度な経営課題を解くための支援。",
+    advisoryTitle: "実際の事業制約に合うAIシステムを設計する。",
     advisoryBody:
-      "既存業務、制約条件、投資対効果を踏まえ、複雑な現場に対して実際に機能するAI導入方針を組み立てます。",
+      "既存業務、承認フロー、システム制約を踏まえ、技術的にも運用的にも無理のないAI導入方針を組み立てます。",
     parallelismLabel: "モデルシステム",
     parallelismTitle: "5D並列化による事前学習と推論。",
     parallelismBody:
-      "大規模モデルの学習・推論に向けて、複数の並列化手法を組み合わせた分散実行基盤を設計し、性能・安定性・運用性のバランスを取ります。",
+      "大規模モデルの学習・推論に向けて、複数の並列化手法を組み合わせた分散実行基盤を設計し、性能、安定性、運用継続性のバランスを取ります。",
     frameworkLabel: "エージェントソリューション",
-    frameworkTitle: "コンプライアンスを踏まえた高度なAIエージェントソリューションの設計と実装。",
+    frameworkTitle: "統制、追跡性、運用明確性を備えたAIエージェント設計。",
     frameworkBody:
-      "BitLabsは、規制対応や説明責任が求められる環境において、オーケストレーション、ツール権限、判断境界を統制要件に合わせて設計します。",
+      "BitLabsは、説明責任や統制が求められる環境において、オーケストレーション、ツール権限、エスカレーション経路、判断境界を設計します。",
     frameworkPoints: [
       "権限管理、承認フロー、監査可能性を備えたポリシー対応型エージェント設計。",
       "社内データ、外部ツール、人の確認工程を安全につなぐ統合設計。",
@@ -591,15 +684,15 @@ export const researchContent: Record<Language, ResearchContent> = {
     metadataDescription:
       "Research areas at BitLabs across SLMs, fine-tuning methods, and reliability for agentic systems.",
     eyebrow: "Research",
-    title: "Research built for the point where models meet operational reality.",
+    title: "Research that improves how AI systems behave in production.",
     body:
-      "We study the control surfaces, failure modes, and evaluation methods that determine whether modern AI systems can be trusted in production, with active work in bias detection, steerability, and enterprise-grade reliability.",
+      "BitLabs studies the control surfaces, failure modes, and evaluation methods that determine whether advanced AI systems can be deployed responsibly. Our research spans model behavior, reliability boundaries, agent orchestration, and the practical limits of production use.",
     reliabilityLabel: "Reliability",
-    reliabilityTitle: "Evaluation and guardrails are built into every research cycle.",
+    reliabilityTitle: "Evaluation, failure analysis, and guardrails are built into every research cycle.",
     reliabilityPoints: [
-      "Structured evaluation suites spanning quality, latency, and safety.",
-      "Reliability testing for tool use, planning behavior, and operational failure modes.",
-      "Release criteria aligned to governance requirements before production deployment.",
+      "Structured evaluation suites spanning quality, latency, safety, and controllability.",
+      "Reliability testing for tool use, planning behavior, escalation paths, and operational failure modes.",
+      "Release criteria aligned to governance and deployment requirements before production use.",
     ],
     note: "Some research engagements cannot be published because of confidentiality constraints.",
   },
@@ -608,15 +701,15 @@ export const researchContent: Record<Language, ResearchContent> = {
     metadataDescription:
       "BitLabsが取り組むSLM、ファインチューニング、エージェント信頼性に関する研究領域。",
     eyebrow: "研究",
-    title: "本番環境の制約を前提に成立する応用研究。",
+    title: "AIシステムを本番で成立させるための研究。",
     body:
-      "BitLabsの研究プログラムは、安全で信頼できるエンタープライズAIへ直接つながる手法に焦点を当てています。",
+      "BitLabsの研究は、先端性そのものを競うためではなく、AIシステムを安全かつ継続的に運用するために必要な制御性、信頼性、評価手法を高めることに焦点を当てています。",
     reliabilityLabel: "信頼性",
-    reliabilityTitle: "評価とガードレールを、すべての研究サイクルに組み込みます。",
+    reliabilityTitle: "評価、障害分析、ガードレールを研究サイクルに組み込みます。",
     reliabilityPoints: [
-      "品質、遅延、安全性の各指標を横断する構造化評価スイート。",
-      "ツール利用、計画挙動、運用上の障害モードに対する信頼性検証。",
-      "本番展開前に実施する、ガバナンス要件に沿ったリリース判定基準。",
+      "品質、遅延、安全性、制御性を横断する構造化評価スイート。",
+      "ツール利用、計画挙動、エスカレーション経路、運用上の障害モードに対する信頼性検証。",
+      "本番利用前に実施する、ガバナンス要件に沿ったリリース判定基準。",
     ],
     note: "一部の研究案件は機密性の観点から公開できません。",
   },
@@ -626,11 +719,11 @@ export const contactContent: Record<Language, ContactContent> = {
   en: {
     metadataTitle: "Contact",
     metadataDescription:
-      "Contact BitLabs about AI consulting, research, and enterprise deployment support.",
+      "Contact BitLabs about AI agents, model customization, research, and enterprise deployment.",
     eyebrow: "Contact",
-    title: "Tell us what you need to build.",
+    title: "Start a serious technical conversation.",
     body:
-      "Share your business context, constraints, and target outcomes. We will propose a practical starting path.",
+      "Tell us what you are trying to build, what systems it needs to touch, and what constraints matter. We will respond with a practical path shaped by architecture, risk, and delivery reality.",
     emailLabel: "Email",
     locationLabel: "Location",
     responseLabel: "Typical response",
@@ -638,11 +731,11 @@ export const contactContent: Record<Language, ContactContent> = {
   },
   ja: {
     metadataTitle: "お問い合わせ",
-    metadataDescription: "AIコンサルティング、研究開発、導入支援についてBitLabsへお問い合わせください。",
+    metadataDescription: "AIエージェント、モデル最適化、研究開発、エンタープライズ導入についてBitLabsへお問い合わせください。",
     eyebrow: "お問い合わせ",
-    title: "実現したい内容をお聞かせください。",
+    title: "技術的な前提を含めてご相談ください。",
     body:
-      "事業背景、制約条件、期待する成果をご共有ください。初期の進め方をご提案します。",
+      "実現したい機能、接続したいシステム、重視する制約条件をご共有ください。BitLabsが技術設計と導入現実性の両面から初期の進め方をご提案します。",
     emailLabel: "メール",
     locationLabel: "所在地",
     responseLabel: "通常のご返信目安",
@@ -661,7 +754,7 @@ export const contactFormContent: Record<Language, ContactFormContent> = {
     companyError: "Please enter your company name.",
     briefError: "Please provide at least 20 characters.",
     honeypotError: "Invalid submission.",
-    submitIdle: "Discuss your AI project",
+    submitIdle: "Discuss your AI system",
     submitBusy: "Sending...",
     success: "Your inquiry has been received. We usually reply within one business day.",
     helper:
@@ -677,7 +770,7 @@ export const contactFormContent: Record<Language, ContactFormContent> = {
     companyError: "会社名を入力してください。",
     briefError: "20文字以上でご記入ください。",
     honeypotError: "無効な送信です。",
-    submitIdle: "AIプロジェクトについて相談する",
+    submitIdle: "AIシステムについて相談する",
     submitBusy: "送信中...",
     success: "お問い合わせを受け付けました。通常1営業日以内にご返信します。",
     helper:
@@ -692,10 +785,10 @@ export const chatContent: Record<Language, ChatContent> = {
     title: "Adam Consultant",
     subtitle: "",
     closeLabel: "Close chat",
-    intro: "Hi, I’m Adam. Ask about BitLabs services or your AI project.",
+    intro: "Hi, I’m Adam. Ask about BitLabs services, AI architecture, or your production AI plans.",
     quickReplies: [
-      "Tell me about BitLabs services",
-      "How do you approach enterprise deployment?",
+      "Tell me about BitLabs technical capabilities",
+      "How do you approach enterprise AI architecture?",
       "We are exploring an AI agent for internal workflows",
     ],
     inputPlaceholder: "Type your question...",
@@ -707,10 +800,10 @@ export const chatContent: Record<Language, ChatContent> = {
     title: "Adamコンサルタント",
     subtitle: "",
     closeLabel: "チャットを閉じる",
-    intro: "こんにちは、Adamです。BitLabsのサービスやAIプロジェクトについてお気軽にご相談ください。",
+    intro: "こんにちは、Adamです。BitLabsの技術領域や、AIシステムの設計・導入についてご相談ください。",
     quickReplies: [
-      "BitLabsのサービスについて知りたい",
-      "エンタープライズ導入はどう進めますか？",
+      "BitLabsの技術力について知りたい",
+      "エンタープライズAIの設計はどう進めますか？",
       "社内業務向けのAIエージェントを検討しています",
     ],
     inputPlaceholder: "質問を入力してください...",

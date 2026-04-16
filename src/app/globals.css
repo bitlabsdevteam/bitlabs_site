@@ -119,6 +119,211 @@ a {
   padding-left: 0.85rem;
 }
 
+.approach-visual {
+  position: relative;
+  min-height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(22, 26, 25, 0.12);
+  border-radius: 1.75rem;
+  padding: 1rem;
+  background:
+    linear-gradient(148deg, rgba(13, 20, 19, 0.97), rgba(24, 36, 33, 0.95)),
+    radial-gradient(120% 70% at 110% -10%, rgba(130, 200, 182, 0.22), transparent 72%);
+  box-shadow: 0 30px 60px -42px rgba(11, 18, 17, 0.72);
+}
+
+.approach-visual-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 14% 12%, rgba(157, 223, 206, 0.16), transparent 42%),
+    radial-gradient(circle at 82% 84%, rgba(122, 174, 162, 0.18), transparent 46%);
+  opacity: 0.95;
+}
+
+.approach-visual-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding: 0.15rem 0.15rem 0.7rem;
+}
+
+.approach-visual-chip {
+  border-radius: 999px;
+  border: 1px solid rgba(197, 232, 221, 0.26);
+  padding: 0.22rem 0.62rem;
+  font-size: 0.61rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(226, 243, 238, 0.9);
+  background: rgba(188, 226, 216, 0.09);
+}
+
+.approach-rail {
+  position: relative;
+  z-index: 2;
+  padding: 0.45rem 0 0.2rem 0.1rem;
+}
+
+.approach-rail::before {
+  content: "";
+  position: absolute;
+  left: 0.68rem;
+  top: 0.8rem;
+  bottom: 5.4rem;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(157, 226, 207, 0.15),
+    rgba(157, 226, 207, 0.8),
+    rgba(157, 226, 207, 0.12)
+  );
+}
+
+.approach-rail-pulse {
+  position: absolute;
+  left: 0.32rem;
+  top: 0.95rem;
+  width: 0.74rem;
+  height: 0.74rem;
+  border-radius: 999px;
+  background: #a2fee3;
+  box-shadow: 0 0 1rem rgba(162, 254, 227, 0.9);
+}
+
+.approach-step-stack {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.approach-step-card {
+  position: relative;
+  padding-left: 1.45rem;
+}
+
+.approach-step-node {
+  position: absolute;
+  left: 0.32rem;
+  top: 1.18rem;
+  width: 0.72rem;
+  height: 0.72rem;
+  border: 2px solid rgba(162, 254, 227, 0.72);
+  border-radius: 999px;
+  background: rgba(18, 31, 28, 0.94);
+  box-shadow: 0 0 0.8rem rgba(162, 254, 227, 0.22);
+}
+
+.approach-step-inner {
+  border: 1px solid rgba(188, 226, 216, 0.18);
+  border-radius: 1.15rem;
+  padding: 1rem 1rem 1.05rem;
+  background: linear-gradient(165deg, rgba(242, 255, 251, 0.08), rgba(242, 255, 251, 0.03));
+  backdrop-filter: blur(4px);
+}
+
+.approach-step-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+}
+
+.approach-step-topline p,
+.approach-step-topline span {
+  margin: 0;
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.approach-step-topline p {
+  color: rgba(223, 241, 235, 0.7);
+}
+
+.approach-step-topline span {
+  border-radius: 999px;
+  border: 1px solid rgba(199, 233, 223, 0.22);
+  padding: 0.18rem 0.5rem;
+  color: rgba(233, 248, 242, 0.88);
+  background: rgba(188, 226, 216, 0.08);
+}
+
+.approach-step-inner h3 {
+  margin: 0;
+  font-size: 1.18rem;
+  line-height: 1.2;
+  color: rgba(247, 251, 249, 0.97);
+}
+
+.approach-outcome-card {
+  position: relative;
+  margin-top: 1rem;
+  margin-left: 1.45rem;
+  border: 1px solid rgba(162, 254, 227, 0.22);
+  border-radius: 1.2rem;
+  padding: 1rem 1rem 1.05rem;
+  background:
+    linear-gradient(160deg, rgba(162, 254, 227, 0.12), rgba(232, 245, 239, 0.06)),
+    rgba(18, 29, 27, 0.76);
+  box-shadow: inset 0 1px 0 rgba(238, 249, 245, 0.08);
+}
+
+.approach-outcome-card h3,
+.approach-outcome-card p {
+  margin: 0;
+}
+
+.approach-outcome-card h3 {
+  font-size: 1.26rem;
+  line-height: 1.2;
+  color: rgba(247, 251, 249, 0.97);
+}
+
+.approach-outcome-card > p:last-child {
+  margin-top: 0.7rem;
+  font-size: 0.94rem;
+  line-height: 1.7;
+  color: rgba(224, 240, 234, 0.74);
+}
+
+.approach-outcome-label {
+  margin-bottom: 0.45rem !important;
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(174, 238, 220, 0.82);
+}
+
+@media (min-width: 768px) {
+  .approach-visual {
+    min-height: 42rem;
+    padding: 1.15rem;
+  }
+
+  .approach-step-card:nth-child(2) {
+    padding-left: 2rem;
+  }
+
+  .approach-step-card:nth-child(2) .approach-step-node {
+    left: 0.88rem;
+  }
+
+  .approach-step-card:nth-child(3) {
+    padding-left: 2.65rem;
+  }
+
+  .approach-step-card:nth-child(3) .approach-step-node {
+    left: 1.53rem;
+  }
+
+  .approach-outcome-card {
+    margin-left: 2.2rem;
+  }
+}
+
 .parallel-hero {
   position: relative;
   min-height: 28rem;

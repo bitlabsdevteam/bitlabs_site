@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { AdamChatWidget } from "@/components/adam-chat-widget";
+import { ApproachFlowVisual } from "@/components/approach-flow-visual";
 import { AnimatedHeroTitle } from "@/components/animated-hero-title";
 import { LandingScrollFade } from "@/components/landing-scroll-fade";
 import { ParallelismHeroVisual } from "@/components/parallelism-hero-visual";
@@ -66,6 +67,56 @@ export function HomeContent() {
               <p className="text-sm italic text-[color:var(--muted-ink)]">{copy.visionAttribution}</p>
             </article>
           </div>
+        </section>
+      </LandingScrollFade>
+
+      <LandingScrollFade>
+        <section className="surface-card relative overflow-hidden px-6 py-8 md:px-10 md:py-10">
+          <div
+            className="pointer-events-none absolute -left-10 bottom-[-4rem] h-44 w-44 rounded-full bg-[color:var(--accent-soft)]/70 blur-3xl"
+            aria-hidden
+          />
+          <div className="relative grid gap-8 lg:grid-cols-[0.96fr_1.04fr] lg:items-start">
+            <div className="space-y-5">
+              <div className="space-y-3">
+                <p className="eyebrow">{copy.approachLabel}</p>
+                <h2 className="max-w-3xl text-4xl md:text-5xl">{copy.approachTitle}</h2>
+                <p className="max-w-2xl leading-8 text-[color:var(--muted-ink)]">{copy.approachBody}</p>
+              </div>
+
+              <div className="grid gap-3">
+                {copy.approachSteps.map((step) => (
+                  <article
+                    key={step.phase}
+                    className="rounded-[1.4rem] border border-[color:var(--line)] bg-[color:var(--surface-strong)]/90 p-5"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="eyebrow">{step.phase}</p>
+                      <span className="rounded-full border border-[color:var(--line)] bg-[color:var(--paper)] px-3 py-1 text-[11px] tracking-[0.14em] text-[color:var(--muted-ink)] uppercase">
+                        {step.marker}
+                      </span>
+                    </div>
+                    <h3 className="mt-3 text-2xl leading-tight">{step.title}</h3>
+                    <p className="mt-3 text-sm leading-7 text-[color:var(--muted-ink)]">{step.body}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <ApproachFlowVisual
+              steps={copy.approachSteps}
+              visualLabel={copy.approachVisualLabel}
+              visualValue={copy.approachVisualValue}
+              outcomeLabel={copy.approachOutcomeLabel}
+              outcomeTitle={copy.approachOutcomeTitle}
+              outcomeBody={copy.approachOutcomeBody}
+            />
+          </div>
+        </section>
+      </LandingScrollFade>
+
+      <LandingScrollFade>
+        <section className="space-y-6">
           <div className="flex items-end justify-between gap-4">
             <div className="space-y-2">
               <p className="eyebrow">{copy.capabilitiesLabel}</p>
