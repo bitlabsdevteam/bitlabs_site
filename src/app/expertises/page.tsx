@@ -4,7 +4,7 @@ import { ExpertisesContent } from "@/components/page-content/expertises-content"
 export const metadata: Metadata = {
   title: "Expertises",
   description:
-    "BitLabs expertise in solving sophisticated business problems with AI and designing 5D-parallel model systems.",
+    "BitLabs expertise across AI system design, agent architecture, and 5D-parallel model systems.",
 };
 
 export default function ExpertisesPage() {
