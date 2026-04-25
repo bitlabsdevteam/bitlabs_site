@@ -38,6 +38,18 @@ type HomeApproachStep = {
   marker: string;
 };
 
+type LabCapability = {
+  label: string;
+  title: string;
+  body: string;
+};
+
+type ProductionProof = {
+  label: string;
+  value: string;
+  body: string;
+};
+
 type HomeContent = {
   location: string;
   heroTitle: string;
@@ -52,6 +64,12 @@ type HomeContent = {
   visionLabel: string;
   visionBody: string;
   visionAttribution: string;
+  labLabel: string;
+  labTitle: string;
+  labBody: string;
+  productionLabel: string;
+  productionTitle: string;
+  productionBody: string;
   capabilitiesLabel: string;
   capabilitiesTitle: string;
   approachLabel: string;
@@ -368,6 +386,108 @@ export const teamStrengths: Record<Language, string[]> = {
   ],
 };
 
+export const labCapabilities: Record<Language, LabCapability[]> = {
+  en: [
+    {
+      label: "01 / Agents",
+      title: "Agent architecture",
+      body:
+        "Tool permissions, memory strategy, orchestration, escalation paths, and review loops designed for accountable operations.",
+    },
+    {
+      label: "02 / Models",
+      title: "LLM and SLM engineering",
+      body:
+        "Training strategy, fine-tuning pipelines, domain adaptation, evaluation harnesses, and deployment constraints handled as one system.",
+    },
+    {
+      label: "03 / Enterprise",
+      title: "AI consulting and delivery",
+      body:
+        "Architecture advisory, system integration, secure rollout planning, and custom React plus AI applications for real business workflows.",
+    },
+    {
+      label: "04 / Reliability",
+      title: "Evaluation-first development",
+      body:
+        "Quality, latency, safety, tool behavior, and failure modes measured before a system is treated as production-ready.",
+    },
+  ],
+  ja: [
+    {
+      label: "01 / エージェント",
+      title: "AIエージェント設計",
+      body:
+        "ツール権限、メモリ設計、オーケストレーション、エスカレーション、人による確認工程を運用責任と合わせて設計します。",
+    },
+    {
+      label: "02 / モデル",
+      title: "LLM・SLMエンジニアリング",
+      body:
+        "学習戦略、ファインチューニング、ドメイン適応、評価ハーネス、配備制約を一つのシステムとして扱います。",
+    },
+    {
+      label: "03 / 企業導入",
+      title: "AIコンサルティングと実装",
+      body:
+        "アーキテクチャ設計、システム連携、セキュアな展開計画、ReactとAIを組み合わせた業務アプリを支援します。",
+    },
+    {
+      label: "04 / 信頼性",
+      title: "評価を前提にした開発",
+      body:
+        "品質、遅延、安全性、ツール挙動、障害モードを測定し、本番運用に進める条件を明確にします。",
+    },
+  ],
+};
+
+export const productionProofs: Record<Language, ProductionProof[]> = {
+  en: [
+    {
+      label: "Research",
+      value: "Model behavior",
+      body: "Study control surfaces, adaptation methods, and the limits of agentic workflows.",
+    },
+    {
+      label: "Architecture",
+      value: "System boundaries",
+      body: "Translate business constraints into model, data, tool, and deployment boundaries.",
+    },
+    {
+      label: "Implementation",
+      value: "Working systems",
+      body: "Build focused MVPs, custom AI applications, and integration layers with measurable learning goals.",
+    },
+    {
+      label: "Operation",
+      value: "Reliable rollout",
+      body: "Connect release criteria, observability, governance, and continuous improvement.",
+    },
+  ],
+  ja: [
+    {
+      label: "研究",
+      value: "モデル挙動",
+      body: "制御性、適応手法、エージェント型ワークフローの限界と可能性を検証します。",
+    },
+    {
+      label: "設計",
+      value: "システム境界",
+      body: "事業制約を、モデル、データ、ツール、配備の境界設計へ落とし込みます。",
+    },
+    {
+      label: "実装",
+      value: "動くシステム",
+      body: "MVP、専用AIアプリ、連携基盤を、検証すべき学習目標とともに構築します。",
+    },
+    {
+      label: "運用",
+      value: "信頼できる展開",
+      body: "リリース基準、可観測性、ガバナンス、継続改善を接続します。",
+    },
+  ],
+};
+
 export const deliverySteps: Record<Language, DeliveryStep[]> = {
   en: [
     {
@@ -428,15 +548,15 @@ export const footerContent: Record<Language, FooterContent> = {
 
 export const homeContent: Record<Language, HomeContent> = {
   en: {
-    location: "Tokyo, Japan",
-    heroTitle: "Technically strong AI systems, built for production.",
+    location: "AI R&D Lab and Consulting Company / Tokyo, Japan",
+    heroTitle: "An expert AI lab for serious enterprise systems.",
     heroBody:
-      "BitLabs is a Tokyo-based AI R&D and engineering company designing AI agents, model systems, fine-tuning pipelines, and secure deployment architectures for real operating environments.",
-    heroStatementLabel: "Technical strength",
+      "BitLabs helps organizations design, build, and deploy AI agents, model systems, fine-tuning pipelines, and secure AI applications with research depth and production discipline.",
+    heroStatementLabel: "Lab + consulting",
     heroStatement:
-      "We combine research depth, system design, evaluation discipline, and production engineering to build AI that can survive real constraints.",
-    primaryCta: "Talk to Adam",
-    secondaryCta: "View services",
+      "We combine AI research, enterprise architecture, evaluation engineering, and implementation work so clients can move from hard technical questions to usable systems.",
+    primaryCta: "Talk to BitLabs",
+    secondaryCta: "Explore expertise",
     missionLabel: "Mission",
     missionBody:
       "Turn serious AI research into dependable systems that create measurable business value under real operational constraints.",
@@ -445,8 +565,16 @@ export const homeContent: Record<Language, HomeContent> = {
     visionBody:
       "Build a future where technically rigorous AI systems can be deployed with the same discipline expected of critical production infrastructure.",
     visionAttribution: "- BitLabs CEO David Bong",
+    labLabel: "Expert Lab",
+    labTitle: "Specialized AI capability across research, architecture, implementation, and deployment.",
+    labBody:
+      "BitLabs is built for organizations that need a technical partner, not a generic AI vendor. We investigate the model behavior, define the architecture, build the application layer, and prepare the system for controlled use.",
+    productionLabel: "Research to Production",
+    productionTitle: "The lab work is connected to delivery.",
+    productionBody:
+      "Our consulting work does not stop at recommendations. We turn research findings and architecture decisions into MVPs, evaluation suites, integration paths, and deployment plans.",
     capabilitiesLabel: "Capabilities",
-    capabilitiesTitle: "Engineering depth across agents, model systems, and production deployment.",
+    capabilitiesTitle: "What companies hire BitLabs to solve.",
     approachLabel: "Approach",
     approachTitle: "We start with the problem, then design the right path to an MVP.",
     approachBody:
@@ -488,15 +616,15 @@ export const homeContent: Record<Language, HomeContent> = {
     ],
   },
   ja: {
-    location: "東京、日本",
-    heroTitle: "技術的に強いAIシステムを、本番運用まで設計する。",
+    location: "AI研究開発ラボ・コンサルティング会社 / 東京",
+    heroTitle: "本格的な企業AIシステムを支える専門ラボ。",
     heroBody:
-      "BitLabsは、AIエージェント、モデル基盤、ファインチューニング、評価設計、セキュアな導入アーキテクチャまで一貫して手がける東京拠点のAI研究開発・エンジニアリング企業です。",
-    heroStatementLabel: "技術で支える実装",
+      "BitLabsは、AIエージェント、モデルシステム、ファインチューニング基盤、セキュアなAIアプリケーションを、研究知見と本番実装の規律をもって設計・構築します。",
+    heroStatementLabel: "ラボ + コンサルティング",
     heroStatement:
-      "研究の深さ、システム設計、評価規律、本番実装を切り離さず、現実の制約下で機能するAIを構築します。",
-    primaryCta: "Adamに相談する",
-    secondaryCta: "サービスを見る",
+      "AI研究、エンタープライズアーキテクチャ、評価設計、実装を組み合わせ、難しい技術課題から実際に使えるシステムまで導きます。",
+    primaryCta: "BitLabsに相談する",
+    secondaryCta: "専門領域を見る",
     missionLabel: "ミッション",
     missionBody:
       "高度なAI研究を、現場で継続運用できる安全で信頼性の高いシステムへ変換すること。",
@@ -505,8 +633,16 @@ export const homeContent: Record<Language, HomeContent> = {
     visionBody:
       "技術的に高度なAIシステムが、厳格な運用規律とともに社会実装される状態を当たり前にすること。",
     visionAttribution: "- BitLabs CEO David Bong",
+    labLabel: "専門ラボ",
+    labTitle: "研究、設計、実装、導入を横断するAI専門性。",
+    labBody:
+      "BitLabsは、一般的なAI導入会社ではなく、技術的な深さが求められる企業のためのパートナーです。モデル挙動を調べ、アーキテクチャを定義し、アプリケーション層を構築し、統制された利用に向けて整えます。",
+    productionLabel: "研究から本番へ",
+    productionTitle: "ラボの知見を、実装と導入につなげる。",
+    productionBody:
+      "BitLabsのコンサルティングは提案だけで終わりません。研究結果と設計判断を、MVP、評価スイート、連携設計、導入計画へ変換します。",
     capabilitiesLabel: "対応領域",
-    capabilitiesTitle: "エージェント、モデル基盤、本番導入を横断する実装力。",
+    capabilitiesTitle: "企業がBitLabsに相談できる技術課題。",
     approachLabel: "進め方",
     approachTitle: "まず課題を正しく捉え、そのうえで最適なMVPへ落とし込みます。",
     approachBody:

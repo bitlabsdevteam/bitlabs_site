@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 type AnimatedHeroTitleProps = {
@@ -12,6 +12,10 @@ type TitleSegment = {
   text: string;
   preserveWhitespace?: boolean;
   keepTogether?: boolean;
+};
+
+type IndexedTitleSegment = TitleSegment & {
+  characters: { character: string; index: number }[];
 };
 
 function splitTitleSegments(text: string): TitleSegment[] {
@@ -63,8 +67,20 @@ function splitTitleSegments(text: string): TitleSegment[] {
 export function AnimatedHeroTitle({ text, className }: AnimatedHeroTitleProps) {
   const prefersReducedMotion = useReducedMotion();
   const [activeIndices, setActiveIndices] = useState<number[]>([]);
-  const segments = splitTitleSegments(text);
-  const animationKey = `${prefersReducedMotion ? "reduced" : "full"}:${text}`;
+  const segments = useMemo(() => splitTitleSegments(text), [text]);
+  const indexedSegments = useMemo<IndexedTitleSegment[]>(() => {
+    let nextCharacterIndex = 0;
+
+    return segments.map((segment) => {
+      const characters = Array.from(segment.text).map((character) => {
+        const index = nextCharacterIndex;
+        nextCharacterIndex += 1;
+        return { character, index };
+      });
+
+      return { ...segment, characters };
+    });
+  }, [segments]);
 
   useEffect(() => {
     if (prefersReducedMotion) {
@@ -114,7 +130,7 @@ export function AnimatedHeroTitle({ text, className }: AnimatedHeroTitleProps) {
         window.clearTimeout(resetTimer);
       }
     };
-  }, [animationKey]);
+  }, [prefersReducedMotion, text]);
 
   if (prefersReducedMotion) {
     return <h1 className={className}>{text}</h1>;
@@ -124,43 +140,32 @@ export function AnimatedHeroTitle({ text, className }: AnimatedHeroTitleProps) {
     <h1 className={className} aria-label={text}>
       <span className="sr-only">{text}</span>
       <span aria-hidden="true">
-        {(() => {
-          let characterIndex = 0;
-
-          return segments.map((segment, segmentIndex) => {
-            if (segment.preserveWhitespace) {
-              characterIndex += Array.from(segment.text).length;
-              return (
-                <span key={`space-${segmentIndex}`} className="whitespace-pre">
-                  {segment.text}
-                </span>
-              );
-            }
-
-            const wordCharacters = Array.from(segment.text);
-            const wrapperClassName = segment.keepTogether ? "inline-block whitespace-nowrap" : undefined;
-
+        {indexedSegments.map((segment, segmentIndex) => {
+          if (segment.preserveWhitespace) {
             return (
-              <span key={`segment-${segmentIndex}`} className={wrapperClassName}>
-                {wordCharacters.map((character) => {
-                  const index = characterIndex;
-                  characterIndex += 1;
-
-                  return (
-                    <motion.span
-                      key={`${character}-${index}`}
-                      className="inline-block will-change-[opacity]"
-                      animate={{ opacity: activeIndices.includes(index) ? 0.16 : 1 }}
-                      transition={{ duration: 0.28, ease: "easeInOut" }}
-                    >
-                      {character}
-                    </motion.span>
-                  );
-                })}
+              <span key={`space-${segmentIndex}`} className="whitespace-pre">
+                {segment.text}
               </span>
             );
-          });
-        })()}
+          }
+
+          const wrapperClassName = segment.keepTogether ? "inline-block whitespace-nowrap" : undefined;
+
+          return (
+            <span key={`segment-${segmentIndex}`} className={wrapperClassName}>
+              {segment.characters.map(({ character, index }) => (
+                <motion.span
+                  key={`${character}-${index}`}
+                  className="inline-block will-change-[opacity]"
+                  animate={{ opacity: activeIndices.includes(index) ? 0.16 : 1 }}
+                  transition={{ duration: 0.28, ease: "easeInOut" }}
+                >
+                  {character}
+                </motion.span>
+              ))}
+            </span>
+          );
+        })}
       </span>
     </h1>
   );

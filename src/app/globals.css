@@ -1,16 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #f5f2eb;
-  --surface: #fdfbf7;
+  --paper: #f4f1ea;
+  --surface: #fbfaf6;
   --surface-strong: #ffffff;
-  --ink: #171a19;
-  --muted-ink: #535b57;
+  --ink: #131817;
+  --muted-ink: #4f5a56;
   --line: rgba(22, 26, 25, 0.14);
-  --accent: #1f4e45;
+  --accent: #174f46;
   --accent-soft: #d4e8e1;
-  --warm: #dfceb6;
-  --radius-xl: 2rem;
+  --accent-cool: #7fb7c8;
+  --warm: #decbb0;
+  --graphite: #101816;
+  --radius-xl: 1.45rem;
 }
 
 @theme inline {
@@ -71,6 +73,103 @@ a {
   border-radius: var(--radius-xl);
   background: linear-gradient(160deg, rgba(255, 255, 255, 0.9), rgba(253, 250, 245, 0.86));
   box-shadow: 0 25px 50px -35px rgba(16, 23, 20, 0.55);
+}
+
+.lab-hero {
+  border: 1px solid rgba(22, 26, 25, 0.16);
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(90deg, rgba(19, 24, 23, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(19, 24, 23, 0.035) 1px, transparent 1px),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(245, 239, 229, 0.88));
+  background-size: 4.6rem 4.6rem, 4.6rem 4.6rem, auto;
+  box-shadow: 0 30px 70px -48px rgba(16, 23, 20, 0.64);
+}
+
+.lab-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent, rgba(23, 79, 70, 0.06), transparent),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 36%, rgba(19, 24, 23, 0.035));
+}
+
+.lab-section {
+  border-top: 1px solid var(--line);
+  padding-top: 2rem;
+}
+
+.expertise-matrix {
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.expertise-cell {
+  min-height: 13rem;
+  padding: 1.35rem;
+  border-bottom: 1px solid var(--line);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.74), rgba(251, 248, 241, 0.62));
+}
+
+.expertise-cell:last-child {
+  border-bottom: 0;
+}
+
+.expertise-cell h3 {
+  margin: 0.8rem 0 0;
+  font-size: 1.55rem;
+  line-height: 1.15;
+}
+
+.expertise-cell p:last-child {
+  margin: 0.8rem 0 0;
+  color: var(--muted-ink);
+  font-size: 0.92rem;
+  line-height: 1.75;
+}
+
+.proof-kicker {
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.production-timeline,
+.service-ledger {
+  border-top: 1px solid var(--line);
+}
+
+.production-step,
+.ledger-row {
+  display: grid;
+  gap: 1rem;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.production-step h3,
+.ledger-row h3 {
+  margin: 0.45rem 0 0;
+}
+
+.production-step h3 {
+  font-size: 1.65rem;
+  line-height: 1.15;
+}
+
+.production-step p:last-child,
+.ledger-row p {
+  margin: 0;
+  color: var(--muted-ink);
+  font-size: 0.96rem;
+  line-height: 1.75;
 }
 
 .eyebrow {
@@ -298,6 +397,27 @@ a {
 }
 
 @media (min-width: 768px) {
+  .expertise-matrix {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .expertise-cell:nth-child(odd) {
+    border-right: 1px solid var(--line);
+  }
+
+  .expertise-cell:nth-last-child(2) {
+    border-bottom: 0;
+  }
+
+  .production-step {
+    grid-template-columns: 12rem 1fr;
+  }
+
+  .ledger-row {
+    grid-template-columns: minmax(13rem, 0.42fr) 1fr;
+    align-items: start;
+  }
+
   .approach-visual {
     min-height: 42rem;
     padding: 1.15rem;
@@ -321,6 +441,18 @@ a {
 
   .approach-outcome-card {
     margin-left: 2.2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lab-section {
+    padding-top: 2.6rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .lab-hero {
+    background-size: 3rem 3rem, 3rem 3rem, auto;
   }
 }
 
