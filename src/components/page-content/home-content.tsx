@@ -7,21 +7,20 @@ import { AnimatedHeroTitle } from "@/components/animated-hero-title";
 import { LandingScrollFade } from "@/components/landing-scroll-fade";
 import { ParallelismHeroVisual } from "@/components/parallelism-hero-visual";
 import { useLanguage } from "@/components/language-provider";
-import { homeContent, services } from "@/lib/site-content";
+import { homeContent, labCapabilities, productionProofs, services } from "@/lib/site-content";
 
 export function HomeContent() {
   const { language } = useLanguage();
   const copy = homeContent[language];
   const localizedServices = services[language];
+  const localizedCapabilities = labCapabilities[language];
+  const localizedProofs = productionProofs[language];
 
   return (
     <div className="space-y-20 md:space-y-24">
       <LandingScrollFade>
-        <section className="surface-card relative overflow-hidden px-6 py-12 md:px-12 md:py-16">
-          <div
-            className="pointer-events-none absolute -right-14 top-[-8rem] h-60 w-60 rounded-full bg-[color:var(--accent-soft)] blur-2xl"
-            aria-hidden
-          />
+        <section className="lab-hero relative overflow-hidden px-6 py-12 md:px-12 md:py-16">
+          <div className="lab-grid-overlay" aria-hidden />
           <div className="relative grid items-center gap-8 lg:grid-cols-[1.15fr_1fr]">
             <div className="space-y-7">
               <p className="eyebrow">{copy.location}</p>
@@ -39,7 +38,7 @@ export function HomeContent() {
               <div className="flex flex-wrap gap-3">
                 <AdamChatWidget launcherLabel={copy.primaryCta} />
                 <Link
-                  href="/services"
+                  href="/expertises"
                   className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-strong)] px-6 py-3 text-sm font-medium transition-colors hover:bg-[color:var(--accent-soft)]"
                 >
                   {copy.secondaryCta}
@@ -54,18 +53,20 @@ export function HomeContent() {
       </LandingScrollFade>
 
       <LandingScrollFade>
-        <section className="space-y-6">
-          <div className="grid gap-4 lg:grid-cols-[1.1fr_1fr]">
-            <article className="surface-card space-y-3 p-6 md:p-7">
-              <p className="eyebrow">{copy.missionLabel}</p>
-              <p className="book-display max-w-2xl text-2xl leading-tight md:text-3xl">{copy.missionBody}</p>
-              <p className="text-sm italic text-[color:var(--muted-ink)]">{copy.missionAttribution}</p>
-            </article>
-            <article className="surface-card space-y-3 p-6 md:p-7">
-              <p className="eyebrow">{copy.visionLabel}</p>
-              <p className="book-display max-w-2xl text-2xl leading-tight md:text-3xl">{copy.visionBody}</p>
-              <p className="text-sm italic text-[color:var(--muted-ink)]">{copy.visionAttribution}</p>
-            </article>
+        <section className="lab-section grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
+          <div className="space-y-4">
+            <p className="eyebrow">{copy.labLabel}</p>
+            <h2 className="max-w-3xl text-4xl leading-tight md:text-5xl">{copy.labTitle}</h2>
+            <p className="max-w-2xl leading-8 text-[color:var(--muted-ink)]">{copy.labBody}</p>
+          </div>
+          <div className="expertise-matrix">
+            {localizedCapabilities.map((item) => (
+              <article key={item.title} className="expertise-cell">
+                <p className="proof-kicker">{item.label}</p>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </article>
+            ))}
           </div>
         </section>
       </LandingScrollFade>
@@ -116,16 +117,35 @@ export function HomeContent() {
       </LandingScrollFade>
 
       <LandingScrollFade>
-        <section className="space-y-6">
-          <div className="flex items-end justify-between gap-4">
-            <div className="space-y-2">
-              <p className="eyebrow">{copy.capabilitiesLabel}</p>
-              <h2 className="text-4xl md:text-5xl">{copy.capabilitiesTitle}</h2>
-            </div>
+        <section className="lab-section grid gap-8 md:grid-cols-[0.85fr_1.15fr] md:items-start">
+          <div className="space-y-4">
+            <p className="eyebrow">{copy.productionLabel}</p>
+            <h2 className="max-w-xl text-4xl leading-tight md:text-5xl">{copy.productionTitle}</h2>
+            <p className="leading-8 text-[color:var(--muted-ink)]">{copy.productionBody}</p>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="production-timeline">
+            {localizedProofs.map((item) => (
+              <article key={item.label} className="production-step">
+                <div>
+                  <p className="proof-kicker">{item.label}</p>
+                  <h3>{item.value}</h3>
+                </div>
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      </LandingScrollFade>
+
+      <LandingScrollFade>
+        <section className="space-y-6">
+          <div className="space-y-2">
+            <p className="eyebrow">{copy.capabilitiesLabel}</p>
+            <h2 className="max-w-4xl text-4xl leading-tight md:text-5xl">{copy.capabilitiesTitle}</h2>
+          </div>
+          <div className="service-ledger">
             {localizedServices.map((item) => (
-              <article key={item.title} className="surface-card p-6 md:p-7">
+              <article key={item.title} className="ledger-row">
                 <h3 className="text-2xl leading-tight">{item.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-[color:var(--muted-ink)]">{item.delivery}</p>
               </article>

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useSyncExternalStore } from "react";
 import type { Language } from "@/lib/site-content";
 
 type LanguageContextValue = {
@@ -9,35 +9,39 @@ type LanguageContextValue = {
 };
 
 const LANGUAGE_STORAGE_KEY = "bitlabs-language";
+const LANGUAGE_CHANGE_EVENT = "bitlabs-language-change";
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<Language>("en");
+function getStoredLanguage(): Language {
+  if (typeof window === "undefined") {
+    return "en";
+  }
 
+  return window.localStorage.getItem(LANGUAGE_STORAGE_KEY) === "ja" ? "ja" : "en";
+}
+
+function subscribeToLanguageStore(onStoreChange: () => void) {
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key === LANGUAGE_STORAGE_KEY) {
+      onStoreChange();
+    }
+  };
+
+  window.addEventListener("storage", handleStorage);
+  window.addEventListener(LANGUAGE_CHANGE_EVENT, onStoreChange);
+
+  return () => {
+    window.removeEventListener("storage", handleStorage);
+    window.removeEventListener(LANGUAGE_CHANGE_EVENT, onStoreChange);
+  };
+}
+
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const language = useSyncExternalStore(subscribeToLanguageStore, getStoredLanguage, (): Language => "en");
   const setLanguage = useCallback((nextLanguage: Language) => {
     window.localStorage.setItem(LANGUAGE_STORAGE_KEY, nextLanguage);
-    setLanguageState(nextLanguage);
-  }, []);
-
-  useEffect(() => {
-    const storedLanguage = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
-
-    if (storedLanguage === "ja") {
-      setLanguageState("ja");
-    }
-
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key === LANGUAGE_STORAGE_KEY) {
-        setLanguageState(event.newValue === "ja" ? "ja" : "en");
-      }
-    };
-
-    window.addEventListener("storage", handleStorage);
-
-    return () => {
-      window.removeEventListener("storage", handleStorage);
-    };
+    window.dispatchEvent(new Event(LANGUAGE_CHANGE_EVENT));
   }, []);
 
   useEffect(() => {

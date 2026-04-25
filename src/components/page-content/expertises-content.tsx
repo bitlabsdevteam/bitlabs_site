@@ -8,15 +8,13 @@ export function ExpertisesContent() {
   const { language } = useLanguage();
   const copy = expertisePageContent[language];
   const localizedAreas = expertiseAreas[language];
+  const controlLayerLabel = language === "en" ? "Control Layer" : "統制レイヤー";
 
   return (
     <div className="space-y-14">
       <FadeIn>
-        <section className="surface-card relative overflow-hidden px-6 py-10 md:px-10 md:py-12">
-          <div
-            className="pointer-events-none absolute right-0 top-0 h-40 w-40 rounded-full bg-[color:var(--accent-soft)]/80 blur-3xl"
-            aria-hidden
-          />
+        <section className="lab-hero relative overflow-hidden px-6 py-10 md:px-10 md:py-12">
+          <div className="lab-grid-overlay" aria-hidden />
           <div className="relative space-y-4">
             <p className="eyebrow">{copy.eyebrow}</p>
             <h1 className="max-w-5xl text-5xl leading-[1.05] md:text-7xl">{copy.title}</h1>
@@ -68,21 +66,20 @@ export function ExpertisesContent() {
       </FadeIn>
 
       <FadeIn delay={0.14}>
-        <section>
-          <article className="surface-card space-y-6 p-7 md:p-9">
-            <div className="space-y-2">
-              <p className="eyebrow">{copy.frameworkLabel}</p>
-              <h2 className="max-w-4xl text-4xl md:text-5xl">{copy.frameworkTitle}</h2>
-            </div>
+        <section className="lab-section grid gap-8 md:grid-cols-[0.85fr_1.15fr]">
+          <div className="space-y-3">
+            <p className="eyebrow">{copy.frameworkLabel}</p>
+            <h2 className="max-w-4xl text-4xl md:text-5xl">{copy.frameworkTitle}</h2>
             <p className="max-w-4xl text-sm leading-7 text-[color:var(--muted-ink)] md:text-base">{copy.frameworkBody}</p>
-            <div className="grid gap-3 text-sm text-[color:var(--muted-ink)] md:grid-cols-3">
-              {copy.frameworkPoints.map((point) => (
-                <p key={point} className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-strong)] p-4">
-                  {point}
-                </p>
-              ))}
-            </div>
-          </article>
+          </div>
+          <div className="expertise-matrix">
+            {copy.frameworkPoints.map((point) => (
+              <article key={point} className="expertise-cell">
+                <p className="proof-kicker">{controlLayerLabel}</p>
+                <p>{point}</p>
+              </article>
+            ))}
+          </div>
         </section>
       </FadeIn>
     </div>
