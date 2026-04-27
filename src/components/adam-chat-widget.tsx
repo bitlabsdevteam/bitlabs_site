@@ -256,7 +256,7 @@ function LocalizedAdamChatWidget({
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="rounded-full border border-[color:var(--accent)] bg-[color:var(--accent-soft)] px-6 py-3 text-sm font-medium text-[color:var(--ink)] transition-colors hover:bg-[color:var(--warm)]"
+        className="button-primary px-6 py-3 text-sm font-medium"
         aria-haspopup="dialog"
         aria-expanded={isOpen}
       >
@@ -269,7 +269,7 @@ function LocalizedAdamChatWidget({
             role="dialog"
             aria-modal="true"
             aria-label={copy.dialogLabel}
-            className="flex h-[74vh] w-full max-w-md flex-col overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[color:var(--surface-strong)] shadow-[0_30px_90px_-35px_rgba(0,0,0,0.55)]"
+            className="flex h-[74vh] w-full max-w-md flex-col overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[color:rgba(12,16,20,0.96)] shadow-[0_30px_90px_-35px_rgba(0,0,0,0.82)]"
           >
             <div className="flex items-center justify-between border-b border-[color:var(--line)] px-5 py-4">
               <div>
@@ -278,24 +278,24 @@ function LocalizedAdamChatWidget({
                   <p className="text-xs text-[color:var(--muted-ink)]">{copy.subtitle}</p>
                 ) : null}
               </div>
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--line)] text-[color:var(--muted-ink)] transition-colors hover:bg-[color:var(--accent-soft)]"
-                aria-label={copy.closeLabel}
-              >
-                x
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--line)] text-[color:var(--muted-ink)] transition-colors hover:bg-[color:rgba(208,186,150,0.12)] hover:text-[color:var(--ink)]"
+                  aria-label={copy.closeLabel}
+                >
+                  x
               </button>
             </div>
 
-            <div ref={viewportRef} className="flex-1 space-y-3 overflow-y-auto bg-[color:var(--surface)]/45 px-4 py-4">
+            <div ref={viewportRef} className="flex-1 space-y-3 overflow-y-auto bg-[color:rgba(8,10,13,0.72)] px-4 py-4">
               {messages.map((message, index) => (
                 <div
                   key={`${message.role}-${index}`}
                   className={`max-w-[88%] rounded-2xl px-4 py-3 text-sm leading-6 ${
                     message.role === "user"
-                      ? "ml-auto bg-[color:var(--ink)] text-white"
-                      : "border border-[color:var(--line)] bg-[color:var(--surface-strong)] text-[color:var(--ink)]"
+                      ? "ml-auto border border-[color:rgba(208,186,150,0.18)] bg-[color:rgba(208,186,150,0.18)] text-[color:var(--ink)]"
+                      : "border border-[color:var(--line)] bg-[color:rgba(18,22,27,0.94)] text-[color:var(--ink)]"
                   }`}
                 >
                   {message.role === "adam" ? (
@@ -306,7 +306,7 @@ function LocalizedAdamChatWidget({
                 </div>
               ))}
               {isPending ? (
-                <div className="max-w-[88%] rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-strong)] px-4 py-3 text-sm leading-6 text-[color:var(--muted-ink)]">
+                <div className="max-w-[88%] rounded-2xl border border-[color:var(--line)] bg-[color:rgba(18,22,27,0.94)] px-4 py-3 text-sm leading-6 text-[color:var(--muted-ink)]">
                   {language === "en" ? "Adam is thinking..." : "Adamが応答を準備しています..."}
                 </div>
               ) : null}
@@ -320,26 +320,26 @@ function LocalizedAdamChatWidget({
                     type="button"
                     disabled={isPending}
                     onClick={() => sendQuickReply(reply)}
-                    className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs text-[color:var(--muted-ink)] transition-colors hover:bg-[color:var(--accent-soft)] disabled:cursor-not-allowed disabled:opacity-45"
+                    className="rounded-full border border-[color:var(--line)] bg-[color:rgba(18,22,27,0.92)] px-3 py-1.5 text-xs text-[color:var(--muted-ink)] transition-colors hover:border-[color:rgba(208,186,150,0.22)] hover:bg-[color:rgba(208,186,150,0.12)] hover:text-[color:var(--ink)] disabled:cursor-not-allowed disabled:opacity-45"
                   >
                     {reply}
                   </button>
                 ))}
               </div>
               {errorMessage ? (
-                <p className="mb-2 text-xs leading-5 text-[color:#8c2f2f]">{errorMessage}</p>
+                <p className="mb-2 text-xs leading-5 text-[color:var(--danger)]">{errorMessage}</p>
               ) : null}
               <form onSubmit={handleSend} className="flex items-center gap-2">
                 <input
                   value={input}
                   onChange={(event) => setInput(event.target.value)}
                   placeholder={copy.inputPlaceholder}
-                  className="h-11 w-full rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] px-3 text-sm outline-none transition-colors focus:border-[color:var(--accent)]"
+                  className="field-control h-11 w-full rounded-xl px-3 text-sm outline-none transition-colors"
                 />
                 <button
                   type="submit"
                   disabled={!canSend}
-                  className="h-11 rounded-xl bg-[color:var(--ink)] px-4 text-sm font-medium text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-45"
+                  className="button-primary h-11 rounded-xl px-4 text-sm font-medium transition-opacity disabled:cursor-not-allowed disabled:opacity-45"
                 >
                   {isPending ? (language === "en" ? "Sending..." : "送信中...") : copy.sendLabel}
                 </button>

@@ -56,41 +56,41 @@ function LocalizedContactForm({ language }: { language: Language }) {
       <label className="grid gap-1 text-sm text-[color:var(--muted-ink)]">
         {copy.nameLabel}
         <input
-          className="rounded-xl border border-[color:var(--line)] bg-[color:var(--surface-strong)] px-4 py-3 text-[color:var(--ink)] outline-none transition-colors focus:border-[color:var(--accent)]"
+          className="field-control rounded-xl px-4 py-3 outline-none transition-colors"
           {...register("name")}
           aria-invalid={Boolean(errors.name)}
         />
-        {errors.name ? <span className="text-xs text-red-700">{errors.name.message}</span> : null}
+        {errors.name ? <span className="text-xs text-[color:var(--danger)]">{errors.name.message}</span> : null}
       </label>
 
       <label className="grid gap-1 text-sm text-[color:var(--muted-ink)]">
         {copy.emailLabel}
         <input
-          className="rounded-xl border border-[color:var(--line)] bg-[color:var(--surface-strong)] px-4 py-3 text-[color:var(--ink)] outline-none transition-colors focus:border-[color:var(--accent)]"
+          className="field-control rounded-xl px-4 py-3 outline-none transition-colors"
           {...register("email")}
           aria-invalid={Boolean(errors.email)}
         />
-        {errors.email ? <span className="text-xs text-red-700">{errors.email.message}</span> : null}
+        {errors.email ? <span className="text-xs text-[color:var(--danger)]">{errors.email.message}</span> : null}
       </label>
 
       <label className="grid gap-1 text-sm text-[color:var(--muted-ink)]">
         {copy.companyLabel}
         <input
-          className="rounded-xl border border-[color:var(--line)] bg-[color:var(--surface-strong)] px-4 py-3 text-[color:var(--ink)] outline-none transition-colors focus:border-[color:var(--accent)]"
+          className="field-control rounded-xl px-4 py-3 outline-none transition-colors"
           {...register("company")}
           aria-invalid={Boolean(errors.company)}
         />
-        {errors.company ? <span className="text-xs text-red-700">{errors.company.message}</span> : null}
+        {errors.company ? <span className="text-xs text-[color:var(--danger)]">{errors.company.message}</span> : null}
       </label>
 
       <label className="grid gap-1 text-sm text-[color:var(--muted-ink)]">
         {copy.briefLabel}
         <textarea
-          className="min-h-32 rounded-xl border border-[color:var(--line)] bg-[color:var(--surface-strong)] px-4 py-3 text-[color:var(--ink)] outline-none transition-colors focus:border-[color:var(--accent)]"
+          className="field-control min-h-32 rounded-xl px-4 py-3 outline-none transition-colors"
           {...register("brief")}
           aria-invalid={Boolean(errors.brief)}
         />
-        {errors.brief ? <span className="text-xs text-red-700">{errors.brief.message}</span> : null}
+        {errors.brief ? <span className="text-xs text-[color:var(--danger)]">{errors.brief.message}</span> : null}
       </label>
 
       <input type="text" className="hidden" tabIndex={-1} autoComplete="off" {...register("website")} />
@@ -98,7 +98,7 @@ function LocalizedContactForm({ language }: { language: Language }) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="mt-2 rounded-full bg-[color:var(--ink)] px-5 py-3 text-sm font-medium text-white transition-transform hover:-translate-y-0.5 disabled:opacity-70"
+        className="button-primary mt-2 px-5 py-3 text-sm font-medium disabled:opacity-70"
       >
         {isSubmitting ? copy.submitBusy : copy.submitIdle}
       </button>

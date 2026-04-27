@@ -36,7 +36,7 @@ export function ExpertisesContent() {
               <p className="text-sm leading-7 text-[color:var(--muted-ink)]">{localizedAreas[0].summary}</p>
               <ul className="grid gap-3 text-sm text-[color:var(--muted-ink)]">
                 {localizedAreas[0].points.map((point) => (
-                  <li key={point} className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-strong)] p-4">
+                  <li key={point} className="rounded-2xl border border-[color:var(--line)] bg-[color:rgba(18,22,27,0.92)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
                     {point}
                   </li>
                 ))}
@@ -55,7 +55,7 @@ export function ExpertisesContent() {
               <p className="text-sm leading-7 text-[color:var(--muted-ink)]">{localizedAreas[1].summary}</p>
               <ul className="grid gap-3 text-sm text-[color:var(--muted-ink)]">
                 {localizedAreas[1].points.map((point) => (
-                  <li key={point} className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-strong)] p-4">
+                  <li key={point} className="rounded-2xl border border-[color:var(--line)] bg-[color:rgba(18,22,27,0.92)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
                     {point}
                   </li>
                 ))}
