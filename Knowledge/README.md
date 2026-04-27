@@ -7,6 +7,7 @@ This folder contains RAG-ready knowledge assets for BitLabs.
 - `bitlabs-rag-knowledge.md`: primary English canonical knowledge file
 - `bitlabs-rag-knowledge-ja.md`: Japanese canonical knowledge file
 - `faq.md`: short Q&A-oriented retrieval file
+- `company-profile-deck-prompt.md`: reusable master prompt for generating a bilingual BitLabs company profile deck
 
 ## Chunked Pack
 

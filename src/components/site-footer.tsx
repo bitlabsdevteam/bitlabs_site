@@ -39,7 +39,7 @@ export function SiteFooter() {
   const copy = footerContent[language];
 
   return (
-    <footer className="mt-24 border-t border-[color:var(--line)] bg-[color:var(--surface)]/85">
+    <footer className="mt-24 border-t border-[color:var(--line)] bg-[color:rgba(8,10,13,0.88)]">
       <div className="mx-auto grid w-full max-w-[1180px] gap-7 px-5 py-12 text-sm text-[color:var(--muted-ink)] md:grid-cols-[1fr_auto] md:items-end md:px-8">
         <div className="space-y-3">
           <p className="font-serif text-2xl tracking-[-0.03em] text-[color:var(--ink)]">BitLabs</p>
@@ -52,7 +52,7 @@ export function SiteFooter() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={copy.socialAriaLabel(social.name)}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--line)] bg-[color:var(--surface-strong)] text-[color:var(--muted-ink)] transition-colors hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--ink)]"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--line)] bg-[color:rgba(18,22,27,0.92)] text-[color:var(--muted-ink)] transition-colors hover:border-[color:rgba(208,186,150,0.24)] hover:bg-[color:rgba(208,186,150,0.12)] hover:text-[color:var(--ink)]"
               >
                 {social.icon}
               </Link>

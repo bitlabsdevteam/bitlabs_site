@@ -46,7 +46,7 @@ export default function RootLayout({
         <LanguageProvider>
           <div className="page-grain" aria-hidden />
           <SiteHeader />
-          <main className="mx-auto w-full max-w-[1180px] flex-1 px-5 pb-24 pt-14 md:px-8 md:pt-20">{children}</main>
+          <main className="relative mx-auto w-full max-w-[1180px] flex-1 px-5 pb-24 pt-14 md:px-8 md:pt-20">{children}</main>
           <SiteFooter />
         </LanguageProvider>
       </body>

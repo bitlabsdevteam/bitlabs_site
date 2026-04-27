@@ -20,13 +20,13 @@ export function SiteHeader() {
   const languageMenuLabel = language === "en" ? "Select language" : "言語を選択";
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[color:var(--line)]/70 bg-[color:var(--surface)]/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-[color:var(--line)]/80 bg-[color:rgba(6,8,11,0.82)] backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-[1180px] flex-wrap items-center justify-between gap-4 px-5 py-4 md:px-8">
         <Link href="/" aria-label={homeAriaLabel} className="inline-flex items-center">
           <BitLabsLogo />
         </Link>
         <div className="flex flex-wrap items-center justify-end gap-3">
-          <nav className="relative flex items-center gap-1 rounded-full border border-[color:var(--line)] bg-[color:var(--surface-strong)]/60 p-1.5 text-sm">
+          <nav className="relative flex items-center gap-1 rounded-full border border-[color:var(--line)] bg-[color:rgba(18,22,27,0.88)] p-1.5 text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
             {localizedNavLinks.map((item) => {
               const active = pathname === item.href;
               return (
@@ -40,7 +40,7 @@ export function SiteHeader() {
                   {active ? (
                     <motion.span
                       layoutId="active-nav-pill"
-                      className="absolute inset-0 -z-10 rounded-full bg-[color:var(--accent-soft)]"
+                      className="absolute inset-0 -z-10 rounded-full border border-[color:rgba(208,186,150,0.14)] bg-[color:rgba(208,186,150,0.14)]"
                       transition={{ type: "spring", stiffness: 450, damping: 38 }}
                     />
                   ) : null}
@@ -51,7 +51,7 @@ export function SiteHeader() {
           </nav>
 
           <div
-            className="flex items-center gap-1 rounded-full border border-[color:var(--line)] bg-[color:var(--surface-strong)]/75 p-1"
+            className="flex items-center gap-1 rounded-full border border-[color:var(--line)] bg-[color:rgba(18,22,27,0.92)] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
             role="group"
             aria-label={languageMenuLabel}
           >
@@ -64,8 +64,8 @@ export function SiteHeader() {
                   onClick={() => setLanguage(option.value)}
                   className={`rounded-full px-3 py-1.5 text-xs font-semibold tracking-[0.16em] transition-colors ${
                     active
-                      ? "bg-[color:var(--ink)] text-white"
-                      : "text-[color:var(--muted-ink)] hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--ink)]"
+                      ? "bg-[color:var(--accent)] text-[color:var(--graphite)]"
+                      : "text-[color:var(--muted-ink)] hover:bg-[color:rgba(208,186,150,0.14)] hover:text-[color:var(--ink)]"
                   }`}
                   aria-pressed={active}
                 >

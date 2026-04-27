@@ -5,7 +5,7 @@ import { AdamChatWidget } from "@/components/adam-chat-widget";
 import { ApproachFlowVisual } from "@/components/approach-flow-visual";
 import { AnimatedHeroTitle } from "@/components/animated-hero-title";
 import { LandingScrollFade } from "@/components/landing-scroll-fade";
-import { ParallelismHeroVisual } from "@/components/parallelism-hero-visual";
+import { TransformerModelHeroVisual } from "@/components/transformer-model-hero-visual";
 import { useLanguage } from "@/components/language-provider";
 import { homeContent, labCapabilities, productionProofs, services } from "@/lib/site-content";
 
@@ -39,14 +39,14 @@ export function HomeContent() {
                 <AdamChatWidget launcherLabel={copy.primaryCta} />
                 <Link
                   href="/expertises"
-                  className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-strong)] px-6 py-3 text-sm font-medium transition-colors hover:bg-[color:var(--accent-soft)]"
+                  className="button-secondary px-6 py-3 text-sm font-medium"
                 >
                   {copy.secondaryCta}
                 </Link>
               </div>
             </div>
-            <div className="overflow-hidden rounded-[1.75rem] border border-[color:var(--line)] bg-[color:var(--surface-strong)] shadow-[0_30px_70px_-45px_rgba(16,23,20,0.72)]">
-              <ParallelismHeroVisual />
+            <div className="overflow-hidden rounded-[1.45rem] border border-[color:rgba(244,238,228,0.12)] bg-[color:var(--graphite)] shadow-[0_34px_80px_-48px_rgba(0,0,0,0.96)]">
+              <TransformerModelHeroVisual />
             </div>
           </div>
         </section>
@@ -89,11 +89,11 @@ export function HomeContent() {
                 {copy.approachSteps.map((step) => (
                   <article
                     key={step.phase}
-                    className="rounded-[1.4rem] border border-[color:var(--line)] bg-[color:var(--surface-strong)]/90 p-5"
+                    className="rounded-[1.4rem] border border-[color:var(--line)] bg-[color:rgba(18,22,27,0.88)] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <p className="eyebrow">{step.phase}</p>
-                      <span className="rounded-full border border-[color:var(--line)] bg-[color:var(--paper)] px-3 py-1 text-[11px] tracking-[0.14em] text-[color:var(--muted-ink)] uppercase">
+                      <span className="rounded-full border border-[color:var(--line)] bg-[color:rgba(255,255,255,0.03)] px-3 py-1 text-[11px] tracking-[0.14em] text-[color:var(--muted-ink)] uppercase">
                         {step.marker}
                       </span>
                     </div>
@@ -163,7 +163,7 @@ export function HomeContent() {
           </div>
           <ul className="grid gap-3 text-sm text-[color:var(--muted-ink)]">
             {copy.securityPoints.map((point) => (
-              <li key={point} className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-strong)] p-4">
+              <li key={point} className="rounded-2xl border border-[color:var(--line)] bg-[color:rgba(18,22,27,0.92)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
                 {point}
               </li>
             ))}
