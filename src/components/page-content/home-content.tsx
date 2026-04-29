@@ -5,7 +5,6 @@ import { AdamChatWidget } from "@/components/adam-chat-widget";
 import { ApproachFlowVisual } from "@/components/approach-flow-visual";
 import { AnimatedHeroTitle } from "@/components/animated-hero-title";
 import { LandingScrollFade } from "@/components/landing-scroll-fade";
-import { TransformerModelHeroVisual } from "@/components/transformer-model-hero-visual";
 import { useLanguage } from "@/components/language-provider";
 import { homeContent, labCapabilities, productionProofs, services } from "@/lib/site-content";
 
@@ -21,8 +20,8 @@ export function HomeContent() {
       <LandingScrollFade>
         <section className="lab-hero relative overflow-hidden px-6 py-12 md:px-12 md:py-16">
           <div className="lab-grid-overlay" aria-hidden />
-          <div className="relative grid items-center gap-8 lg:grid-cols-[1.15fr_1fr]">
-            <div className="space-y-7">
+          <div className="relative">
+            <div className="max-w-5xl space-y-7">
               <p className="eyebrow">{copy.location}</p>
               <AnimatedHeroTitle
                 text={copy.heroTitle}
@@ -44,9 +43,6 @@ export function HomeContent() {
                   {copy.secondaryCta}
                 </Link>
               </div>
-            </div>
-            <div className="overflow-hidden rounded-[1.45rem] border border-[color:rgba(244,238,228,0.12)] bg-[color:var(--graphite)] shadow-[0_34px_80px_-48px_rgba(0,0,0,0.96)]">
-              <TransformerModelHeroVisual />
             </div>
           </div>
         </section>

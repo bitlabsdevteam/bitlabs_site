@@ -2,16 +2,80 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/components/language-provider";
+import type { Language } from "@/lib/site-content";
 
 const gpus = ["GPU 0", "GPU 1", "GPU 2", "GPU 3"];
 const expertY = [10, 28, 46, 64];
+type ParallelMode = "training" | "inference";
 
-function DataParallelRow() {
+const labels: Record<Language, {
+  data: string;
+  tensor: string;
+  pipeline: string;
+  sequence: string;
+  expert: string;
+  stage: string;
+  shard: string;
+  router: string;
+  training: string;
+  inference: string;
+  chip: string;
+  aria: string;
+  axis: string[];
+}> = {
+  en: {
+    data: "Data",
+    tensor: "Tensor",
+    pipeline: "Pipeline",
+    sequence: "Sequence",
+    expert: "Expert",
+    stage: "Stage",
+    shard: "Shard",
+    router: "Router",
+    training: "Training",
+    inference: "Inference",
+    chip: "5D x 4 GPUs",
+    aria:
+      "Animated 5D parallelism diagram showing data, tensor, pipeline, sequence, and expert communication patterns across four GPUs.",
+    axis: [
+      "Data: replica + all-reduce",
+      "Tensor: shard + gather/scatter",
+      "Pipeline: microbatch stages",
+      "Sequence: token partition",
+      "Expert: routed MoE tokens",
+    ],
+  },
+  ja: {
+    data: "データ",
+    tensor: "テンソル",
+    pipeline: "パイプライン",
+    sequence: "シーケンス",
+    expert: "エキスパート",
+    stage: "ステージ",
+    shard: "シャード",
+    router: "ルーター",
+    training: "事前学習",
+    inference: "推論",
+    chip: "5D x GPU 4基",
+    aria:
+      "4基のGPU上で、データ、テンソル、パイプライン、シーケンス、エキスパートの通信パターンを示す5D並列化アニメーション図。",
+    axis: [
+      "データ: 複製 + all-reduce",
+      "テンソル: シャード + gather/scatter",
+      "パイプライン: マイクロバッチ段階",
+      "シーケンス: トークン分割",
+      "エキスパート: ルーティングされたMoEトークン",
+    ],
+  },
+};
+
+function DataParallelRow({ copy }: { copy: typeof labels.en }) {
   const reduceMotion = useReducedMotion();
 
   return (
     <div className="parallel-row">
-      <div className="parallel-row-label">データ</div>
+      <div className="parallel-row-label">{copy.data}</div>
       <div className="parallel-row-canvas">
         <div className="parallel-lanes">
           {gpus.map((gpu, lane) => (
@@ -52,12 +116,12 @@ function DataParallelRow() {
   );
 }
 
-function TensorParallelRow() {
+function TensorParallelRow({ copy }: { copy: typeof labels.en }) {
   const reduceMotion = useReducedMotion();
 
   return (
     <div className="parallel-row">
-      <div className="parallel-row-label">テンソル</div>
+      <div className="parallel-row-label">{copy.tensor}</div>
       <div className="parallel-row-canvas parallel-row-canvas-tensor">
         <div className="parallel-tensor-grid">
           {gpus.map((gpu, index) => (
@@ -68,7 +132,7 @@ function TensorParallelRow() {
                 <span className="parallel-shard" />
                 <span className="parallel-shard" />
               </div>
-              <span className="parallel-shard-tag">シャード {index}</span>
+              <span className="parallel-shard-tag">{copy.shard} {index}</span>
             </div>
           ))}
         </div>
@@ -89,18 +153,18 @@ function TensorParallelRow() {
   );
 }
 
-function PipelineParallelRow({ mode }: { mode: "事前学習" | "推論" }) {
+function PipelineParallelRow({ mode, copy }: { mode: ParallelMode; copy: typeof labels.en }) {
   const reduceMotion = useReducedMotion();
-  const forwardDelay = mode === "事前学習" ? 0 : 0.2;
+  const forwardDelay = mode === "training" ? 0 : 0.2;
 
   return (
     <div className="parallel-row">
-      <div className="parallel-row-label">パイプライン</div>
+      <div className="parallel-row-label">{copy.pipeline}</div>
       <div className="parallel-row-canvas parallel-row-canvas-pipeline">
         <div className="parallel-stages">
           {gpus.map((gpu, i) => (
             <div key={gpu} className="parallel-stage">
-              <span>ステージ {i}</span>
+              <span>{copy.stage} {i}</span>
             </div>
           ))}
         </div>
@@ -118,7 +182,7 @@ function PipelineParallelRow({ mode }: { mode: "事前学習" | "推論" }) {
             aria-hidden
           />
         ))}
-        {mode === "事前学習" &&
+        {mode === "training" &&
           Array.from({ length: 4 }).map((_, i) => (
             <motion.span
               key={`b-${i}`}
@@ -138,12 +202,12 @@ function PipelineParallelRow({ mode }: { mode: "事前学習" | "推論" }) {
   );
 }
 
-function SequenceParallelRow() {
+function SequenceParallelRow({ copy }: { copy: typeof labels.en }) {
   const reduceMotion = useReducedMotion();
 
   return (
     <div className="parallel-row">
-      <div className="parallel-row-label">シーケンス</div>
+      <div className="parallel-row-label">{copy.sequence}</div>
       <div className="parallel-row-canvas parallel-row-canvas-sequence">
         <div className="parallel-seq-chunks">
           {gpus.map((gpu) => (
@@ -175,14 +239,14 @@ function SequenceParallelRow() {
   );
 }
 
-function ExpertParallelRow() {
+function ExpertParallelRow({ copy }: { copy: typeof labels.en }) {
   const reduceMotion = useReducedMotion();
 
   return (
     <div className="parallel-row">
-      <div className="parallel-row-label">エキスパート</div>
+      <div className="parallel-row-label">{copy.expert}</div>
       <div className="parallel-row-canvas parallel-row-canvas-expert">
-        <span className="parallel-router">ルーター</span>
+        <span className="parallel-router">{copy.router}</span>
         <div className="parallel-experts">
           {gpus.map((gpu, i) => (
             <span key={gpu} className="parallel-expert-node" style={{ top: `${expertY[i]}%` }}>
@@ -255,27 +319,29 @@ function ExpertParallelRow() {
   );
 }
 
-function Panel({ mode }: { mode: "事前学習" | "推論" }) {
+function Panel({ mode, copy }: { mode: ParallelMode; copy: typeof labels.en }) {
   return (
     <section className="parallel-panel">
       <header className="parallel-panel-header">
-        <span>{mode}</span>
-        <span className="parallel-chip">5D x GPU 4基</span>
+        <span>{mode === "training" ? copy.training : copy.inference}</span>
+        <span className="parallel-chip">{copy.chip}</span>
       </header>
       <div className="parallel-row-stack">
-        <DataParallelRow />
-        <TensorParallelRow />
-        <PipelineParallelRow mode={mode} />
-        <SequenceParallelRow />
-        <ExpertParallelRow />
+        <DataParallelRow copy={copy} />
+        <TensorParallelRow copy={copy} />
+        <PipelineParallelRow mode={mode} copy={copy} />
+        <SequenceParallelRow copy={copy} />
+        <ExpertParallelRow copy={copy} />
       </div>
     </section>
   );
 }
 
 export function ParallelismHeroVisual() {
+  const { language } = useLanguage();
   const reduceMotion = useReducedMotion();
-  const [mode, setMode] = useState<"事前学習" | "推論">("事前学習");
+  const [mode, setMode] = useState<ParallelMode>("training");
+  const copy = labels[language];
 
   useEffect(() => {
     if (reduceMotion) {
@@ -283,21 +349,19 @@ export function ParallelismHeroVisual() {
     }
 
     const timer = window.setInterval(() => {
-      setMode((current) => (current === "事前学習" ? "推論" : "事前学習"));
+      setMode((current) => (current === "training" ? "inference" : "training"));
     }, 4200);
 
     return () => window.clearInterval(timer);
   }, [reduceMotion]);
 
   return (
-    <div className="parallel-hero" aria-label="4基のGPU上で、データ、テンソル、パイプライン、シーケンス、エキスパートの通信パターンを示す5D並列化アニメーション図。">
+    <div className="parallel-hero" aria-label={copy.aria}>
       <div className="parallel-background" aria-hidden />
       <div className="parallel-axis-row" aria-hidden>
-        <span className="parallel-axis-pill">データ: 複製 + all-reduce</span>
-        <span className="parallel-axis-pill">テンソル: シャード + gather/scatter</span>
-        <span className="parallel-axis-pill">パイプライン: マイクロバッチ段階</span>
-        <span className="parallel-axis-pill">シーケンス: トークン分割</span>
-        <span className="parallel-axis-pill">エキスパート: ルーティングされたMoEトークン</span>
+        {copy.axis.map((item) => (
+          <span key={item} className="parallel-axis-pill">{item}</span>
+        ))}
       </div>
 
       <div className="parallel-panels">
@@ -309,7 +373,7 @@ export function ParallelismHeroVisual() {
             exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
             transition={reduceMotion ? undefined : { duration: 0.42, ease: "easeOut" }}
           >
-            <Panel mode={mode} />
+            <Panel mode={mode} copy={copy} />
           </motion.div>
         </AnimatePresence>
       </div>
