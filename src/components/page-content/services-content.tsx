@@ -23,32 +23,19 @@ export function ServicesContent() {
       </FadeIn>
 
       <FadeIn delay={0.08}>
-        <section className="service-ledger">
+        <section className="services-impact-grid">
           {localizedServices.map((service) => (
-            <article key={service.title} className="ledger-row">
+            <article key={service.title} className="service-impact-card">
               <div>
-                <p className="proof-kicker">{copy.deliveryLabel}</p>
+                <p className="proof-kicker">{copy.outcomeLabel}</p>
                 <h2 className="mt-3 text-3xl leading-tight">{service.title}</h2>
               </div>
-              <div className="grid gap-5 md:grid-cols-3">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--ink)]">
-                    {copy.problemLabel}
-                  </p>
-                  <p className="mt-2 text-sm leading-7 text-[color:var(--muted-ink)]">{service.problem}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--ink)]">
-                    {copy.deliveryLabel}
-                  </p>
-                  <p className="mt-2 text-sm leading-7 text-[color:var(--muted-ink)]">{service.delivery}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--ink)]">
-                    {copy.outcomeLabel}
-                  </p>
-                  <p className="mt-2 text-sm leading-7 text-[color:var(--muted-ink)]">{service.outcome}</p>
-                </div>
+              <p className="text-sm leading-7 text-[color:var(--muted-ink)]">{service.delivery}</p>
+              <div className="service-impact-result">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--accent)]">
+                  {copy.outcomeLabel}
+                </p>
+                <p>{service.outcome}</p>
               </div>
             </article>
           ))}

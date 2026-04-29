@@ -2,15 +2,11 @@
 
 import { FadeIn } from "@/components/fade-in";
 import { useLanguage } from "@/components/language-provider";
-import { aboutContent, principles, teamStrengths } from "@/lib/site-content";
+import { aboutContent } from "@/lib/site-content";
 
 export function AboutContent() {
   const { language } = useLanguage();
   const copy = aboutContent[language];
-  const localizedPrinciples = principles[language];
-  const localizedStrengths = teamStrengths[language];
-  const principleLabel = language === "en" ? "Principle" : "原則";
-  const capabilityLabel = language === "en" ? "Capability" : "専門性";
   const profileItems = [
     { label: copy.companyNameLabel, value: copy.companyName },
     { label: copy.ceoLabel, value: copy.ceo },
@@ -33,48 +29,6 @@ export function AboutContent() {
       </FadeIn>
 
       <FadeIn delay={0.08}>
-        <section className="lab-section grid gap-8 md:grid-cols-[0.85fr_1.15fr]">
-          <div className="space-y-3">
-            <p className="eyebrow">{language === "en" ? "Working Principles" : "行動原則"}</p>
-            <h2 className="max-w-xl text-4xl leading-tight md:text-5xl">
-              {language === "en" ? "Disciplined AI work for high-accountability environments." : "説明責任が求められる環境のための、規律あるAI実装。"}
-            </h2>
-          </div>
-          <div className="production-timeline">
-            {localizedPrinciples.map((principle, index) => (
-              <article key={principle} className="production-step">
-                <p className="proof-kicker">
-                  {principleLabel} {String(index + 1).padStart(2, "0")}
-                </p>
-                <p>{principle}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-      </FadeIn>
-
-      <FadeIn delay={0.12}>
-        <section className="lab-section grid gap-8 md:grid-cols-[0.85fr_1.15fr]">
-          <div className="space-y-3">
-            <p className="eyebrow">{language === "en" ? "Team Strength" : "チームの強み"}</p>
-            <h2 className="max-w-xl text-4xl leading-tight md:text-5xl">
-              {language === "en" ? "The expertise clients should feel immediately." : "訪問者に伝えるべき専門性。"}
-            </h2>
-          </div>
-          <div className="expertise-matrix">
-            {localizedStrengths.map((strength, index) => (
-              <article key={strength} className="expertise-cell">
-                <p className="proof-kicker">
-                  {String(index + 1).padStart(2, "0")} / {capabilityLabel}
-                </p>
-                <p>{strength}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-      </FadeIn>
-
-      <FadeIn delay={0.16}>
         <section className="surface-card space-y-5 p-7 md:p-9">
           <div className="space-y-2 border-b border-[color:var(--line)] pb-5">
             <p className="eyebrow">{copy.profileLabel}</p>

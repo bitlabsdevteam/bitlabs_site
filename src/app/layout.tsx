@@ -6,17 +6,24 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "BitLabs | AI R&D and Engineering",
+    default: "BitLabs | Deep AI and LLM Systems",
     template: "%s | BitLabs",
   },
   description:
-    "BitLabs is a Tokyo-based AI R&D and engineering company delivering AI agents, enterprise AI architecture, LLM or SLM training, and secure production deployment.",
+    "BitLabs is a Tokyo-based AI R&D and engineering company building deep AI, LLM systems, production AI agents, inference systems, and secure enterprise AI deployments.",
   metadataBase: new URL("https://bitlabs.site"),
   keywords: [
     "BitLabs",
+    "Deep AI",
+    "LLM development",
+    "LLM integration",
+    "Production AI agents",
+    "Agentic AI applications",
+    "AI agent development",
+    "Inference engineering",
+    "GPU parallelism",
     "AI consulting",
     "AI R&D",
-    "AI agents",
     "LLM fine-tuning",
     "SLM development",
     "enterprise AI",
@@ -24,7 +31,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "BitLabs",
-    description: "Technically strong AI systems for agents, model infrastructure, and secure production deployment.",
+    description: "Production AI agents, inference engineering, and secure enterprise AI deployment.",
     url: "https://bitlabs.site",
     siteName: "BitLabs",
     locale: "en_US",
