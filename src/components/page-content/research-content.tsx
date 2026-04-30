@@ -24,6 +24,27 @@ export function ResearchContent() {
       </FadeIn>
 
       <FadeIn delay={0.08}>
+        <section className="lab-section grid gap-8 md:grid-cols-[0.85fr_1.15fr]">
+          <div className="space-y-2">
+            <p className="eyebrow">{copy.inferenceLabel}</p>
+            <h2 className="text-4xl md:text-5xl">{copy.inferenceTitle}</h2>
+          </div>
+          <div className="space-y-6">
+            <div className="production-timeline">
+              {copy.inferencePoints.map((point, index) => (
+                <article key={point} className="production-step">
+                  <p className="proof-kicker">
+                    {checkLabel} {String(index + 1).padStart(2, "0")}
+                  </p>
+                  <p>{point}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      </FadeIn>
+
+      <FadeIn delay={0.12}>
         <section className="expertise-matrix">
           {localizedTracks.map((track, index) => (
             <article key={track} className="expertise-cell">
@@ -36,7 +57,7 @@ export function ResearchContent() {
         </section>
       </FadeIn>
 
-      <FadeIn delay={0.13}>
+      <FadeIn delay={0.16}>
         <section className="lab-section grid gap-8 md:grid-cols-[0.85fr_1.15fr]">
           <div className="space-y-2">
             <p className="eyebrow">{copy.reliabilityLabel}</p>

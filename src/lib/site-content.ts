@@ -144,6 +144,9 @@ type ResearchContent = {
   eyebrow: string;
   title: string;
   body: string;
+  inferenceLabel: string;
+  inferenceTitle: string;
+  inferencePoints: string[];
   reliabilityLabel: string;
   reliabilityTitle: string;
   reliabilityPoints: string[];
@@ -355,6 +358,7 @@ export const expertiseAreas: Record<Language, ExpertiseArea[]> = {
 
 export const researchTracks: Record<Language, string[]> = {
   en: [
+    "Inference engineering for low-latency serving, including KV cache optimization, batching strategy, and memory-aware decoding.",
     "SLM architecture design and training-efficiency research for deployment-constrained environments.",
     "Fine-tuning and domain-adaptation methods for model behavior that needs tighter control in production.",
     "Bias detection, steerability, and intervention methods for safer and more predictable model behavior.",
@@ -362,6 +366,7 @@ export const researchTracks: Record<Language, string[]> = {
     "Evaluation, robustness, and lifecycle governance for production-grade model systems.",
   ],
   ja: [
+    "低遅延推論のための推論エンジニアリング。KVキャッシュ最適化、バッチ戦略、メモリを考慮したデコード設計を含む。",
     "配備制約の大きい環境を前提にしたSLMアーキテクチャ設計と学習効率の研究",
     "本番環境での制御性を高めるためのファインチューニングとドメイン適応の研究",
     "LLM出力の暗黙的バイアス検出と、挙動をより予測可能にする介入手法の研究",
@@ -836,11 +841,18 @@ export const researchContent: Record<Language, ResearchContent> = {
   en: {
     metadataTitle: "Research",
     metadataDescription:
-      "Research areas at BitLabs across SLMs, fine-tuning methods, and reliability for agentic systems.",
+      "Research areas at BitLabs across inference engineering, SLMs, fine-tuning methods, and reliability for agentic systems.",
     eyebrow: "Research",
     title: "Research that improves how AI systems behave in production.",
     body:
-      "BitLabs studies the control surfaces, failure modes, and evaluation methods that determine whether advanced AI systems can be deployed responsibly. Our research spans model behavior, reliability boundaries, agent orchestration, and the practical limits of production use.",
+      "BitLabs studies the control surfaces, failure modes, and evaluation methods that determine whether advanced AI systems can be deployed responsibly. Our research spans inference engineering, model behavior, reliability boundaries, agent orchestration, and the practical limits of production use.",
+    inferenceLabel: "Inference Engineering",
+    inferenceTitle: "We focus on the serving layer that determines real user experience.",
+    inferencePoints: [
+      "KV cache optimization to reduce memory pressure, improve token throughput, and keep long-context serving stable.",
+      "Batching and scheduling strategies tuned for latency targets, traffic shape, and GPU utilization.",
+      "Parallelism and memory planning that fit the model, the workload, and the production deployment envelope.",
+    ],
     reliabilityLabel: "Reliability",
     reliabilityTitle: "Evaluation, failure analysis, and guardrails are built into every research cycle.",
     reliabilityPoints: [
@@ -853,11 +865,18 @@ export const researchContent: Record<Language, ResearchContent> = {
   ja: {
     metadataTitle: "研究",
     metadataDescription:
-      "BitLabsが取り組むSLM、ファインチューニング、エージェント信頼性に関する研究領域。",
+      "BitLabsが取り組む推論エンジニアリング、SLM、ファインチューニング、エージェント信頼性に関する研究領域。",
     eyebrow: "研究",
     title: "AIシステムを本番で成立させるための研究。",
     body:
-      "BitLabsの研究は、先端性そのものを競うためではなく、AIシステムを安全かつ継続的に運用するために必要な制御性、信頼性、評価手法を高めることに焦点を当てています。",
+      "BitLabsの研究は、先端性そのものを競うためではなく、AIシステムを安全かつ継続的に運用するために必要な制御性、信頼性、評価手法を高めることに焦点を当てています。推論エンジニアリングも主要テーマのひとつです。",
+    inferenceLabel: "推論エンジニアリング",
+    inferenceTitle: "実際のユーザー体験を決める配信層を重点的に研究します。",
+    inferencePoints: [
+      "KVキャッシュの最適化によってメモリ負荷を抑え、トークンスループットと長文脈処理の安定性を高めます。",
+      "レイテンシ要件、トラフィック形状、GPU利用率に合わせたバッチングとスケジューリングを設計します。",
+      "モデル、ワークロード、本番環境の制約に合う並列化とメモリ計画を扱います。",
+    ],
     reliabilityLabel: "信頼性",
     reliabilityTitle: "評価、障害分析、ガードレールを研究サイクルに組み込みます。",
     reliabilityPoints: [
