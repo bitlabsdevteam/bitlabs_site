@@ -311,6 +311,7 @@ a {
 .cinematic-hero {
   position: relative;
   display: grid;
+  align-items: end;
   align-content: center;
   gap: 2rem;
   min-height: min(760px, calc(100svh - 5.5rem));
@@ -335,6 +336,46 @@ a {
   display: grid;
   gap: 1.65rem;
   max-width: 64rem;
+}
+
+.cinematic-hero-panel {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.85rem;
+  width: min(100%, 25rem);
+  justify-self: end;
+}
+
+.cinematic-hero-panel-grid {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.cinematic-hero-card {
+  border: 1px solid rgba(244, 238, 228, 0.12);
+  border-radius: 1.15rem;
+  padding: 1rem 1.05rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 48%),
+    linear-gradient(160deg, rgba(14, 19, 24, 0.82), rgba(7, 10, 13, 0.7));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 2rem 4rem -3rem rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(16px);
+}
+
+.cinematic-hero-card h2 {
+  margin: 0.35rem 0 0;
+  font-size: clamp(1.35rem, 1.8vw, 1.7rem);
+  line-height: 1.05;
+}
+
+.cinematic-hero-card p:last-child {
+  margin: 0.55rem 0 0;
+  color: rgba(244, 238, 228, 0.76);
+  font-size: 0.92rem;
+  line-height: 1.75;
 }
 
 .cinematic-hero-title {
@@ -383,6 +424,19 @@ a {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   backdrop-filter: blur(14px);
+}
+
+@media (min-width: 1080px) {
+  .cinematic-hero {
+    grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.85fr);
+  }
+}
+
+@media (max-width: 1079px) {
+  .cinematic-hero-panel {
+    justify-self: start;
+    width: min(100%, 40rem);
+  }
 }
 
 .cinematic-scroll-track {

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-const tokenLabels = ["Data", "visualization", "em", "powers", "users", "to"] as const;
+const tokenLabels = ["Tokyo", "pretrain", "finetune", "inference", "agents", "deploy"] as const;
 const tokenRows = [3.2, 1.95, 0.7, -0.55, -1.8, -3.05] as const;
 const blockColumns = [-5.9, -2.65, 0.55, 3.75] as const;
 const channelColors = {
@@ -537,12 +537,12 @@ export function LandingCinematicScene() {
     <div className="landing-transformer-scene">
       <canvas ref={canvasRef} className="landing-cinematic-canvas" data-testid="landing-cinematic-canvas" />
       <div className="landing-transformer-labels" aria-hidden>
-        <span className="scene-label scene-label-embedding">Embedding</span>
-        <span className="scene-label scene-label-block">Transformer Block 1</span>
-        <span className="scene-label scene-label-attention">Multi-head Self Attention</span>
-        <span className="scene-label scene-label-mlp">MLP</span>
-        <span className="scene-label scene-label-probabilities">Probabilities</span>
-        <span className="scene-label scene-label-residual">Residual stream</span>
+        <span className="scene-label scene-label-embedding">Data curation</span>
+        <span className="scene-label scene-label-block">Model program</span>
+        <span className="scene-label scene-label-attention">Context and control</span>
+        <span className="scene-label scene-label-mlp">Inference path</span>
+        <span className="scene-label scene-label-probabilities">Release gates</span>
+        <span className="scene-label scene-label-residual">Evaluation loop</span>
         <span className="scene-chip scene-chip-q">Q</span>
         <span className="scene-chip scene-chip-k">K</span>
         <span className="scene-chip scene-chip-v">V</span>
@@ -552,10 +552,10 @@ export function LandingCinematicScene() {
           ))}
         </div>
         <div className="scene-probability-list">
-          <span>visualize 54.67%</span>
-          <span>create 20.87%</span>
-          <span>see 12.09%</span>
-          <strong>make 6.26%</strong>
+          <span>serve 54.67%</span>
+          <span>adapt 20.87%</span>
+          <span>audit 12.09%</span>
+          <strong>ship 6.26%</strong>
         </div>
       </div>
     </div>
