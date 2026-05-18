@@ -44,13 +44,26 @@ export function HomeContent() {
                 {copy.secondaryCta}
               </Link>
             </div>
+
+            <div className="cinematic-hero-readout" aria-hidden>
+              {copy.heroReadout.map((item) => (
+                <span key={item}>{item}</span>
+              ))}
+            </div>
           </div>
 
-          <div className="cinematic-hero-readout" aria-hidden>
-            <span>Transformer layers</span>
-            <span>Attention heads</span>
-            <span>Residual streams</span>
-          </div>
+          <aside className="cinematic-hero-panel" aria-label={copy.heroHighlightsLabel}>
+            <p className="eyebrow">{copy.heroHighlightsLabel}</p>
+            <div className="cinematic-hero-panel-grid">
+              {copy.heroHighlights.map((item) => (
+                <article key={item.label} className="cinematic-hero-card">
+                  <p className="proof-kicker">{item.label}</p>
+                  <h2>{item.value}</h2>
+                  <p>{item.body}</p>
+                </article>
+              ))}
+            </div>
+          </aside>
         </section>
       </LandingScrollFade>
 

@@ -3,7 +3,7 @@ import { AboutContent } from "@/components/page-content/about-content";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Company profile for BitLabs, a Tokyo-based AI R&D and engineering company.",
+  description: "Company profile for BitLabs, a Tokyo-based AI research and engineering lab.",
 };
 
 export default function AboutPage() {
