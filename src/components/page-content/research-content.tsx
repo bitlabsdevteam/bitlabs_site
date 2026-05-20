@@ -2,13 +2,12 @@
 
 import { FadeIn } from "@/components/fade-in";
 import { useLanguage } from "@/components/language-provider";
-import { researchContent, researchTracks } from "@/lib/site-content";
+import { researchContent, researchLabNotes } from "@/lib/site-content";
 
 export function ResearchContent() {
   const { language } = useLanguage();
   const copy = researchContent[language];
-  const localizedTracks = researchTracks[language];
-  const trackLabel = language === "en" ? "Research Track" : "研究領域";
+  const localizedLabNotes = researchLabNotes[language];
   const checkLabel = language === "en" ? "Check" : "検証";
 
   return (
@@ -24,6 +23,43 @@ export function ResearchContent() {
       </FadeIn>
 
       <FadeIn delay={0.08}>
+        <section className="lab-section space-y-7">
+          <div className="grid gap-4 md:grid-cols-[0.82fr_1.18fr] md:items-end">
+            <div className="space-y-2">
+              <p className="eyebrow">{copy.labLabel}</p>
+              <h2 className="max-w-3xl text-4xl leading-tight md:text-5xl">{copy.labTitle}</h2>
+            </div>
+            <p className="max-w-3xl leading-8 text-[color:var(--muted-ink)]">{copy.note}</p>
+          </div>
+
+          <div className="research-note-grid">
+            {localizedLabNotes.map((note) => (
+              <article key={note.label} className="research-note-card">
+                <div>
+                  <p className="proof-kicker">{note.label}</p>
+                  <h3>{note.title}</h3>
+                </div>
+                <dl>
+                  <div>
+                    <dt>{copy.focusLabel}</dt>
+                    <dd>{note.focus}</dd>
+                  </div>
+                  <div>
+                    <dt>{copy.methodLabel}</dt>
+                    <dd>{note.method}</dd>
+                  </div>
+                  <div>
+                    <dt>{copy.signalLabel}</dt>
+                    <dd>{note.signal}</dd>
+                  </div>
+                </dl>
+              </article>
+            ))}
+          </div>
+        </section>
+      </FadeIn>
+
+      <FadeIn delay={0.12}>
         <section className="lab-section grid gap-8 md:grid-cols-[0.85fr_1.15fr]">
           <div className="space-y-2">
             <p className="eyebrow">{copy.inferenceLabel}</p>
@@ -44,20 +80,7 @@ export function ResearchContent() {
         </section>
       </FadeIn>
 
-      <FadeIn delay={0.12}>
-        <section className="expertise-matrix">
-          {localizedTracks.map((track, index) => (
-            <article key={track} className="expertise-cell">
-              <p className="proof-kicker">
-                {String(index + 1).padStart(2, "0")} / {trackLabel}
-              </p>
-              <p>{track}</p>
-            </article>
-          ))}
-        </section>
-      </FadeIn>
-
-      <FadeIn delay={0.16}>
+      <FadeIn delay={0.2}>
         <section className="lab-section grid gap-8 md:grid-cols-[0.85fr_1.15fr]">
           <div className="space-y-2">
             <p className="eyebrow">{copy.reliabilityLabel}</p>

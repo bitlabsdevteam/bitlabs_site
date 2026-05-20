@@ -7,7 +7,13 @@ import { AnimatedHeroTitle } from "@/components/animated-hero-title";
 import { LandingCinematicScene } from "@/components/landing-cinematic-scene";
 import { LandingScrollFade } from "@/components/landing-scroll-fade";
 import { useLanguage } from "@/components/language-provider";
-import { homeContent, labCapabilities, productionProofs, services } from "@/lib/site-content";
+import {
+  homeContent,
+  labCapabilities,
+  productionProofs,
+  services,
+  systemMapSteps,
+} from "@/lib/site-content";
 
 export function HomeContent() {
   const { language } = useLanguage();
@@ -15,6 +21,7 @@ export function HomeContent() {
   const localizedServices = services[language];
   const localizedCapabilities = labCapabilities[language];
   const localizedProofs = productionProofs[language];
+  const localizedSystemMap = systemMapSteps[language];
 
   return (
     <div className="cinematic-home">
@@ -28,9 +35,9 @@ export function HomeContent() {
             <p className="eyebrow">{copy.location}</p>
             <AnimatedHeroTitle
               text={copy.heroTitle}
-              className="cinematic-hero-title max-w-5xl text-5xl leading-[1.03] md:text-7xl"
+              className="cinematic-hero-title max-w-5xl text-4xl leading-[1.05] md:text-6xl"
             />
-            <p className="max-w-3xl text-lg leading-8 text-[color:var(--muted-ink)] md:text-xl">{copy.heroBody}</p>
+            <p className="max-w-3xl text-base leading-8 text-[color:var(--muted-ink)] md:text-lg">{copy.heroBody}</p>
             <p className="cinematic-hero-statement">
               <span>{copy.heroStatementLabel}</span>
               {copy.heroStatement}
@@ -72,7 +79,7 @@ export function HomeContent() {
           <section className="cinematic-section cinematic-section-lab grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
             <div className="space-y-4">
               <p className="eyebrow">{copy.labLabel}</p>
-              <h2 className="max-w-3xl text-4xl leading-tight md:text-5xl">{copy.labTitle}</h2>
+              <h2 className="max-w-3xl text-3xl leading-tight md:text-4xl">{copy.labTitle}</h2>
               <p className="max-w-2xl leading-8 text-[color:var(--muted-ink)]">{copy.labBody}</p>
             </div>
             <div className="expertise-matrix cinematic-depth-grid">
@@ -90,11 +97,34 @@ export function HomeContent() {
         <LandingScrollFade>
           <section className="cinematic-section cinematic-approach">
             <div className="cinematic-section-glint" aria-hidden />
+            <div className="mb-8 grid gap-6 md:grid-cols-[0.82fr_1.18fr] md:items-end">
+              <div className="space-y-3">
+                <p className="eyebrow">{copy.systemMapLabel}</p>
+                <h2 className="max-w-3xl text-3xl leading-tight md:text-4xl">{copy.systemMapTitle}</h2>
+              </div>
+              <p className="max-w-3xl leading-8 text-[color:var(--muted-ink)]">{copy.systemMapBody}</p>
+            </div>
+
+            <div className="system-map" aria-label={copy.systemMapTitle}>
+              <div className="system-map-rail" aria-hidden />
+              {localizedSystemMap.map((step) => (
+                <article key={step.label} className="system-map-node">
+                  <p className="proof-kicker">{step.label}</p>
+                  <h3>{step.title}</h3>
+                </article>
+              ))}
+            </div>
+          </section>
+        </LandingScrollFade>
+
+        <LandingScrollFade>
+          <section className="cinematic-section cinematic-approach">
+            <div className="cinematic-section-glint" aria-hidden />
             <div className="relative grid gap-8 lg:grid-cols-[0.96fr_1.04fr] lg:items-start">
               <div className="space-y-5">
                 <div className="space-y-3">
                   <p className="eyebrow">{copy.approachLabel}</p>
-                  <h2 className="max-w-3xl text-4xl md:text-5xl">{copy.approachTitle}</h2>
+                  <h2 className="max-w-3xl text-3xl md:text-4xl">{copy.approachTitle}</h2>
                   <p className="max-w-2xl leading-8 text-[color:var(--muted-ink)]">{copy.approachBody}</p>
                 </div>
 
@@ -105,7 +135,7 @@ export function HomeContent() {
                         <p className="eyebrow">{step.phase}</p>
                         <span>{step.marker}</span>
                       </div>
-                      <h3 className="mt-3 text-2xl leading-tight">{step.title}</h3>
+                      <h3 className="mt-3 text-xl leading-tight">{step.title}</h3>
                       <p className="mt-3 text-sm leading-7 text-[color:var(--muted-ink)]">{step.body}</p>
                     </article>
                   ))}
@@ -128,7 +158,7 @@ export function HomeContent() {
           <section className="cinematic-section cinematic-proof grid gap-8 md:grid-cols-[0.85fr_1.15fr] md:items-start">
             <div className="space-y-4">
               <p className="eyebrow">{copy.productionLabel}</p>
-              <h2 className="max-w-xl text-4xl leading-tight md:text-5xl">{copy.productionTitle}</h2>
+              <h2 className="max-w-xl text-3xl leading-tight md:text-4xl">{copy.productionTitle}</h2>
               <p className="leading-8 text-[color:var(--muted-ink)]">{copy.productionBody}</p>
             </div>
             <div className="production-timeline cinematic-timeline">
@@ -149,13 +179,13 @@ export function HomeContent() {
           <section className="cinematic-section cinematic-services space-y-6">
             <div className="space-y-2">
               <p className="eyebrow">{copy.capabilitiesLabel}</p>
-              <h2 className="max-w-4xl text-4xl leading-tight md:text-5xl">{copy.capabilitiesTitle}</h2>
+              <h2 className="max-w-4xl text-3xl leading-tight md:text-4xl">{copy.capabilitiesTitle}</h2>
             </div>
             <div className="service-ledger cinematic-ledger">
               {localizedServices.map((item) => (
                 <article key={item.title} className="ledger-row cinematic-ledger-row">
-                  <h3 className="text-2xl leading-tight">{item.title}</h3>
-                  <p className="mt-3 text-sm leading-7 text-[color:var(--muted-ink)]">{item.delivery}</p>
+                  <h3 className="text-xl leading-tight">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-7 text-[color:var(--muted-ink)]">{item.problem}</p>
                 </article>
               ))}
             </div>
@@ -166,7 +196,7 @@ export function HomeContent() {
           <section className="cinematic-section cinematic-security grid gap-6 md:grid-cols-[1.15fr_1fr]">
             <div className="space-y-3">
               <p className="eyebrow">{copy.securityLabel}</p>
-              <h2 className="text-4xl md:text-5xl">{copy.securityTitle}</h2>
+              <h2 className="text-3xl md:text-4xl">{copy.securityTitle}</h2>
               <p className="leading-8 text-[color:var(--muted-ink)]">{copy.securityBody}</p>
             </div>
             <ul className="grid gap-3 text-sm text-[color:var(--muted-ink)]">

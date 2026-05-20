@@ -385,14 +385,14 @@ a {
 .cinematic-hero-statement {
   display: grid;
   gap: 0.55rem;
-  max-width: 42rem;
+  max-width: 40rem;
   margin: 0;
   border-left: 1px solid rgba(208, 186, 150, 0.45);
   padding-left: 1.1rem;
   color: rgba(244, 238, 228, 0.9);
   font-family: var(--font-book);
-  font-size: clamp(1.45rem, 2.8vw, 2.15rem);
-  line-height: 1.18;
+  font-size: clamp(1.18rem, 2vw, 1.65rem);
+  line-height: 1.25;
 }
 
 .cinematic-hero-statement span {
@@ -437,20 +437,35 @@ a {
     justify-self: start;
     width: min(100%, 40rem);
   }
+
+  .buyer-service-card {
+    grid-template-columns: 1fr;
+  }
+
+  .buyer-service-heading {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 0 0 1rem;
+  }
+
+  .buyer-service-grid,
+  .research-note-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .cinematic-scroll-track {
   position: relative;
   z-index: 1;
   display: grid;
-  gap: clamp(5rem, 10vw, 8rem);
+  gap: clamp(4rem, 7vw, 6rem);
   padding: clamp(2rem, 5vw, 4rem) 0 clamp(4rem, 8vw, 7rem);
 }
 
 .cinematic-section {
   position: relative;
   overflow: hidden;
-  padding: clamp(2rem, 5vw, 4rem) 0;
+  padding: clamp(1.75rem, 4vw, 3.25rem) 0;
   border-top: 1px solid rgba(244, 238, 228, 0.12);
 }
 
@@ -542,6 +557,72 @@ a {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
+.system-map {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(9rem, 1fr));
+  gap: 0.55rem;
+  overflow-x: auto;
+  padding: 0.75rem 0.1rem 0.35rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(208, 186, 150, 0.5) rgba(244, 238, 228, 0.06);
+}
+
+.system-map-rail {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  top: 2.35rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(143, 184, 199, 0.15), rgba(208, 186, 150, 0.72), rgba(98, 242, 169, 0.42));
+}
+
+.system-map-node,
+.buyer-service-card,
+.research-note-card {
+  border: 1px solid rgba(244, 238, 228, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 44%),
+    linear-gradient(155deg, rgba(18, 24, 29, 0.9), rgba(8, 11, 14, 0.82));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 1.4rem 3.4rem -2.8rem rgba(0, 0, 0, 0.95);
+}
+
+.system-map-node {
+  position: relative;
+  min-height: 8.75rem;
+  min-width: 9rem;
+  border-radius: 0.85rem;
+  padding: 0.85rem;
+}
+
+.system-map-node::before {
+  content: "";
+  display: block;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-bottom: 0.85rem;
+  border: 2px solid rgba(208, 186, 150, 0.72);
+  border-radius: 999px;
+  background: #090d11;
+  box-shadow: 0 0 1.1rem rgba(208, 186, 150, 0.36);
+}
+
+.system-map-node h3,
+.research-note-card h3 {
+  margin: 0.55rem 0 0;
+  font-size: 1.08rem;
+  line-height: 1.12;
+}
+
+.system-map-node p:last-child {
+  margin: 0.75rem 0 0;
+  color: var(--muted-ink);
+  font-size: 0.9rem;
+  line-height: 1.72;
+}
+
 .lab-grid-overlay {
   position: absolute;
   inset: 0;
@@ -613,6 +694,72 @@ a {
   gap: 1rem;
 }
 
+.buyer-services-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.buyer-service-card {
+  display: grid;
+  grid-template-columns: minmax(13rem, 0.34fr) minmax(0, 1fr);
+  gap: 1rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  padding: 0.9rem;
+}
+
+.buyer-service-heading {
+  display: grid;
+  align-content: start;
+  gap: 0.8rem;
+  border-right: 1px solid var(--line);
+  padding: 0.35rem 1rem 0.35rem 0.2rem;
+}
+
+.buyer-service-heading h2 {
+  margin: 0;
+  font-size: clamp(1.45rem, 2.5vw, 2.2rem);
+  line-height: 1.08;
+}
+
+.buyer-service-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.buyer-service-cell {
+  display: grid;
+  align-content: start;
+  gap: 0.65rem;
+  min-height: 10.5rem;
+  border: 1px solid rgba(244, 238, 228, 0.1);
+  border-radius: 0.85rem;
+  padding: 0.85rem;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012));
+}
+
+.buyer-service-cell p:last-child {
+  margin: 0;
+  color: var(--muted-ink);
+  font-size: 0.88rem;
+  line-height: 1.62;
+}
+
+.buyer-service-outcome {
+  border-color: rgba(208, 186, 150, 0.18);
+  background:
+    linear-gradient(160deg, rgba(208, 186, 150, 0.1), rgba(143, 184, 199, 0.04)),
+    rgba(12, 16, 20, 0.74);
+}
+
+.buyer-service-outcome p:last-child {
+  color: rgba(244, 238, 228, 0.9);
+  font-family: var(--font-book);
+  font-size: 1rem;
+  line-height: 1.38;
+}
+
 .service-impact-card {
   position: relative;
   display: grid;
@@ -629,6 +776,59 @@ a {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.03),
     0 24px 70px -50px rgba(0, 0, 0, 0.96);
+}
+
+.research-note-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.research-note-card {
+  display: grid;
+  align-content: space-between;
+  gap: 1.2rem;
+  min-height: 25rem;
+  border-radius: var(--radius-xl);
+  padding: 1.15rem;
+}
+
+.research-note-card dl {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+}
+
+.research-note-card dt {
+  color: var(--accent);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.research-note-card dd {
+  margin: 0.22rem 0 0;
+  color: var(--muted-ink);
+  font-size: 0.9rem;
+  line-height: 1.68;
+}
+
+@media (max-width: 1079px) {
+  .buyer-service-card {
+    grid-template-columns: 1fr;
+  }
+
+  .buyer-service-heading {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 0 0 1rem;
+  }
+
+  .buyer-service-grid,
+  .research-note-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .service-impact-card::before {
@@ -2188,6 +2388,48 @@ a {
   }
 
   .service-impact-card {
+    min-height: auto;
+  }
+
+  .system-map {
+    grid-template-columns: 1fr;
+    margin-inline: -0.25rem;
+    padding-bottom: 0.8rem;
+    overflow-x: visible;
+  }
+
+  .system-map-node {
+    min-height: auto;
+    min-width: 0;
+  }
+
+  .system-map-rail {
+    display: none;
+  }
+
+  .research-note-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .research-note-card {
+    min-height: auto;
+  }
+
+  .buyer-service-card {
+    grid-template-columns: 1fr;
+  }
+
+  .buyer-service-heading {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 0 0 1rem;
+  }
+
+  .buyer-service-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .buyer-service-cell {
     min-height: auto;
   }
 

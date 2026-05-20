@@ -16,26 +16,34 @@ export function ServicesContent() {
         <section className="lab-section grid gap-6 md:grid-cols-[0.9fr_1.1fr] md:items-end">
           <div className="space-y-4">
             <p className="eyebrow">{copy.eyebrow}</p>
-            <h1 className="max-w-5xl text-5xl leading-[1.05] md:text-7xl">{copy.title}</h1>
+            <h1 className="max-w-5xl text-4xl leading-[1.08] md:text-6xl">{copy.title}</h1>
           </div>
-          <p className="max-w-3xl text-lg leading-8 text-[color:var(--muted-ink)]">{copy.body}</p>
+          <p className="max-w-3xl text-base leading-8 text-[color:var(--muted-ink)] md:text-lg">{copy.body}</p>
         </section>
       </FadeIn>
 
       <FadeIn delay={0.08}>
-        <section className="services-impact-grid">
+        <section className="buyer-services-stack">
           {localizedServices.map((service) => (
-            <article key={service.title} className="service-impact-card">
-              <div>
-                <p className="proof-kicker">{copy.outcomeLabel}</p>
-                <h2 className="mt-3 text-3xl leading-tight">{service.title}</h2>
+            <article key={service.title} className="buyer-service-card">
+              <div className="buyer-service-heading">
+                <p className="proof-kicker">{copy.problemLabel}</p>
+                <h2>{service.title}</h2>
               </div>
-              <p className="text-sm leading-7 text-[color:var(--muted-ink)]">{service.delivery}</p>
-              <div className="service-impact-result">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--accent)]">
-                  {copy.outcomeLabel}
-                </p>
-                <p>{service.outcome}</p>
+
+              <div className="buyer-service-grid">
+                <div className="buyer-service-cell">
+                  <p className="proof-kicker">{copy.problemLabel}</p>
+                  <p>{service.problem}</p>
+                </div>
+                <div className="buyer-service-cell">
+                  <p className="proof-kicker">{copy.responseLabel}</p>
+                  <p>{service.response}</p>
+                </div>
+                <div className="buyer-service-cell buyer-service-outcome">
+                  <p className="proof-kicker">{copy.outcomeLabel}</p>
+                  <p>{service.outcome}</p>
+                </div>
               </div>
             </article>
           ))}
@@ -46,7 +54,7 @@ export function ServicesContent() {
         <section className="lab-section grid gap-8 md:grid-cols-[0.8fr_1.2fr]">
           <div className="space-y-2">
             <p className="eyebrow">{copy.processLabel}</p>
-            <h2 className="text-4xl md:text-5xl">{copy.processTitle}</h2>
+            <h2 className="text-3xl md:text-4xl">{copy.processTitle}</h2>
           </div>
           <div className="production-timeline">
             {localizedSteps.map((step) => (
