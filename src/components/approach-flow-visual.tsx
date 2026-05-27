@@ -1,6 +1,10 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import {
+  cinematicEase,
+  cinematicRevealDistance,
+} from "@/components/cinematic-motion";
 
 type ApproachFlowStep = {
   phase: string;
@@ -51,13 +55,13 @@ export function ApproachFlowVisual({
             <motion.article
               key={step.phase}
               className="approach-step-card"
-              initial={prefersReducedMotion ? false : { opacity: 0, x: 24 }}
+              initial={prefersReducedMotion ? false : { opacity: 0, x: cinematicRevealDistance + 6 }}
               whileInView={prefersReducedMotion ? undefined : { opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.45 }}
               transition={
                 prefersReducedMotion
                   ? undefined
-                  : { duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }
+                  : { duration: 0.62, delay: index * 0.08, ease: cinematicEase }
               }
             >
               <span className="approach-step-node" />
@@ -74,10 +78,14 @@ export function ApproachFlowVisual({
 
         <motion.article
           className="approach-outcome-card"
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
+          initial={prefersReducedMotion ? false : { opacity: 0, y: cinematicRevealDistance }}
           whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
-          transition={prefersReducedMotion ? undefined : { duration: 0.65, delay: 0.24, ease: [0.22, 1, 0.36, 1] }}
+          transition={
+            prefersReducedMotion
+              ? undefined
+              : { duration: 0.68, delay: 0.18, ease: cinematicEase }
+          }
         >
           <p className="approach-outcome-label">{outcomeLabel}</p>
           <h3>{outcomeTitle}</h3>

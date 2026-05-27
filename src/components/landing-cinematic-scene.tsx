@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import type { MutableRefObject } from "react";
 import { Bloom, EffectComposer, Vignette } from "@react-three/postprocessing";
 import { Canvas, useFrame } from "@react-three/fiber";
@@ -9,23 +9,27 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import * as THREE from "three";
+import {
+  type MotionQuality,
+  useMotionPreferences,
+} from "@/components/motion-preferences";
 
-const tokenLabels = ["Tokyo", "pretrain", "finetune", "inference", "agents", "deploy"] as const;
+const tokenLabels = [
+  "Tokyo",
+  "pretrain",
+  "finetune",
+  "inference",
+  "agents",
+  "deploy",
+] as const;
 const tokenRows = [3.2, 1.95, 0.7, -0.55, -1.8, -3.05] as const;
 const blockColumns = [-5.9, -2.65, 0.55, 3.75] as const;
-type SceneQuality = "mobile" | "desktop";
 
 type LandingCinematicSceneProps = {
   reduced?: boolean;
-  quality?: SceneQuality;
+  quality?: MotionQuality;
   scrollProgress?: number;
 };
-
-declare global {
-  interface Window {
-    __BITLABS_REDUCED_MOTION__?: boolean;
-  }
-}
 
 type CinematicRefs = {
   progress: MutableRefObject<number>;
@@ -48,35 +52,11 @@ const palette = {
   graphite: "#0b0d10",
 };
 
-function useMediaState(explicitReduced?: boolean, explicitQuality?: SceneQuality) {
-  const [state, setState] = useState({ reduced: Boolean(explicitReduced), quality: explicitQuality ?? "desktop" });
-
-  useEffect(() => {
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const mobileQuery = window.matchMedia("(max-width: 767px)");
-
-    const update = () => {
-      const queryForcesReduced = new URLSearchParams(window.location.search).get("reduced-motion") === "1";
-      setState({
-        reduced: explicitReduced ?? (queryForcesReduced || Boolean(window.__BITLABS_REDUCED_MOTION__) || motionQuery.matches),
-        quality: explicitQuality ?? (mobileQuery.matches ? "mobile" : "desktop"),
-      });
-    };
-
-    update();
-    motionQuery.addEventListener("change", update);
-    mobileQuery.addEventListener("change", update);
-
-    return () => {
-      motionQuery.removeEventListener("change", update);
-      mobileQuery.removeEventListener("change", update);
-    };
-  }, [explicitQuality, explicitReduced]);
-
-  return state;
-}
-
-function useCinematicScroll(reduced: boolean, incomingProgress?: number) {
+function useCinematicScroll(
+  reduced: boolean,
+  quality: MotionQuality,
+  incomingProgress?: number,
+) {
   const progress = useRef(incomingProgress ?? 0);
   const section = useRef(0);
   const pointer = useRef(new THREE.Vector2(0, 0));
@@ -107,7 +87,7 @@ function useCinematicScroll(reduced: boolean, incomingProgress?: number) {
       progress.current = THREE.MathUtils.clamp(window.scrollY / maxScroll, 0, 1);
     };
 
-    if (reduced) {
+    if (reduced || quality === "mobile") {
       updateNativeProgress();
       window.addEventListener("scroll", updateNativeProgress, { passive: true });
 
@@ -117,9 +97,9 @@ function useCinematicScroll(reduced: boolean, incomingProgress?: number) {
     }
 
     const lenis = new Lenis({
-      duration: 1.08,
+      duration: 1.02,
       easing: (t) => 1 - Math.pow(1 - t, 3),
-      lerp: 0.09,
+      lerp: 0.082,
       smoothWheel: true,
     });
 
@@ -160,7 +140,7 @@ function useCinematicScroll(reduced: boolean, incomingProgress?: number) {
       gsap.ticker.remove(tickLenis);
       lenis.destroy();
     };
-  }, [reduced]);
+  }, [quality, reduced]);
 
   return { progress, section, pointer };
 }
@@ -189,7 +169,7 @@ function StageCamera({
   refs,
 }: {
   cameraRef: MutableRefObject<THREE.PerspectiveCamera | null>;
-  quality: SceneQuality;
+  quality: MotionQuality;
   reduced: boolean;
   refs: CinematicRefs;
 }) {
@@ -224,7 +204,7 @@ function StageCamera({
   return null;
 }
 
-function TokenColumn({ quality }: { quality: SceneQuality }) {
+function TokenColumn({ quality }: { quality: MotionQuality }) {
   const mobile = quality === "mobile";
 
   return (
@@ -261,7 +241,7 @@ function TokenColumn({ quality }: { quality: SceneQuality }) {
   );
 }
 
-function TransformerBlocks({ quality }: { quality: SceneQuality }) {
+function TransformerBlocks({ quality }: { quality: MotionQuality }) {
   const mobile = quality === "mobile";
 
   return (
@@ -317,7 +297,13 @@ function TransformerBlocks({ quality }: { quality: SceneQuality }) {
   );
 }
 
-function FlowLayer({ quality, reduced }: { quality: SceneQuality; reduced: boolean }) {
+function FlowLayer({
+  quality,
+  reduced,
+}: {
+  quality: MotionQuality;
+  reduced: boolean;
+}) {
   const groupRef = useRef<THREE.Group>(null);
   const mobile = quality === "mobile";
 
@@ -417,7 +403,7 @@ function FlowLayer({ quality, reduced }: { quality: SceneQuality; reduced: boole
   );
 }
 
-function EvaluationGate({ quality }: { quality: SceneQuality }) {
+function EvaluationGate({ quality }: { quality: MotionQuality }) {
   const mobile = quality === "mobile";
   const values = mobile ? [0.58, 0.32, 0.24, 0.15] : [0.58, 0.32, 0.24, 0.15, 0.1, 0.07, 0.04];
 
@@ -442,7 +428,7 @@ function EvaluationGate({ quality }: { quality: SceneQuality }) {
   );
 }
 
-function ResearchCues({ quality }: { quality: SceneQuality }) {
+function ResearchCues({ quality }: { quality: MotionQuality }) {
   const mobile = quality === "mobile";
 
   return (
@@ -464,7 +450,13 @@ function ResearchCues({ quality }: { quality: SceneQuality }) {
   );
 }
 
-function DeploymentRails({ quality, reduced }: { quality: SceneQuality; reduced: boolean }) {
+function DeploymentRails({
+  quality,
+  reduced,
+}: {
+  quality: MotionQuality;
+  reduced: boolean;
+}) {
   const groupRef = useRef<THREE.Group>(null);
   const mobile = quality === "mobile";
 
@@ -501,9 +493,75 @@ function DeploymentRails({ quality, reduced }: { quality: SceneQuality; reduced:
   );
 }
 
-function Particles({ quality, reduced }: { quality: SceneQuality; reduced: boolean }) {
+function AtmosphericField({
+  quality,
+  reduced,
+}: {
+  quality: MotionQuality;
+  reduced: boolean;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const mobile = quality === "mobile";
+
+  useFrame(({ clock }, delta) => {
+    if (!groupRef.current || reduced) {
+      return;
+    }
+
+    const elapsed = clock.getElapsedTime();
+    groupRef.current.rotation.z = THREE.MathUtils.damp(
+      groupRef.current.rotation.z,
+      Math.sin(elapsed * 0.18) * 0.035,
+      2,
+      delta,
+    );
+    groupRef.current.position.x = THREE.MathUtils.damp(
+      groupRef.current.position.x,
+      Math.cos(elapsed * 0.14) * 0.28,
+      2,
+      delta,
+    );
+  });
+
+  return (
+    <group ref={groupRef} position={[0.25, 0.45, -5.8]}>
+      <mesh position={[-5.8, 2.6, -0.4]} rotation={[0.18, 0.22, -0.12]}>
+        <planeGeometry args={mobile ? [8.4, 5.8] : [10.8, 7.2]} />
+        <meshBasicMaterial
+          color={palette.teal}
+          transparent
+          opacity={mobile ? 0.06 : 0.085}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </mesh>
+      <mesh position={[6.4, -2.15, -0.8]} rotation={[-0.14, -0.24, 0.22]}>
+        <planeGeometry args={mobile ? [7.2, 5.2] : [9.8, 6.6]} />
+        <meshBasicMaterial
+          color={palette.amber}
+          transparent
+          opacity={mobile ? 0.045 : 0.072}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </mesh>
+      <mesh position={[0.65, -0.55, -1.2]} rotation={[0.06, -0.18, 0.02]}>
+        <ringGeometry args={[mobile ? 1.55 : 1.7, mobile ? 1.62 : 1.78, 64]} />
+        <meshBasicMaterial
+          color={palette.tealHot}
+          transparent
+          opacity={0.18}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+function Particles({ quality, reduced }: { quality: MotionQuality; reduced: boolean }) {
   const groupRef = useRef<THREE.Points>(null);
-  const count = quality === "mobile" ? 210 : 420;
+  const count = quality === "mobile" ? 120 : 320;
   const positions = useParticlePositions(count);
 
   useFrame(({ clock }) => {
@@ -523,7 +581,15 @@ function Particles({ quality, reduced }: { quality: SceneQuality; reduced: boole
   );
 }
 
-function CinematicStage({ quality, reduced, refs }: { quality: SceneQuality; reduced: boolean; refs: CinematicRefs }) {
+function CinematicStage({
+  quality,
+  reduced,
+  refs,
+}: {
+  quality: MotionQuality;
+  reduced: boolean;
+  refs: CinematicRefs;
+}) {
   const rootRef = useRef<THREE.Group>(null);
   const foregroundRef = useRef<THREE.Group>(null);
   const pointer = useRef(new THREE.Vector2());
@@ -540,11 +606,36 @@ function CinematicStage({ quality, reduced, refs }: { quality: SceneQuality; red
 
     const rootScale = mobile ? 0.66 : 1;
     rootRef.current.scale.setScalar(THREE.MathUtils.damp(rootRef.current.scale.x, rootScale, 3, delta));
-    rootRef.current.position.x = THREE.MathUtils.damp(rootRef.current.position.x, mobile ? 0.9 : 1.1, 3, delta);
-    rootRef.current.position.y = THREE.MathUtils.damp(rootRef.current.position.y, 0.28 - progress * (mobile ? 1.7 : 3.65) + pointer.current.y * -0.12, 2.8, delta);
-    rootRef.current.rotation.x = THREE.MathUtils.damp(rootRef.current.rotation.x, -0.08 + progress * (mobile ? 0.1 : 0.22) + pointer.current.y * 0.03, 2.8, delta);
-    rootRef.current.rotation.y = THREE.MathUtils.damp(rootRef.current.rotation.y, -0.29 + progress * (mobile ? 0.38 : 0.76) + pointer.current.x * 0.07, 2.8, delta);
-    rootRef.current.rotation.z = THREE.MathUtils.damp(rootRef.current.rotation.z, -0.015 + pointer.current.x * 0.014, 2.8, delta);
+    rootRef.current.position.x = THREE.MathUtils.damp(
+      rootRef.current.position.x,
+      mobile ? 0.86 : 1.04,
+      3,
+      delta,
+    );
+    rootRef.current.position.y = THREE.MathUtils.damp(
+      rootRef.current.position.y,
+      0.38 - progress * (mobile ? 1.45 : 3.2) + pointer.current.y * -0.11,
+      2.8,
+      delta,
+    );
+    rootRef.current.rotation.x = THREE.MathUtils.damp(
+      rootRef.current.rotation.x,
+      -0.065 + progress * (mobile ? 0.08 : 0.18) + pointer.current.y * 0.028,
+      2.8,
+      delta,
+    );
+    rootRef.current.rotation.y = THREE.MathUtils.damp(
+      rootRef.current.rotation.y,
+      -0.31 + progress * (mobile ? 0.32 : 0.68) + pointer.current.x * 0.066,
+      2.8,
+      delta,
+    );
+    rootRef.current.rotation.z = THREE.MathUtils.damp(
+      rootRef.current.rotation.z,
+      -0.012 + pointer.current.x * 0.012,
+      2.8,
+      delta,
+    );
 
     foregroundRef.current.position.x = Math.sin(elapsed * 0.34) * (mobile ? 0.04 : 0.12) + pointer.current.x * (mobile ? 0.06 : 0.18);
     foregroundRef.current.position.y = Math.cos(elapsed * 0.28) * (mobile ? 0.03 : 0.08) + pointer.current.y * (mobile ? -0.05 : -0.14);
@@ -552,6 +643,7 @@ function CinematicStage({ quality, reduced, refs }: { quality: SceneQuality; red
 
   return (
     <group ref={rootRef}>
+      <AtmosphericField quality={quality} reduced={reduced} />
       <DeploymentRails quality={quality} reduced={reduced} />
       <TokenColumn quality={quality} />
       <TransformerBlocks quality={quality} />
@@ -561,7 +653,14 @@ function CinematicStage({ quality, reduced, refs }: { quality: SceneQuality; red
         <EvaluationGate quality={quality} />
       </group>
       <Particles quality={quality} reduced={reduced} />
-      <Sparkles count={mobile ? 20 : 44} scale={[18, 7, 5]} size={mobile ? 1.1 : 1.6} speed={reduced ? 0 : 0.22} opacity={0.22} color={palette.amberHot} />
+      <Sparkles
+        count={mobile ? 12 : 30}
+        scale={[18, 7, 5]}
+        size={mobile ? 1 : 1.35}
+        speed={reduced ? 0 : 0.18}
+        opacity={0.16}
+        color={palette.amberHot}
+      />
     </group>
   );
 }
@@ -595,18 +694,26 @@ function SceneLabels() {
   );
 }
 
-function SceneContents({ quality, reduced, refs }: { quality: SceneQuality; reduced: boolean; refs: CinematicRefs }) {
+function SceneContents({
+  quality,
+  reduced,
+  refs,
+}: {
+  quality: MotionQuality;
+  reduced: boolean;
+  refs: CinematicRefs;
+}) {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
 
   return (
     <>
       <PerspectiveCamera ref={cameraRef} makeDefault position={[0, 0.8, quality === "mobile" ? 32 : 24]} fov={quality === "mobile" ? 38 : 33} near={0.1} far={160} />
       <StageCamera cameraRef={cameraRef} quality={quality} reduced={reduced} refs={refs} />
-      <fogExp2 attach="fog" args={[palette.paper, 0.032]} />
-      <ambientLight color="#f4eee4" intensity={0.78} />
-      <pointLight color={palette.blue} intensity={4.6} distance={36} position={[-4.5, 5.2, 8]} />
-      <pointLight color={palette.amberHot} intensity={3.2} distance={34} position={[5.2, -3.4, 7]} />
-      <pointLight color={palette.violet} intensity={3.6} distance={32} position={[1.2, 2, 9]} />
+      <fogExp2 attach="fog" args={[palette.paper, quality === "mobile" ? 0.036 : 0.03]} />
+      <ambientLight color="#f4eee4" intensity={0.74} />
+      <pointLight color={palette.blue} intensity={4.1} distance={36} position={[-4.5, 5.2, 8]} />
+      <pointLight color={palette.amberHot} intensity={2.9} distance={34} position={[5.2, -3.4, 7]} />
+      <pointLight color={palette.violet} intensity={3.1} distance={32} position={[1.2, 2, 9]} />
       <mesh position={[1.85, 0.15, -1.2]} rotation={[0.16, -0.32, 0.05]}>
         <torusGeometry args={[1.45, 0.018, 10, 96]} />
         <meshBasicMaterial color={palette.tealHot} transparent opacity={0.46} blending={THREE.AdditiveBlending} depthWrite={false} />
@@ -628,9 +735,9 @@ function SceneContents({ quality, reduced, refs }: { quality: SceneQuality; redu
 }
 
 export function LandingCinematicScene({ reduced: explicitReduced, quality: explicitQuality, scrollProgress }: LandingCinematicSceneProps) {
-  const { reduced, quality } = useMediaState(explicitReduced, explicitQuality);
-  const refs = useCinematicScroll(reduced, scrollProgress);
-  const dpr: [number, number] = quality === "mobile" ? [1, 1.25] : [1, 1.65];
+  const { reduced, quality } = useMotionPreferences(explicitReduced, explicitQuality);
+  const refs = useCinematicScroll(reduced, quality, scrollProgress);
+  const dpr: [number, number] = quality === "mobile" ? [1, 1.2] : [1, 1.55];
 
   return (
     <div className="landing-transformer-scene" data-reduced-motion={reduced ? "true" : "false"}>
@@ -638,11 +745,11 @@ export function LandingCinematicScene({ reduced: explicitReduced, quality: expli
         className="landing-cinematic-canvas"
         data-testid="landing-cinematic-canvas"
         dpr={dpr}
+        frameloop="always"
         gl={{
           alpha: true,
           antialias: quality === "desktop",
           powerPreference: "high-performance",
-          preserveDrawingBuffer: true,
         }}
         onCreated={({ gl }) => {
           gl.setClearColor(palette.paper, 0);

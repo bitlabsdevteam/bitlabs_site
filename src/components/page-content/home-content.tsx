@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { AdamChatWidget } from "@/components/adam-chat-widget";
 import { ApproachFlowVisual } from "@/components/approach-flow-visual";
 import { AnimatedHeroTitle } from "@/components/animated-hero-title";
-import { LandingCinematicScene } from "@/components/landing-cinematic-scene";
 import { LandingScrollFade } from "@/components/landing-scroll-fade";
+import { SectionParallax } from "@/components/section-parallax";
 import { useLanguage } from "@/components/language-provider";
 import {
   homeContent,
@@ -14,6 +15,62 @@ import {
   services,
   systemMapSteps,
 } from "@/lib/site-content";
+
+const LandingCinematicScene = dynamic(
+  () =>
+    import("@/components/landing-cinematic-scene").then(
+      (module) => module.LandingCinematicScene,
+    ),
+  { ssr: false },
+);
+
+const labBackground = (
+  <>
+    <span className="section-parallax-orb section-parallax-orb-teal section-parallax-orb-lab-left" />
+    <span className="section-parallax-orb section-parallax-orb-amber section-parallax-orb-lab-right" />
+    <span className="section-parallax-grid section-parallax-grid-lab" />
+  </>
+);
+
+const labMidground = (
+  <div className="section-parallax-rails section-parallax-rails-lab">
+    <span />
+    <span />
+    <span />
+  </div>
+);
+
+const systemBackground = (
+  <>
+    <span className="section-parallax-grid section-parallax-grid-system" />
+    <span className="section-parallax-orb section-parallax-orb-teal section-parallax-orb-system-left" />
+    <span className="section-parallax-orb section-parallax-orb-violet section-parallax-orb-system-right" />
+  </>
+);
+
+const systemMidground = (
+  <div className="section-parallax-pulseband">
+    <span />
+    <span />
+  </div>
+);
+
+const proofBackground = (
+  <>
+    <span className="section-parallax-orb section-parallax-orb-amber section-parallax-orb-proof-left" />
+    <span className="section-parallax-orb section-parallax-orb-teal section-parallax-orb-proof-right" />
+    <span className="section-parallax-grid section-parallax-grid-proof" />
+  </>
+);
+
+const proofMidground = (
+  <div className="section-parallax-rails section-parallax-rails-proof">
+    <span />
+    <span />
+    <span />
+    <span />
+  </div>
+);
 
 export function HomeContent() {
   const { language } = useLanguage();
@@ -63,7 +120,10 @@ export function HomeContent() {
             <p className="eyebrow">{copy.heroHighlightsLabel}</p>
             <div className="cinematic-hero-panel-grid">
               {copy.heroHighlights.map((item) => (
-                <article key={item.label} className="cinematic-hero-card">
+                <article
+                  key={item.label}
+                  className="cinematic-hero-card cinematic-hover-plane"
+                >
                   <p className="proof-kicker">{item.label}</p>
                   <h2>{item.value}</h2>
                   <p>{item.body}</p>
@@ -76,45 +136,69 @@ export function HomeContent() {
 
       <div className="cinematic-scroll-track">
         <LandingScrollFade>
-          <section className="cinematic-section cinematic-section-lab grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
-            <div className="space-y-4">
-              <p className="eyebrow">{copy.labLabel}</p>
-              <h2 className="max-w-3xl text-3xl leading-tight md:text-4xl">{copy.labTitle}</h2>
-              <p className="max-w-2xl leading-8 text-[color:var(--muted-ink)]">{copy.labBody}</p>
-            </div>
-            <div className="expertise-matrix cinematic-depth-grid">
-              {localizedCapabilities.map((item) => (
-                <article key={item.title} className="expertise-cell cinematic-depth-card">
-                  <p className="proof-kicker">{item.label}</p>
-                  <h3>{item.title}</h3>
-                  <p>{item.body}</p>
-                </article>
-              ))}
-            </div>
-          </section>
+          <SectionParallax
+            className="cinematic-section-parallax cinematic-section-parallax-lab"
+            background={labBackground}
+            midground={labMidground}
+            contentY={[26, -20]}
+            midgroundY={[-42, 42]}
+            backgroundY={[-78, 78]}
+          >
+            <section className="cinematic-section cinematic-section-lab grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
+              <div className="space-y-4">
+                <p className="eyebrow">{copy.labLabel}</p>
+                <h2 className="max-w-3xl text-3xl leading-tight md:text-4xl">{copy.labTitle}</h2>
+                <p className="max-w-2xl leading-8 text-[color:var(--muted-ink)]">{copy.labBody}</p>
+              </div>
+              <div className="expertise-matrix cinematic-depth-grid">
+                {localizedCapabilities.map((item) => (
+                  <article
+                    key={item.title}
+                    className="expertise-cell cinematic-depth-card cinematic-hover-plane"
+                  >
+                    <p className="proof-kicker">{item.label}</p>
+                    <h3>{item.title}</h3>
+                    <p>{item.body}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          </SectionParallax>
         </LandingScrollFade>
 
         <LandingScrollFade>
-          <section className="cinematic-section cinematic-approach">
-            <div className="cinematic-section-glint" aria-hidden />
-            <div className="mb-8 grid gap-6 md:grid-cols-[0.82fr_1.18fr] md:items-end">
-              <div className="space-y-3">
-                <p className="eyebrow">{copy.systemMapLabel}</p>
-                <h2 className="max-w-3xl text-3xl leading-tight md:text-4xl">{copy.systemMapTitle}</h2>
+          <SectionParallax
+            className="cinematic-section-parallax cinematic-section-parallax-system"
+            background={systemBackground}
+            midground={systemMidground}
+            contentY={[18, -18]}
+            midgroundY={[-28, 32]}
+            backgroundY={[-62, 62]}
+          >
+            <section className="cinematic-section cinematic-approach">
+              <div className="cinematic-section-glint" aria-hidden />
+              <div className="mb-8 grid gap-6 md:grid-cols-[0.82fr_1.18fr] md:items-end">
+                <div className="space-y-3">
+                  <p className="eyebrow">{copy.systemMapLabel}</p>
+                  <h2 className="max-w-3xl text-3xl leading-tight md:text-4xl">{copy.systemMapTitle}</h2>
+                </div>
+                <p className="max-w-3xl leading-8 text-[color:var(--muted-ink)]">{copy.systemMapBody}</p>
               </div>
-              <p className="max-w-3xl leading-8 text-[color:var(--muted-ink)]">{copy.systemMapBody}</p>
-            </div>
 
-            <div className="system-map" aria-label={copy.systemMapTitle}>
-              <div className="system-map-rail" aria-hidden />
-              {localizedSystemMap.map((step) => (
-                <article key={step.label} className="system-map-node">
-                  <p className="proof-kicker">{step.label}</p>
-                  <h3>{step.title}</h3>
-                </article>
-              ))}
-            </div>
-          </section>
+              <div className="system-map" aria-label={copy.systemMapTitle}>
+                <div className="system-map-rail" aria-hidden />
+                {localizedSystemMap.map((step) => (
+                  <article
+                    key={step.label}
+                    className="system-map-node cinematic-hover-plane"
+                  >
+                    <p className="proof-kicker">{step.label}</p>
+                    <h3>{step.title}</h3>
+                  </article>
+                ))}
+              </div>
+            </section>
+          </SectionParallax>
         </LandingScrollFade>
 
         <LandingScrollFade>
@@ -130,7 +214,10 @@ export function HomeContent() {
 
                 <div className="grid gap-3">
                   {copy.approachSteps.map((step) => (
-                    <article key={step.phase} className="cinematic-process-card">
+                    <article
+                      key={step.phase}
+                      className="cinematic-process-card cinematic-hover-plane"
+                    >
                       <div className="flex items-center justify-between gap-3">
                         <p className="eyebrow">{step.phase}</p>
                         <span>{step.marker}</span>
@@ -155,24 +242,36 @@ export function HomeContent() {
         </LandingScrollFade>
 
         <LandingScrollFade>
-          <section className="cinematic-section cinematic-proof grid gap-8 md:grid-cols-[0.85fr_1.15fr] md:items-start">
-            <div className="space-y-4">
-              <p className="eyebrow">{copy.productionLabel}</p>
-              <h2 className="max-w-xl text-3xl leading-tight md:text-4xl">{copy.productionTitle}</h2>
-              <p className="leading-8 text-[color:var(--muted-ink)]">{copy.productionBody}</p>
-            </div>
-            <div className="production-timeline cinematic-timeline">
-              {localizedProofs.map((item) => (
-                <article key={item.label} className="production-step cinematic-timeline-step">
-                  <div>
-                    <p className="proof-kicker">{item.label}</p>
-                    <h3>{item.value}</h3>
-                  </div>
-                  <p>{item.body}</p>
-                </article>
-              ))}
-            </div>
-          </section>
+          <SectionParallax
+            className="cinematic-section-parallax cinematic-section-parallax-proof"
+            background={proofBackground}
+            midground={proofMidground}
+            contentY={[22, -16]}
+            midgroundY={[-32, 28]}
+            backgroundY={[-58, 58]}
+          >
+            <section className="cinematic-section cinematic-proof grid gap-8 md:grid-cols-[0.85fr_1.15fr] md:items-start">
+              <div className="space-y-4">
+                <p className="eyebrow">{copy.productionLabel}</p>
+                <h2 className="max-w-xl text-3xl leading-tight md:text-4xl">{copy.productionTitle}</h2>
+                <p className="leading-8 text-[color:var(--muted-ink)]">{copy.productionBody}</p>
+              </div>
+              <div className="production-timeline cinematic-timeline">
+                {localizedProofs.map((item) => (
+                  <article
+                    key={item.label}
+                    className="production-step cinematic-timeline-step cinematic-hover-plane"
+                  >
+                    <div>
+                      <p className="proof-kicker">{item.label}</p>
+                      <h3>{item.value}</h3>
+                    </div>
+                    <p>{item.body}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          </SectionParallax>
         </LandingScrollFade>
 
         <LandingScrollFade>
@@ -183,7 +282,10 @@ export function HomeContent() {
             </div>
             <div className="service-ledger cinematic-ledger">
               {localizedServices.map((item) => (
-                <article key={item.title} className="ledger-row cinematic-ledger-row">
+                <article
+                  key={item.title}
+                  className="ledger-row cinematic-ledger-row cinematic-hover-plane"
+                >
                   <h3 className="text-xl leading-tight">{item.title}</h3>
                   <p className="mt-3 text-sm leading-7 text-[color:var(--muted-ink)]">{item.problem}</p>
                 </article>
@@ -201,7 +303,10 @@ export function HomeContent() {
             </div>
             <ul className="grid gap-3 text-sm text-[color:var(--muted-ink)]">
               {copy.securityPoints.map((point) => (
-                <li key={point} className="cinematic-security-point">
+                <li
+                  key={point}
+                  className="cinematic-security-point cinematic-hover-plane"
+                >
                   {point}
                 </li>
               ))}
