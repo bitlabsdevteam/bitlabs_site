@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { AdamChatWidget } from "@/components/adam-chat-widget";
 import { ApproachFlowVisual } from "@/components/approach-flow-visual";
 import { AnimatedHeroTitle } from "@/components/animated-hero-title";
 import { LandingScrollFade } from "@/components/landing-scroll-fade";
@@ -100,7 +99,6 @@ export function HomeContent() {
               {copy.heroStatement}
             </p>
             <div className="flex flex-wrap gap-3">
-              <AdamChatWidget launcherLabel={copy.primaryCta} />
               <Link
                 href="/expertises"
                 className="button-secondary px-6 py-3 text-sm font-medium"

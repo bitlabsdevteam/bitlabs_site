@@ -27,7 +27,6 @@ export function ServicesContent() {
           {localizedServices.map((service) => (
             <article key={service.title} className="buyer-service-card">
               <div className="buyer-service-heading">
-                <p className="proof-kicker">{copy.problemLabel}</p>
                 <h2>{service.title}</h2>
               </div>
 

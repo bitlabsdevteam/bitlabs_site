@@ -105,6 +105,11 @@ The Adam chat integration requires server-side Dify credentials. These values mu
 DIFY_API_KEY=your_dify_api_key
 # Optional. Defaults to the hosted Dify API shown in the studio UI.
 DIFY_API_BASE_URL=https://api.dify.ai/v1
+
+# Optional defaults for Adam's session-scoped /tools web_search integration.
+# Users still provide their own Perplexity API key in the chat UI; do not hardcode it.
+PERPLEXITY_API_BASE_URL=https://api.perplexity.ai/v1/sonar
+PERPLEXITY_MODEL=sonar
 ```
 
 ## Security and Privacy Rules

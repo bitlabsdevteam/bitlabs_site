@@ -35,7 +35,6 @@ test.describe("homepage cinematic stage", () => {
     await expect(canvas).toBeVisible();
 
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(page.getByRole("button", { name: /talk to bitlabs/i })).toBeVisible();
     await expect(page.getByRole("link", { name: /explore expertise/i })).toBeVisible();
 
     await expect.poll(async () => (await readCanvasSignal(page)).signal).toBeGreaterThan(1000);

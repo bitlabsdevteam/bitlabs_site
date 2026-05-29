@@ -14,6 +14,8 @@ type ChatApiResponse = {
   conversationId: string | null;
 };
 
+type ToolMode = "chat" | "web_search";
+
 const CHAT_USER_STORAGE_KEY = "bitlabs-adam-chat-user";
 const CHAT_CONVERSATION_STORAGE_KEY = "bitlabs-adam-chat-conversation";
 
@@ -32,6 +34,30 @@ function getChatErrorMessage(language: Language) {
   return language === "en"
     ? "Adam is temporarily unavailable. Please try again in a moment or use the contact form."
     : "現在Adamチャットを利用できません。しばらくしてから再度お試しいただくか、お問い合わせフォームをご利用ください。";
+}
+
+function getToolsOpenedMessage(language: Language) {
+  return language === "en"
+    ? "Tool settings are open. Add a Perplexity API key to enable web_search for Adam."
+    : "ツール設定を開きました。Perplexity APIキーを入力すると、Adamでweb_searchを利用できます。";
+}
+
+function getWebSearchMissingKeyMessage(language: Language) {
+  return language === "en"
+    ? "web_search needs a Perplexity API key first. Open /tools and add your key."
+    : "web_searchを使うにはPerplexity APIキーが必要です。/toolsを開いてキーを入力してください。";
+}
+
+function getToolEnabledMessage(language: Language) {
+  return language === "en"
+    ? "web_search is enabled for this chat session."
+    : "このチャットセッションでweb_searchを有効にしました。";
+}
+
+function getToolDisabledMessage(language: Language) {
+  return language === "en"
+    ? "web_search is disabled. Your Perplexity API key was cleared from this session."
+    : "web_searchを無効にしました。このセッションからPerplexity APIキーを削除しました。";
 }
 
 function renderInlineMarkdown(text: string) {
@@ -154,6 +180,9 @@ function LocalizedAdamChatWidget({
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isToolsOpen, setIsToolsOpen] = useState(false);
+  const [perplexityApiKey, setPerplexityApiKey] = useState("");
+  const [isWebSearchEnabled, setIsWebSearchEnabled] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "adam",
@@ -194,9 +223,70 @@ function LocalizedAdamChatWidget({
 
   const canSend = input.trim().length > 0 && !isPending;
 
-  const sendMessage = (value: string) => {
+  const openTools = () => {
+    setIsOpen(true);
+    setIsToolsOpen(true);
+    setMessages((current) => [...current, { role: "user", text: "/tools" }, { role: "adam", text: getToolsOpenedMessage(language) }]);
+  };
+
+  const enableWebSearch = () => {
+    if (!perplexityApiKey.trim()) {
+      setErrorMessage(getWebSearchMissingKeyMessage(language));
+      return;
+    }
+
+    setIsWebSearchEnabled(true);
+    setErrorMessage(null);
+    setMessages((current) => [...current, { role: "adam", text: getToolEnabledMessage(language) }]);
+  };
+
+  const disableWebSearch = () => {
+    setIsWebSearchEnabled(false);
+    setPerplexityApiKey("");
+    setErrorMessage(null);
+    setMessages((current) => [...current, { role: "adam", text: getToolDisabledMessage(language) }]);
+  };
+
+  const sendMessage = (value: string, toolMode: ToolMode = "chat") => {
     const trimmedValue = value.trim();
     if (!trimmedValue || !userIdRef.current) {
+      return;
+    }
+
+    if (trimmedValue === "/tools") {
+      openTools();
+      return;
+    }
+
+    if (trimmedValue.startsWith("/web_search")) {
+      const webSearchQuery = trimmedValue.replace(/^\/web_search\s*/u, "").trim();
+
+      if (!isWebSearchEnabled || !perplexityApiKey.trim()) {
+        setMessages((current) => [
+          ...current,
+          { role: "user", text: trimmedValue },
+          { role: "adam", text: getWebSearchMissingKeyMessage(language) },
+        ]);
+        setIsToolsOpen(true);
+        return;
+      }
+
+      if (!webSearchQuery) {
+        setMessages((current) => [
+          ...current,
+          { role: "user", text: trimmedValue },
+          {
+            role: "adam",
+            text:
+              language === "en"
+                ? "Add a search query after /web_search."
+                : "/web_search の後に検索したい内容を入力してください。",
+          },
+        ]);
+        return;
+      }
+
+      sendMessage(webSearchQuery, "web_search");
       return;
     }
 
@@ -213,6 +303,17 @@ function LocalizedAdamChatWidget({
           body: JSON.stringify({
             query: trimmedValue,
             conversationId,
+            toolMode,
+            tools:
+              isWebSearchEnabled && perplexityApiKey.trim()
+                ? {
+                    webSearch: {
+                      enabled: true,
+                      provider: "perplexity",
+                      apiKey: perplexityApiKey.trim(),
+                    },
+                  }
+                : undefined,
             userId: userIdRef.current,
           }),
         });
@@ -314,6 +415,18 @@ function LocalizedAdamChatWidget({
 
             <div className="border-t border-[color:var(--line)] px-4 py-3">
               <div className="mb-2 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  disabled={isPending}
+                  onClick={openTools}
+                  className={`rounded-full border px-3 py-1.5 text-xs transition-colors disabled:cursor-not-allowed disabled:opacity-45 ${
+                    isWebSearchEnabled
+                      ? "border-[color:rgba(101,229,169,0.34)] bg-[color:rgba(101,229,169,0.12)] text-[color:var(--ink)]"
+                      : "border-[color:var(--line)] bg-[color:rgba(18,22,27,0.92)] text-[color:var(--muted-ink)] hover:border-[color:rgba(208,186,150,0.22)] hover:bg-[color:rgba(208,186,150,0.12)] hover:text-[color:var(--ink)]"
+                  }`}
+                >
+                  /tools
+                </button>
                 {copy.quickReplies.map((reply) => (
                   <button
                     key={reply}
@@ -326,6 +439,71 @@ function LocalizedAdamChatWidget({
                   </button>
                 ))}
               </div>
+              {isToolsOpen ? (
+                <div className="mb-3 rounded-2xl border border-[color:var(--line)] bg-[color:rgba(18,22,27,0.82)] p-3">
+                  <div className="mb-2 flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
+                        web_search
+                      </p>
+                      <p className="mt-1 text-xs leading-5 text-[color:var(--muted-ink)]">
+                        {language === "en"
+                          ? "Use Perplexity API search for current web context. The key is kept only in this chat session."
+                          : "Perplexity API検索で最新のWeb文脈を取得します。キーはこのチャットセッション内だけで保持されます。"}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsToolsOpen(false)}
+                      className="text-xs text-[color:var(--muted-ink)] transition-colors hover:text-[color:var(--ink)]"
+                    >
+                      {language === "en" ? "Hide" : "閉じる"}
+                    </button>
+                  </div>
+                  <label className="grid gap-1 text-xs text-[color:var(--muted-ink)]">
+                    {language === "en" ? "Perplexity API key" : "Perplexity APIキー"}
+                    <input
+                      type="password"
+                      value={perplexityApiKey}
+                      onChange={(event) => setPerplexityApiKey(event.target.value)}
+                      placeholder="pplx-..."
+                      autoComplete="off"
+                      className="field-control h-10 w-full rounded-xl px-3 text-sm outline-none transition-colors"
+                    />
+                  </label>
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={enableWebSearch}
+                      className="button-primary h-9 rounded-xl px-3 text-xs font-medium"
+                    >
+                      {isWebSearchEnabled
+                        ? language === "en"
+                          ? "Enabled"
+                          : "有効"
+                        : language === "en"
+                          ? "Enable web_search"
+                          : "web_searchを有効化"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={disableWebSearch}
+                      className="button-secondary h-9 rounded-xl px-3 text-xs font-medium"
+                    >
+                      {language === "en" ? "Clear" : "削除"}
+                    </button>
+                    <span className="text-xs text-[color:var(--muted-ink)]">
+                      {isWebSearchEnabled
+                        ? language === "en"
+                          ? "Active"
+                          : "有効"
+                        : language === "en"
+                          ? "Inactive"
+                          : "無効"}
+                    </span>
+                  </div>
+                </div>
+              ) : null}
               {errorMessage ? (
                 <p className="mb-2 text-xs leading-5 text-[color:var(--danger)]">{errorMessage}</p>
               ) : null}
@@ -333,7 +511,7 @@ function LocalizedAdamChatWidget({
                 <input
                   value={input}
                   onChange={(event) => setInput(event.target.value)}
-                  placeholder={copy.inputPlaceholder}
+                  placeholder={isWebSearchEnabled ? `${copy.inputPlaceholder} /web_search ...` : copy.inputPlaceholder}
                   className="field-control h-11 w-full rounded-xl px-3 text-sm outline-none transition-colors"
                 />
                 <button
