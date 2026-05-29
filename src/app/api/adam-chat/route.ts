@@ -4,6 +4,18 @@ const requestSchema = z.object({
   query: z.string().trim().min(1).max(4000),
   conversationId: z.string().trim().uuid().nullable().optional(),
   userId: z.string().trim().min(1).max(200),
+  toolMode: z.enum(["chat", "web_search"]).optional(),
+  tools: z
+    .object({
+      webSearch: z
+        .object({
+          enabled: z.boolean(),
+          provider: z.literal("perplexity"),
+          apiKey: z.string().trim().min(1).max(300),
+        })
+        .optional(),
+    })
+    .optional(),
 });
 
 type DifyChatResponse = {
@@ -11,7 +23,25 @@ type DifyChatResponse = {
   conversation_id?: string;
 };
 
+type PerplexitySearchResult = {
+  title?: string;
+  url?: string;
+  date?: string;
+};
+
+type PerplexityChatResponse = {
+  choices?: Array<{
+    message?: {
+      content?: string;
+    };
+  }>;
+  search_results?: PerplexitySearchResult[];
+};
+
 type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+
+const perplexitySystemPrompt =
+  "You are the BitLabs web_search tool. Search the web for the user's query and return a concise, factual result with source URLs. Do not mention private data or unsupported claims.";
 
 function stripCodeFence(value: string) {
   const trimmedValue = value.trim();
@@ -125,13 +155,91 @@ function normalizeDifyAnswer(answer: string) {
   }
 }
 
+function formatSearchResults(results: PerplexitySearchResult[] | undefined) {
+  if (!results || results.length === 0) {
+    return "";
+  }
+
+  const formattedResults = results
+    .slice(0, 6)
+    .map((result, index) => {
+      const title = result.title?.trim() || `Source ${index + 1}`;
+      const url = result.url?.trim();
+      const date = result.date?.trim();
+      return [`${index + 1}. ${title}`, url ? `   ${url}` : "", date ? `   Published: ${date}` : ""]
+        .filter(Boolean)
+        .join("\n");
+    })
+    .join("\n");
+
+  return `\n\nSources:\n${formattedResults}`;
+}
+
+async function runPerplexityWebSearch(query: string, apiKey: string) {
+  const baseUrl = process.env.PERPLEXITY_API_BASE_URL ?? "https://api.perplexity.ai/v1/sonar";
+  const model = process.env.PERPLEXITY_MODEL ?? "sonar";
+
+  const response = await fetch(baseUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      messages: [
+        {
+          role: "system",
+          content: perplexitySystemPrompt,
+        },
+        {
+          role: "user",
+          content: query,
+        },
+      ],
+      search_mode: "web",
+    }),
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("Perplexity web_search request failed", {
+      status: response.status,
+      body: errorText,
+    });
+
+    throw new Error("web_search unavailable");
+  }
+
+  const payload = (await response.json()) as PerplexityChatResponse;
+  const answer = payload.choices?.[0]?.message?.content?.trim();
+
+  if (!answer) {
+    throw new Error("web_search missing answer");
+  }
+
+  return `${answer}${formatSearchResults(payload.search_results)}`;
+}
+
+function buildDifyQuery(query: string, webSearchResult: string | null) {
+  if (!webSearchResult) {
+    return query;
+  }
+
+  return [
+    query,
+    "",
+    "Use the following web_search tool result as current external context. Cite or name sources when relevant, and do not treat unsupported claims as facts.",
+    "<web_search_result>",
+    webSearchResult,
+    "</web_search_result>",
+  ].join("\n");
+}
+
 export async function POST(request: Request) {
   const apiKey = process.env.DIFY_API_KEY;
   const baseUrl = process.env.DIFY_API_BASE_URL ?? "https://api.dify.ai/v1";
-
-  if (!apiKey) {
-    return Response.json({ error: "Dify API key is not configured." }, { status: 500 });
-  }
 
   const parsedBody = requestSchema.safeParse(await request.json().catch(() => null));
 
@@ -139,7 +247,37 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid chat request." }, { status: 400 });
   }
 
-  const { query, conversationId, userId } = parsedBody.data;
+  const { query, conversationId, toolMode = "chat", tools, userId } = parsedBody.data;
+  const webSearchApiKey = tools?.webSearch?.enabled ? tools.webSearch.apiKey : null;
+
+  if (toolMode === "web_search") {
+    if (!webSearchApiKey) {
+      return Response.json({ error: "Perplexity API key is required for web_search." }, { status: 400 });
+    }
+
+    try {
+      return Response.json({
+        answer: await runPerplexityWebSearch(query, webSearchApiKey),
+        conversationId: conversationId ?? null,
+      });
+    } catch {
+      return Response.json({ error: "web_search is unavailable." }, { status: 502 });
+    }
+  }
+
+  if (!apiKey) {
+    return Response.json({ error: "Dify API key is not configured." }, { status: 500 });
+  }
+
+  let webSearchResult: string | null = null;
+
+  if (webSearchApiKey) {
+    try {
+      webSearchResult = await runPerplexityWebSearch(query, webSearchApiKey);
+    } catch {
+      return Response.json({ error: "web_search is unavailable." }, { status: 502 });
+    }
+  }
 
   const difyResponse = await fetch(`${baseUrl.replace(/\/$/, "")}/chat-messages`, {
     method: "POST",
@@ -148,7 +286,7 @@ export async function POST(request: Request) {
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      query,
+      query: buildDifyQuery(query, webSearchResult),
       inputs: {},
       user: userId,
       response_mode: "blocking",

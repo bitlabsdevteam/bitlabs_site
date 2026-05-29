@@ -97,7 +97,6 @@ export function ResearchContent() {
                 </article>
               ))}
             </div>
-            <p className="text-sm leading-7 text-[color:var(--muted-ink)]">{copy.note}</p>
           </div>
         </section>
       </FadeIn>
