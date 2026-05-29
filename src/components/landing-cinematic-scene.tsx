@@ -2,9 +2,8 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import type { MutableRefObject } from "react";
-import { Bloom, EffectComposer, Vignette } from "@react-three/postprocessing";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Html, Line, PerspectiveCamera, RoundedBox, Sparkles } from "@react-three/drei";
+import { Html, Line, PerspectiveCamera, RoundedBox, Sparkles, Text } from "@react-three/drei";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
@@ -15,15 +14,17 @@ import {
 } from "@/components/motion-preferences";
 
 const tokenLabels = [
-  "Tokyo",
-  "pretrain",
-  "finetune",
-  "inference",
-  "agents",
-  "deploy",
+  "emb: Tokyo",
+  "emb: pretrain",
+  "emb: finetune",
+  "emb: inference",
+  "emb: agents",
+  "emb: deploy",
 ] as const;
 const tokenRows = [3.2, 1.95, 0.7, -0.55, -1.8, -3.05] as const;
 const blockColumns = [-5.9, -2.65, 0.55, 3.75] as const;
+const parameterLabels = ["Wq", "Wk", "Wv", "Wo", "MLP", "Norm"] as const;
+const logitLabels = ["ship", "serve", "adapt", "audit", "hold"] as const;
 
 type LandingCinematicSceneProps = {
   reduced?: boolean;
@@ -224,6 +225,19 @@ function TokenColumn({ quality }: { quality: MotionQuality }) {
               clearcoat={0.8}
             />
           </mesh>
+          {!mobile ? (
+            <Text
+              position={[-9.38, y - 0.03, 0.28]}
+              rotation={[0.02, -0.16, 0]}
+              fontSize={0.16}
+              color={palette.ink}
+              anchorX="right"
+              anchorY="middle"
+              fillOpacity={0.6}
+            >
+              {tokenLabels[index]}
+            </Text>
+          ) : null}
           <Line
             points={[
               [-8.65, y, -0.05],
@@ -235,6 +249,50 @@ function TokenColumn({ quality }: { quality: MotionQuality }) {
             opacity={0.2}
             lineWidth={mobile ? 0.9 : 1.4}
           />
+        </group>
+      ))}
+    </group>
+  );
+}
+
+function ParameterBlockLabels({ quality }: { quality: MotionQuality }) {
+  const mobile = quality === "mobile";
+  const positions: [number, number, number][] = [
+    [-4.85, 2.8, 0.58],
+    [-4.85, 2.26, 0.58],
+    [-4.85, 1.72, 0.58],
+    [-1.58, 2.46, 0.78],
+    [1.68, 2.2, 0.96],
+    [4.85, 1.86, 1.14],
+  ];
+
+  return (
+    <group>
+      {parameterLabels.map((label, index) => (
+        <group key={label} position={positions[index]} rotation={[0.03, -0.2, 0.02]}>
+          <RoundedBox
+            args={[mobile ? 0.36 : 0.5, mobile ? 0.18 : 0.24, 0.05]}
+            radius={0.025}
+            smoothness={2}
+          >
+            <meshBasicMaterial
+              color={index < 3 ? palette.blue : index === 4 ? palette.amberHot : palette.tealHot}
+              transparent
+              opacity={index < 3 ? 0.26 : 0.22}
+              blending={THREE.AdditiveBlending}
+              depthWrite={false}
+            />
+          </RoundedBox>
+          <Text
+            position={[0, 0, 0.035]}
+            fontSize={mobile ? 0.105 : 0.14}
+            color={palette.ink}
+            anchorX="center"
+            anchorY="middle"
+            fillOpacity={0.82}
+          >
+            {label}
+          </Text>
         </group>
       ))}
     </group>
@@ -421,6 +479,19 @@ function EvaluationGate({ quality }: { quality: MotionQuality }) {
               <sphereGeometry args={[0.105, mobile ? 14 : 18, mobile ? 8 : 12]} />
               <meshBasicMaterial color={isRelease ? palette.amberHot : palette.ink} transparent opacity={0.72} blending={THREE.AdditiveBlending} depthWrite={false} />
             </mesh>
+            {!mobile && index < logitLabels.length ? (
+              <Text
+                position={[8.35, y, 0.48]}
+                rotation={[0.02, -0.2, 0]}
+                fontSize={0.13}
+                color={isRelease ? palette.amberHot : palette.ink}
+                anchorX="left"
+                anchorY="middle"
+                fillOpacity={isRelease ? 0.8 : 0.48}
+              >
+                {`${logitLabels[index]} ${(value * 100).toFixed(1)}%`}
+              </Text>
+            ) : null}
           </group>
         );
       })}
@@ -647,6 +718,7 @@ function CinematicStage({
       <DeploymentRails quality={quality} reduced={reduced} />
       <TokenColumn quality={quality} />
       <TransformerBlocks quality={quality} />
+      <ParameterBlockLabels quality={quality} />
       <FlowLayer quality={quality} reduced={reduced} />
       <group ref={foregroundRef}>
         <ResearchCues quality={quality} />
@@ -669,25 +741,28 @@ function SceneLabels() {
   return (
     <Html fullscreen zIndexRange={[2, 0]} prepend>
       <div className="landing-transformer-labels" aria-hidden>
-        <span className="scene-label scene-label-embedding">Data curation</span>
-        <span className="scene-label scene-label-block">Model program</span>
-        <span className="scene-label scene-label-attention">Context and control</span>
-        <span className="scene-label scene-label-mlp">Inference path</span>
-        <span className="scene-label scene-label-probabilities">Release gates</span>
-        <span className="scene-label scene-label-residual">Evaluation loop</span>
-        <span className="scene-chip scene-chip-q">Q</span>
-        <span className="scene-chip scene-chip-k">K</span>
-        <span className="scene-chip scene-chip-v">V</span>
+        <span className="scene-label scene-label-embedding">Input embeddings</span>
+        <span className="scene-label scene-label-block">Transformer blocks</span>
+        <span className="scene-label scene-label-attention">Attention heads</span>
+        <span className="scene-label scene-label-mlp">MLP + Norm</span>
+        <span className="scene-label scene-label-probabilities">Output logits</span>
+        <span className="scene-label scene-label-residual">Residual stream</span>
+        <span className="scene-chip scene-chip-q">Wq</span>
+        <span className="scene-chip scene-chip-k">Wk</span>
+        <span className="scene-chip scene-chip-v">Wv</span>
+        <span className="scene-chip scene-chip-o">Wo</span>
+        <span className="scene-chip scene-chip-mlp">MLP</span>
+        <span className="scene-chip scene-chip-norm">Norm</span>
         <div className="scene-token-list">
           {tokenLabels.map((label) => (
             <span key={label}>{label}</span>
           ))}
         </div>
         <div className="scene-probability-list">
-          <span>serve 54.67%</span>
-          <span>adapt 20.87%</span>
-          <span>audit 12.09%</span>
-          <strong>ship 6.26%</strong>
+          <span>serve logit 54.67</span>
+          <span>adapt logit 20.87</span>
+          <span>audit logit 12.09</span>
+          <strong>ship logit 6.26</strong>
         </div>
       </div>
     </Html>
@@ -724,12 +799,6 @@ function SceneContents({
       </mesh>
       <CinematicStage quality={quality} reduced={reduced} refs={refs} />
       <SceneLabels />
-      {quality === "desktop" && !reduced ? (
-        <EffectComposer multisampling={0} enableNormalPass={false}>
-          <Bloom luminanceThreshold={0.24} luminanceSmoothing={0.72} intensity={0.42} mipmapBlur />
-          <Vignette eskil={false} offset={0.2} darkness={0.72} />
-        </EffectComposer>
-      ) : null}
     </>
   );
 }
@@ -747,17 +816,23 @@ export function LandingCinematicScene({ reduced: explicitReduced, quality: expli
         dpr={dpr}
         frameloop="always"
         gl={{
-          alpha: true,
-          antialias: quality === "desktop",
+          alpha: false,
+          antialias: false,
           powerPreference: "high-performance",
+          preserveDrawingBuffer: true,
         }}
         onCreated={({ gl }) => {
-          gl.setClearColor(palette.paper, 0);
+          gl.setClearColor(palette.paper, 1);
           gl.outputColorSpace = THREE.SRGBColorSpace;
         }}
       >
         <SceneContents quality={quality} reduced={reduced} refs={refs} />
       </Canvas>
+      <div className="landing-cinema-grade" data-testid="landing-cinema-grade" aria-hidden>
+        <span className="landing-cinema-vignette" />
+        <span className="landing-cinema-light-sweep" />
+        <span className="landing-cinema-letterbox" />
+      </div>
     </div>
   );
 }

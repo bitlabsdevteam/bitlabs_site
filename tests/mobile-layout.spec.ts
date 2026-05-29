@@ -13,7 +13,7 @@ for (const project of mobileProjects) {
 
     for (const route of routes) {
       test(`${route} fits mobile viewport`, async ({ page }, testInfo) => {
-        await page.goto(route, { waitUntil: "networkidle" });
+        await page.goto(route, { waitUntil: "domcontentloaded" });
 
         const overflow = await page.evaluate(() => {
           const doc = document.documentElement;
