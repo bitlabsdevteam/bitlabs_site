@@ -25,6 +25,30 @@ const tokenRows = [3.2, 1.95, 0.7, -0.55, -1.8, -3.05] as const;
 const blockColumns = [-5.9, -2.65, 0.55, 3.75] as const;
 const parameterLabels = ["Wq", "Wk", "Wv", "Wo", "MLP", "Norm"] as const;
 const logitLabels = ["ship", "serve", "adapt", "audit", "hold"] as const;
+const flowProgressionValues = [0.58, 0.32, 0.24, 0.15, 0.1, 0.07, 0.04] as const;
+const flowBarRows = flowProgressionValues.map((_, index) => 2.25 - index * 0.62);
+
+const FLOW_BASE_SPEED = 0.11;
+const FLOW_POINTER_PULSE = 1.2;
+const FLOW_SCROLL_PULSE = 0.4;
+const FLOW_SECTION_PULSE = 0.07;
+const FLOW_IDLE_DRIFT = 0.56;
+const FLOW_GLOW_INTENSITY = {
+  desktop: 1,
+  mobile: 0.62,
+} as const;
+const FLOW_CARRIER_COUNT = {
+  desktop: {
+    input: 4,
+    residual: 8,
+    output: 3,
+  },
+  mobile: {
+    input: 2,
+    residual: 4,
+    output: 2,
+  },
+} as const;
 
 type LandingCinematicSceneProps = {
   reduced?: boolean;
@@ -36,6 +60,32 @@ type CinematicRefs = {
   progress: MutableRefObject<number>;
   section: MutableRefObject<number>;
   pointer: MutableRefObject<THREE.Vector2>;
+};
+
+type FlowPathKind = "input" | "residual" | "output";
+
+type FlowPathDefinition = {
+  id: string;
+  kind: FlowPathKind;
+  color: string;
+  opacity: number;
+  width: number;
+  points: [number, number, number][];
+  speed: number;
+  carrierScale: number;
+  secondary?: boolean;
+};
+
+type ResolvedFlowPath = FlowPathDefinition & {
+  curve: THREE.CatmullRomCurve3;
+};
+
+type FlowCarrierSpec = {
+  id: string;
+  pathId: string;
+  offset: number;
+  speedJitter: number;
+  scale: number;
 };
 
 const palette = {
@@ -161,6 +211,129 @@ function useParticlePositions(count: number) {
     }
     return positions;
   }, [count]);
+}
+
+function makeFlowCurve(points: [number, number, number][]) {
+  return new THREE.CatmullRomCurve3(
+    points.map(([x, y, z]) => new THREE.Vector3(x, y, z)),
+    false,
+    "catmullrom",
+    0.38,
+  );
+}
+
+function buildFlowPathDefinitions(mobile: boolean): FlowPathDefinition[] {
+  const inputIndices = mobile ? [1, 3, 5] : [0, 1, 2, 3, 4, 5];
+  const residualIndices = mobile ? [1, 3, 4] : [0, 1, 2, 3, 4, 5];
+  const outputIndices = mobile ? [0, 2, 3, 4] : [0, 1, 2, 3, 4];
+
+  const inputPaths = inputIndices.map((rowIndex) => {
+    const y = tokenRows[rowIndex];
+    return {
+      id: `input-${rowIndex}`,
+      kind: "input" as const,
+      color: rowIndex % 2 === 0 ? palette.teal : palette.blue,
+      opacity: mobile ? 0.22 : 0.28,
+      width: mobile ? 1.05 : 1.45,
+      speed: 0.92 + rowIndex * 0.025,
+      carrierScale: 0.94,
+      points: [
+        [-8.65, y, -0.05],
+        [-8.05, y + Math.sin(rowIndex * 0.8) * 0.16, -0.12],
+        [-7.25, y + (rowIndex % 2 === 0 ? 0.12 : -0.12), -0.26],
+        [blockColumns[0] - 0.52, y * 0.94 + Math.sin(rowIndex) * 0.12, -0.22],
+      ] satisfies [number, number, number][],
+    };
+  });
+
+  const residualPaths = residualIndices.map((rowIndex) => {
+    const y = tokenRows[rowIndex];
+    return {
+      id: `residual-${rowIndex}`,
+      kind: "residual" as const,
+      color: rowIndex === 1 ? palette.ink : rowIndex % 2 === 0 ? "#d7e7ff" : "#b9d2f7",
+      opacity: rowIndex === 1 ? (mobile ? 0.22 : 0.3) : mobile ? 0.16 : 0.22,
+      width: rowIndex === 1 ? (mobile ? 1.35 : 2.2) : mobile ? 1.05 : 1.55,
+      speed: 1 + rowIndex * 0.03,
+      carrierScale: rowIndex === 1 ? 1.1 : 1,
+      points: [
+        [-8.5, y + 0.08, -0.9],
+        [-4.2, y + Math.sin(rowIndex * 1.4) * 0.34, -2.65],
+        [1.45, y + Math.cos(rowIndex) * 0.28, -2.35],
+        [6.45, y * 0.52, -1.18],
+      ] satisfies [number, number, number][],
+    };
+  });
+
+  const secondaryResidualPaths = mobile
+    ? []
+    : residualIndices
+        .filter((rowIndex) => rowIndex % 2 === 0)
+        .map((rowIndex, index) => {
+          const y = tokenRows[rowIndex];
+          const alternateY = tokenRows[(rowIndex + 2) % tokenRows.length];
+          return {
+            id: `residual-secondary-${rowIndex}`,
+            kind: "residual" as const,
+            color: palette.ink,
+            opacity: 0.14,
+            width: 0.78,
+            speed: 0.86 + index * 0.04,
+            carrierScale: 0.86,
+            secondary: true,
+            points: [
+              [blockColumns[0] - 0.2, y, -0.72],
+              [-1.8, (y + alternateY) / 2 - 0.34, -1.9],
+              [blockColumns[2] + 0.55, alternateY, -0.9],
+              [6.05, alternateY * 0.58, -0.48],
+            ] satisfies [number, number, number][],
+          };
+        });
+
+  const outputPaths = outputIndices.map((outputIndex) => {
+    const y = flowBarRows[outputIndex];
+    return {
+      id: `output-${outputIndex}`,
+      kind: "output" as const,
+      color: outputIndex === 0 ? palette.amberHot : "#ffc79b",
+      opacity: mobile ? 0.34 : 0.44,
+      width: outputIndex === 0 ? (mobile ? 1.2 : 1.55) : mobile ? 0.96 : 1.18,
+      speed: 1.08 + outputIndex * 0.035,
+      carrierScale: outputIndex === 0 ? 1.08 : 0.95,
+      points: [
+        [4.25, -1.35 + outputIndex * 0.64, 0.12],
+        [5.25, -1.35 + outputIndex * 0.64 + Math.sin(outputIndex) * 0.22, -0.1],
+        [6.5, (-1.35 + outputIndex * 0.64) * 0.62, -0.02],
+        [7.18 + flowProgressionValues[outputIndex] * 0.92, y, 0.38],
+      ] satisfies [number, number, number][],
+    };
+  });
+
+  return [...inputPaths, ...residualPaths, ...secondaryResidualPaths, ...outputPaths];
+}
+
+function buildFlowCarrierSpecs(paths: ResolvedFlowPath[], mobile: boolean) {
+  const counts = mobile ? FLOW_CARRIER_COUNT.mobile : FLOW_CARRIER_COUNT.desktop;
+  const carriers: FlowCarrierSpec[] = [];
+
+  (["input", "residual", "output"] as const).forEach((kind) => {
+    const candidates = paths.filter((path) => path.kind === kind && !path.secondary);
+    const count = counts[kind];
+
+    for (let index = 0; index < count; index += 1) {
+      const path = candidates[index % candidates.length];
+      const noise = seededNoise(index + kind.length * 17);
+      carriers.push({
+        id: `${kind}-carrier-${index}`,
+        pathId: path.id,
+        offset: (index / count + noise * 0.17) % 1,
+        speedJitter: 0.88 + noise * 0.36,
+        scale: path.carrierScale * (0.88 + seededNoise(index + 211) * 0.2),
+      });
+    }
+  });
+
+  return carriers;
 }
 
 function StageCamera({
@@ -358,12 +531,40 @@ function TransformerBlocks({ quality }: { quality: MotionQuality }) {
 function FlowLayer({
   quality,
   reduced,
+  refs,
+  outputPulseRef,
 }: {
   quality: MotionQuality;
   reduced: boolean;
+  refs: CinematicRefs;
+  outputPulseRef: MutableRefObject<number>;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const mobile = quality === "mobile";
+  const carrierRefs = useRef<(THREE.Group | null)[]>([]);
+  const pulse = useRef(FLOW_IDLE_DRIFT);
+  const smoothedPointer = useRef(new THREE.Vector2());
+  const previousPointer = useRef(new THREE.Vector2());
+  const unitX = useMemo(() => new THREE.Vector3(1, 0, 0), []);
+  const tempTangent = useMemo(() => new THREE.Vector3(), []);
+  const tempQuaternion = useMemo(() => new THREE.Quaternion(), []);
+
+  const flowPaths = useMemo(() => {
+    const definitions = buildFlowPathDefinitions(mobile);
+    return definitions.map((path) => ({
+      ...path,
+      curve: makeFlowCurve(path.points),
+    }));
+  }, [mobile]);
+  const flowPathMap = useMemo(
+    () => new Map(flowPaths.map((path) => [path.id, path])),
+    [flowPaths],
+  );
+
+  const carrierSpecs = useMemo(
+    () => (reduced ? [] : buildFlowCarrierSpecs(flowPaths, mobile)),
+    [flowPaths, mobile, reduced],
+  );
 
   useFrame(({ clock }) => {
     if (!groupRef.current || reduced) {
@@ -373,63 +574,88 @@ function FlowLayer({
     groupRef.current.position.z = Math.sin(elapsed * 0.27) * 0.24;
   });
 
-  const connectionLines = useMemo(() => {
-    const lines: { points: [number, number, number][]; color: string; opacity: number; width: number }[] = [];
-    for (let columnIndex = 0; columnIndex < blockColumns.length - 1; columnIndex += 1) {
-      const fromX = blockColumns[columnIndex] + 0.45;
-      const toX = blockColumns[columnIndex + 1] - 0.45;
-
-      tokenRows.forEach((y, rowIndex) => {
-        const targetY = tokenRows[(rowIndex + columnIndex + 1) % tokenRows.length];
-        const alternateY = tokenRows[(rowIndex + 3) % tokenRows.length];
-        const color = rowIndex % 3 === 0 ? palette.blue : rowIndex % 3 === 1 ? palette.red : palette.green;
-
-        lines.push({
-          points: [
-            [fromX, y, 0.05 + columnIndex * 0.12],
-            [(fromX + toX) / 2, (y + targetY) / 2 + 0.25, -1.1 - columnIndex * 0.12],
-            [toX, targetY, 0.08 + columnIndex * 0.12],
-          ],
-          color,
-          opacity: 0.42,
-          width: mobile ? 0.7 : 1.15,
-        });
-
-        if ((rowIndex + columnIndex) % 2 === 0 && !mobile) {
-          lines.push({
-            points: [
-              [fromX, y, -0.75],
-              [(fromX + toX) / 2, (y + alternateY) / 2 - 0.32, -1.9],
-              [toX, alternateY, -0.65],
-            ],
-            color: palette.ink,
-            opacity: 0.18,
-            width: 0.7,
-          });
-        }
-      });
+  useFrame(({ clock }, delta) => {
+    if (reduced) {
+      outputPulseRef.current = THREE.MathUtils.damp(outputPulseRef.current, 0, 5, delta);
+      return;
     }
-    return lines;
-  }, [mobile]);
+
+    const elapsed = clock.getElapsedTime();
+    const progress = refs.progress.current;
+    const section = Math.min(refs.section.current, 4);
+
+    smoothedPointer.current.lerp(refs.pointer.current, mobile ? 0.05 : 0.08);
+    const pointerVelocity = smoothedPointer.current.distanceTo(previousPointer.current) / Math.max(delta, 0.001);
+    previousPointer.current.copy(smoothedPointer.current);
+
+    const pointerPulse = THREE.MathUtils.clamp(pointerVelocity * FLOW_POINTER_PULSE, 0, mobile ? 0.38 : 0.62);
+    const scrollPulse =
+      progress * 0.18 + Math.sin(progress * Math.PI) * FLOW_SCROLL_PULSE + section * FLOW_SECTION_PULSE;
+    const pulseTarget =
+      FLOW_IDLE_DRIFT +
+      (mobile ? 0.06 : 0.1) * Math.sin(elapsed * 0.62) +
+      scrollPulse +
+      pointerPulse;
+
+    pulse.current = THREE.MathUtils.damp(
+      pulse.current,
+      THREE.MathUtils.clamp(pulseTarget, 0.48, mobile ? 1.02 : 1.28),
+      3.4,
+      delta,
+    );
+
+    let outputPulseTarget = 0;
+
+    carrierSpecs.forEach((carrier, index) => {
+      const carrierGroup = carrierRefs.current[index];
+      const path = flowPathMap.get(carrier.pathId);
+
+      if (!carrierGroup || !path) {
+        return;
+      }
+
+      const speed =
+        FLOW_BASE_SPEED *
+        path.speed *
+        carrier.speedJitter *
+        (mobile ? 0.82 : 1) *
+        (0.58 + pulse.current * 0.68);
+      const travel = (carrier.offset + elapsed * speed) % 1;
+      const point = path.curve.getPointAt(travel);
+      path.curve.getTangentAt(travel, tempTangent).normalize();
+      tempQuaternion.setFromUnitVectors(unitX, tempTangent);
+
+      carrierGroup.position.copy(point);
+      carrierGroup.position.z +=
+        Math.sin(elapsed * (path.kind === "residual" ? 1.24 : 1.52) + index * 0.72) *
+        (path.kind === "residual" ? 0.045 : 0.024);
+      carrierGroup.quaternion.slerp(tempQuaternion, 0.24);
+
+      const emphasis = path.kind === "output" ? 1.08 : path.kind === "residual" ? 1 : 0.92;
+      const scale = carrier.scale * emphasis * (1 + pulse.current * 0.14);
+      carrierGroup.scale.set(scale, 1 + pulse.current * 0.08, 1 + pulse.current * 0.08);
+
+      if (path.kind === "output") {
+        outputPulseTarget = Math.max(
+          outputPulseTarget,
+          THREE.MathUtils.smoothstep(travel, 0.74, 0.99) * (0.54 + pulse.current * 0.3),
+        );
+      }
+    });
+
+    outputPulseRef.current = THREE.MathUtils.damp(outputPulseRef.current, outputPulseTarget, 6, delta);
+  });
 
   return (
     <group ref={groupRef}>
-      {connectionLines.map((line, index) => (
-        <Line key={index} points={line.points} color={line.color} transparent opacity={line.opacity} lineWidth={line.width} />
-      ))}
-      {tokenRows.map((y, rowIndex) => (
+      {flowPaths.map((path) => (
         <Line
-          key={y}
-          points={[
-            [-8.5, y + 0.08, -0.9],
-            [-4.2, y + Math.sin(rowIndex * 1.4) * 0.34, -2.65],
-            [1.45, y + Math.cos(rowIndex) * 0.28, -2.35],
-            [6.45, y * 0.52, -1.18],
-          ]}
-          color={palette.ink}
+          key={path.id}
+          points={path.points}
+          color={path.color}
           transparent
-          opacity={rowIndex === 1 ? 0.28 : 0.18}
-          lineWidth={rowIndex === 1 ? (mobile ? 1.25 : 2.2) : mobile ? 0.9 : 1.45}
+          opacity={path.opacity}
+          lineWidth={path.width}
         />
       ))}
       <Line
@@ -443,27 +669,93 @@ function FlowLayer({
         opacity={0.58}
         lineWidth={mobile ? 2.2 : 3.8}
       />
-      {[0, 1, 2, 3, 4].map((index) => (
-        <Line
-          key={index}
-          points={[
-            [4.25, -1.35 + index * 0.64, 0.12],
-            [5.25, -1.35 + index * 0.64 + Math.sin(index) * 0.22, -0.1],
-            [6.5, (-1.35 + index * 0.64) * 0.62, -0.02],
-          ]}
-          color={palette.violet}
-          transparent
-          opacity={0.5}
-          lineWidth={mobile ? 0.9 : 1.25}
-        />
-      ))}
+      {!reduced
+        ? carrierSpecs.map((carrier, index) => {
+            const path = flowPathMap.get(carrier.pathId);
+            if (!path) {
+              return null;
+            }
+
+            const glowColor = path.kind === "output" ? palette.amberHot : path.color;
+            const glowOpacity =
+              (path.kind === "residual" ? 0.86 : 0.74) * FLOW_GLOW_INTENSITY[mobile ? "mobile" : "desktop"];
+            const dashLength = path.kind === "residual" ? 0.38 : 0.28;
+
+            return (
+              <group
+                key={carrier.id}
+                ref={(node) => {
+                  carrierRefs.current[index] = node;
+                }}
+              >
+                <RoundedBox args={[dashLength, 0.06, 0.06]} radius={0.024} smoothness={2} position={[-dashLength * 0.34, 0, 0]}>
+                  <meshBasicMaterial
+                    color={glowColor}
+                    transparent
+                    opacity={glowOpacity}
+                    blending={THREE.AdditiveBlending}
+                    depthWrite={false}
+                  />
+                </RoundedBox>
+                <mesh position={[0.02, 0, 0]}>
+                  <sphereGeometry args={[path.kind === "output" ? 0.082 : 0.074, mobile ? 14 : 18, mobile ? 10 : 14]} />
+                  <meshBasicMaterial
+                    color={glowColor}
+                    transparent
+                    opacity={0.92 * FLOW_GLOW_INTENSITY[mobile ? "mobile" : "desktop"]}
+                    blending={THREE.AdditiveBlending}
+                    depthWrite={false}
+                  />
+                </mesh>
+              </group>
+            );
+          })
+        : null}
     </group>
   );
 }
 
-function EvaluationGate({ quality }: { quality: MotionQuality }) {
+function EvaluationGate({
+  quality,
+  outputPulseRef,
+}: {
+  quality: MotionQuality;
+  outputPulseRef: MutableRefObject<number>;
+}) {
   const mobile = quality === "mobile";
-  const values = mobile ? [0.58, 0.32, 0.24, 0.15] : [0.58, 0.32, 0.24, 0.15, 0.1, 0.07, 0.04];
+  const values = mobile ? flowProgressionValues.slice(0, 4) : flowProgressionValues;
+  const barRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const nodeRefs = useRef<(THREE.Mesh | null)[]>([]);
+
+  useFrame((_, delta) => {
+    values.forEach((_, index) => {
+      const emphasis = index === 0 ? 1 : index === 3 ? 0.9 : 0.56;
+      const pulse = outputPulseRef.current * emphasis;
+      const bar = barRefs.current[index];
+      const node = nodeRefs.current[index];
+
+      if (bar) {
+        bar.scale.x = THREE.MathUtils.damp(bar.scale.x, 1 + pulse * 0.12, 5.2, delta);
+        const material = Array.isArray(bar.material) ? bar.material[0] : bar.material;
+        if (material instanceof THREE.MeshBasicMaterial) {
+          const baseOpacity = index === 3 ? 0.48 : 0.22;
+          material.opacity = THREE.MathUtils.damp(material.opacity, baseOpacity + pulse * 0.28, 5.2, delta);
+        }
+      }
+
+      if (node) {
+        const baseScale = index === 3 ? 0.8 : 0.5;
+        const currentScale = node.scale.x;
+        const targetScale = baseScale * (1 + pulse * 0.2);
+        const nextScale = THREE.MathUtils.damp(currentScale, targetScale, 5.2, delta);
+        node.scale.setScalar(nextScale);
+        const material = Array.isArray(node.material) ? node.material[0] : node.material;
+        if (material instanceof THREE.MeshBasicMaterial) {
+          material.opacity = THREE.MathUtils.damp(material.opacity, 0.72 + pulse * 0.18, 5.2, delta);
+        }
+      }
+    });
+  });
 
   return (
     <group>
@@ -472,10 +764,25 @@ function EvaluationGate({ quality }: { quality: MotionQuality }) {
         const isRelease = index === 3;
         return (
           <group key={value}>
-            <RoundedBox args={[value * 2.8, 0.075, 0.075]} radius={0.01} smoothness={2} position={[7.15 + value * 1.35, y, 0.38]} rotation={[0.02, -0.18, 0]}>
+            <RoundedBox
+              ref={(node) => {
+                barRefs.current[index] = node;
+              }}
+              args={[value * 2.8, 0.075, 0.075]}
+              radius={0.01}
+              smoothness={2}
+              position={[7.15 + value * 1.35, y, 0.38]}
+              rotation={[0.02, -0.18, 0]}
+            >
               <meshBasicMaterial color={isRelease ? palette.amberHot : palette.ink} transparent opacity={isRelease ? 0.48 : 0.22} blending={THREE.AdditiveBlending} depthWrite={false} />
             </RoundedBox>
-            <mesh position={[7.02, y, 0.42]} scale={isRelease ? 0.8 : 0.5}>
+            <mesh
+              ref={(node) => {
+                nodeRefs.current[index] = node;
+              }}
+              position={[7.02, y, 0.42]}
+              scale={isRelease ? 0.8 : 0.5}
+            >
               <sphereGeometry args={[0.105, mobile ? 14 : 18, mobile ? 8 : 12]} />
               <meshBasicMaterial color={isRelease ? palette.amberHot : palette.ink} transparent opacity={0.72} blending={THREE.AdditiveBlending} depthWrite={false} />
             </mesh>
@@ -664,6 +971,7 @@ function CinematicStage({
   const rootRef = useRef<THREE.Group>(null);
   const foregroundRef = useRef<THREE.Group>(null);
   const pointer = useRef(new THREE.Vector2());
+  const outputPulse = useRef(0);
   const mobile = quality === "mobile";
 
   useFrame(({ clock }, delta) => {
@@ -719,10 +1027,10 @@ function CinematicStage({
       <TokenColumn quality={quality} />
       <TransformerBlocks quality={quality} />
       <ParameterBlockLabels quality={quality} />
-      <FlowLayer quality={quality} reduced={reduced} />
+      <FlowLayer quality={quality} reduced={reduced} refs={refs} outputPulseRef={outputPulse} />
       <group ref={foregroundRef}>
         <ResearchCues quality={quality} />
-        <EvaluationGate quality={quality} />
+        <EvaluationGate quality={quality} outputPulseRef={outputPulse} />
       </group>
       <Particles quality={quality} reduced={reduced} />
       <Sparkles

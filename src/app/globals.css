@@ -47,6 +47,11 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  position: relative;
+}
+
 body {
   margin: 0;
   font-family: var(--font-sans);
@@ -222,6 +227,11 @@ a {
   animation: cinematicSweep 14s var(--motion-ease-drift) infinite alternate;
 }
 
+.landing-transformer-scene[data-reduced-motion="true"] .landing-cinema-light-sweep {
+  animation: none;
+  transform: none;
+}
+
 .landing-cinema-letterbox {
   background:
     linear-gradient(180deg, rgba(3, 4, 5, 0.96), rgba(3, 4, 5, 0.66) 2.6rem, transparent 8.6rem),
@@ -255,6 +265,14 @@ a {
 .scene-probability-list {
   position: absolute;
   animation: transformerLabelFloat 9s ease-in-out infinite;
+}
+
+.landing-transformer-scene[data-reduced-motion="true"] .scene-label,
+.landing-transformer-scene[data-reduced-motion="true"] .scene-chip,
+.landing-transformer-scene[data-reduced-motion="true"] .scene-token-list,
+.landing-transformer-scene[data-reduced-motion="true"] .scene-probability-list {
+  animation: none;
+  transform: none;
 }
 
 .scene-label {
