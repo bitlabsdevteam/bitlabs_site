@@ -47,6 +47,11 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  position: relative;
+}
+
 body {
   margin: 0;
   font-family: var(--font-sans);
@@ -151,6 +156,14 @@ a {
   position: absolute;
   inset: 0;
   overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(3, 4, 5, 0.68), rgba(3, 4, 5, 0.08) 48%, rgba(3, 4, 5, 0.5)),
+    image-set(
+      url("/images/transformer-background-preview.png") 1x,
+      url("/images/transformer-background-4k.png") 2x
+    );
+  background-position: center;
+  background-size: cover;
 }
 
 .landing-transformer-scene::before,
@@ -186,6 +199,55 @@ a {
   opacity: 1;
 }
 
+.landing-cinema-grade {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.landing-cinema-grade span {
+  position: absolute;
+  inset: 0;
+}
+
+.landing-cinema-vignette {
+  background:
+    radial-gradient(circle at 53% 43%, transparent 0 30%, rgba(3, 4, 5, 0.22) 66%, rgba(3, 4, 5, 0.78) 100%),
+    linear-gradient(90deg, rgba(3, 4, 5, 0.62), transparent 24% 74%, rgba(3, 4, 5, 0.56));
+}
+
+.landing-cinema-light-sweep {
+  opacity: 0.52;
+  background:
+    linear-gradient(111deg, transparent 0 27%, rgba(143, 184, 199, 0.08) 35%, transparent 48%),
+    linear-gradient(89deg, transparent 0 11%, rgba(255, 210, 139, 0.045) 11.4%, transparent 11.8% 88.2%, rgba(79, 229, 224, 0.04) 88.6%, transparent 89%);
+  mix-blend-mode: screen;
+  animation: cinematicSweep 14s var(--motion-ease-drift) infinite alternate;
+}
+
+.landing-transformer-scene[data-reduced-motion="true"] .landing-cinema-light-sweep {
+  animation: none;
+  transform: none;
+}
+
+.landing-cinema-letterbox {
+  background:
+    linear-gradient(180deg, rgba(3, 4, 5, 0.96), rgba(3, 4, 5, 0.66) 2.6rem, transparent 8.6rem),
+    linear-gradient(0deg, rgba(3, 4, 5, 0.98), rgba(3, 4, 5, 0.76) 2.9rem, transparent 9rem);
+}
+
+@keyframes cinematicSweep {
+  0% {
+    transform: translate3d(-2.5%, 0, 0) skewX(-3deg);
+  }
+
+  100% {
+    transform: translate3d(2.5%, 0, 0) skewX(3deg);
+  }
+}
+
 .landing-transformer-labels {
   position: absolute;
   inset: 0;
@@ -203,6 +265,14 @@ a {
 .scene-probability-list {
   position: absolute;
   animation: transformerLabelFloat 9s ease-in-out infinite;
+}
+
+.landing-transformer-scene[data-reduced-motion="true"] .scene-label,
+.landing-transformer-scene[data-reduced-motion="true"] .scene-chip,
+.landing-transformer-scene[data-reduced-motion="true"] .scene-token-list,
+.landing-transformer-scene[data-reduced-motion="true"] .scene-probability-list {
+  animation: none;
+  transform: none;
 }
 
 .scene-label {
@@ -245,9 +315,11 @@ a {
 .scene-chip {
   display: grid;
   place-items: center;
-  width: 1.05rem;
+  width: auto;
+  min-width: 1.45rem;
   height: 1.05rem;
   border-radius: 0.25rem;
+  padding: 0 0.22rem;
   font-size: 0.62rem;
   line-height: 1;
   box-shadow: 0 0 1.2rem currentColor;
@@ -274,6 +346,30 @@ a {
   color: rgba(101, 229, 169, 0.8);
   background: rgba(101, 229, 169, 0.12);
   animation-delay: -2.2s;
+}
+
+.scene-chip-o {
+  left: 28.6%;
+  top: 29.5%;
+  color: rgba(131, 184, 255, 0.76);
+  background: rgba(131, 184, 255, 0.1);
+  animation-delay: -3s;
+}
+
+.scene-chip-mlp {
+  left: 49.8%;
+  top: 34%;
+  color: rgba(255, 210, 139, 0.78);
+  background: rgba(255, 210, 139, 0.1);
+  animation-delay: -1.8s;
+}
+
+.scene-chip-norm {
+  left: 60.6%;
+  top: 39%;
+  color: rgba(79, 229, 224, 0.76);
+  background: rgba(79, 229, 224, 0.1);
+  animation-delay: -2.8s;
 }
 
 .scene-token-list {
@@ -315,6 +411,37 @@ a {
 
   50% {
     transform: translate3d(0.22rem, -0.18rem, 0);
+  }
+}
+
+@media (max-width: 720px) {
+  .landing-cinema-light-sweep {
+    opacity: 0.36;
+    animation-duration: 18s;
+  }
+
+  .landing-cinema-letterbox {
+    background:
+      linear-gradient(180deg, rgba(3, 4, 5, 0.98), rgba(3, 4, 5, 0.72) 1.4rem, transparent 5.8rem),
+      linear-gradient(0deg, rgba(3, 4, 5, 0.98), rgba(3, 4, 5, 0.72) 1.8rem, transparent 6rem);
+  }
+
+  .landing-transformer-labels {
+    opacity: 0.72;
+  }
+
+  .scene-label-attention,
+  .scene-label-mlp,
+  .scene-label-residual,
+  .scene-chip-o,
+  .scene-chip-mlp,
+  .scene-chip-norm {
+    display: none;
+  }
+
+  .scene-token-list,
+  .scene-probability-list {
+    font-size: 0.58rem;
   }
 }
 
