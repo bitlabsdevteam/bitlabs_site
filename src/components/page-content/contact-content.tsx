@@ -11,8 +11,8 @@ export function ContactContent() {
   const footer = footerContent[language];
   const consultationAreas =
     language === "en"
-      ? ["Agentic systems", "Model training or fine-tuning", "Inference stack and deployment"]
-      : ["AIエージェント", "モデル学習・ファインチューニング", "推論基盤と導入"];
+      ? ["AI agents & RAG", "Model training & fine-tuning", "Inference stacks & deployment"]
+      : ["AIエージェント・RAG", "モデル学習・ファインチューニング", "推論基盤と導入"];
 
   return (
     <div className="grid gap-8 md:grid-cols-[1fr_1.15fr] md:items-start">

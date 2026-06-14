@@ -1,115 +1,99 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
-import type { MutableRefObject } from "react";
+import Image from "next/image";
+import { Component, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import type { MutableRefObject, ReactNode } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Html, Line, PerspectiveCamera, RoundedBox, Sparkles, Text } from "@react-three/drei";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
+import {
+  Float,
+  Line,
+  PerspectiveCamera,
+  RoundedBox,
+  Sparkles,
+} from "@react-three/drei";
 import * as THREE from "three";
 import {
   type MotionQuality,
   useMotionPreferences,
 } from "@/components/motion-preferences";
 
-const tokenLabels = [
-  "emb: Tokyo",
-  "emb: pretrain",
-  "emb: finetune",
-  "emb: inference",
-  "emb: agents",
-  "emb: deploy",
-] as const;
-const tokenRows = [3.2, 1.95, 0.7, -0.55, -1.8, -3.05] as const;
-const blockColumns = [-5.9, -2.65, 0.55, 3.75] as const;
-const parameterLabels = ["Wq", "Wk", "Wv", "Wo", "MLP", "Norm"] as const;
-const logitLabels = ["ship", "serve", "adapt", "audit", "hold"] as const;
-const flowProgressionValues = [0.58, 0.32, 0.24, 0.15, 0.1, 0.07, 0.04] as const;
-const flowBarRows = flowProgressionValues.map((_, index) => 2.25 - index * 0.62);
-
-const FLOW_BASE_SPEED = 0.11;
-const FLOW_POINTER_PULSE = 1.2;
-const FLOW_SCROLL_PULSE = 0.4;
-const FLOW_SECTION_PULSE = 0.07;
-const FLOW_IDLE_DRIFT = 0.56;
-const FLOW_GLOW_INTENSITY = {
-  desktop: 1,
-  mobile: 0.62,
-} as const;
-const FLOW_CARRIER_COUNT = {
-  desktop: {
-    input: 4,
-    residual: 8,
-    output: 3,
-  },
-  mobile: {
-    input: 2,
-    residual: 4,
-    output: 2,
-  },
-} as const;
-
 type LandingCinematicSceneProps = {
   reduced?: boolean;
   quality?: MotionQuality;
   scrollProgress?: number;
+  posterSrc?: string;
+};
+
+type SceneErrorBoundaryProps = {
+  children: ReactNode;
+  onError: () => void;
+};
+
+type SceneErrorBoundaryState = {
+  hasError: boolean;
 };
 
 type CinematicRefs = {
   progress: MutableRefObject<number>;
-  section: MutableRefObject<number>;
   pointer: MutableRefObject<THREE.Vector2>;
-};
-
-type FlowPathKind = "input" | "residual" | "output";
-
-type FlowPathDefinition = {
-  id: string;
-  kind: FlowPathKind;
-  color: string;
-  opacity: number;
-  width: number;
-  points: [number, number, number][];
-  speed: number;
-  carrierScale: number;
-  secondary?: boolean;
-};
-
-type ResolvedFlowPath = FlowPathDefinition & {
-  curve: THREE.CatmullRomCurve3;
-};
-
-type FlowCarrierSpec = {
-  id: string;
-  pathId: string;
-  offset: number;
-  speedJitter: number;
-  scale: number;
 };
 
 const palette = {
   paper: "#030405",
   ink: "#f4eee4",
-  muted: "#aaa195",
   teal: "#8fb8c7",
   tealHot: "#4fe5e0",
   amber: "#d0ba96",
   amberHot: "#ffd28b",
-  green: "#65e5a9",
-  red: "#ff8f86",
   violet: "#8c67ff",
   blue: "#83b8ff",
-  graphite: "#0b0d10",
 };
 
-function useCinematicScroll(
-  reduced: boolean,
-  quality: MotionQuality,
-  incomingProgress?: number,
-) {
+class SceneErrorBoundary extends Component<
+  SceneErrorBoundaryProps,
+  SceneErrorBoundaryState
+> {
+  state: SceneErrorBoundaryState = {
+    hasError: false,
+  };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch() {
+    this.props.onError();
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return null;
+    }
+
+    return this.props.children;
+  }
+}
+
+function PosterLayer({ posterSrc }: { posterSrc: string }) {
+  return (
+    <div className="landing-cinematic-media" aria-hidden>
+      <div className="landing-cinematic-poster" data-testid="landing-cinematic-poster">
+        <Image
+          className="landing-cinematic-poster-image"
+          src={posterSrc}
+          alt=""
+          aria-hidden="true"
+          fill
+          priority
+          sizes="100vw"
+        />
+      </div>
+    </div>
+  );
+}
+
+function useCinematicScroll(incomingProgress?: number) {
   const progress = useRef(incomingProgress ?? 0);
-  const section = useRef(0);
   const pointer = useRef(new THREE.Vector2(0, 0));
 
   useEffect(() => {
@@ -119,81 +103,36 @@ function useCinematicScroll(
   }, [incomingProgress]);
 
   useEffect(() => {
-    const onPointerMove = (event: PointerEvent) => {
-      pointer.current.set((event.clientX / window.innerWidth - 0.5) * 2, (event.clientY / window.innerHeight - 0.5) * 2);
-    };
+    if (typeof incomingProgress === "number") {
+      return;
+    }
 
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
-
-    return () => {
-      window.removeEventListener("pointermove", onPointerMove);
-    };
-  }, []);
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    const updateNativeProgress = () => {
-      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const updateProgress = () => {
+      const maxScroll = Math.max(
+        1,
+        document.documentElement.scrollHeight - window.innerHeight,
+      );
       progress.current = THREE.MathUtils.clamp(window.scrollY / maxScroll, 0, 1);
     };
 
-    if (reduced || quality === "mobile") {
-      updateNativeProgress();
-      window.addEventListener("scroll", updateNativeProgress, { passive: true });
-
-      return () => {
-        window.removeEventListener("scroll", updateNativeProgress);
-      };
-    }
-
-    const lenis = new Lenis({
-      duration: 1.02,
-      easing: (t) => 1 - Math.pow(1 - t, 3),
-      lerp: 0.082,
-      smoothWheel: true,
-    });
-
-    const onLenisScroll = () => {
-      updateNativeProgress();
-      ScrollTrigger.update();
+    const onPointerMove = (event: PointerEvent) => {
+      pointer.current.set(
+        (event.clientX / window.innerWidth - 0.5) * 2,
+        (event.clientY / window.innerHeight - 0.5) * 2,
+      );
     };
 
-    const tickLenis = (time: number) => lenis.raf(time * 1000);
-
-    lenis.on("scroll", onLenisScroll);
-    gsap.ticker.add(tickLenis);
-    gsap.ticker.lagSmoothing(0);
-
-    const triggers = gsap.utils.toArray<HTMLElement>(".cinematic-section, .cinematic-hero").map((element, index) =>
-      ScrollTrigger.create({
-        trigger: element,
-        start: "top 68%",
-        end: "bottom 32%",
-        onEnter: () => {
-          section.current = index;
-        },
-        onEnterBack: () => {
-          section.current = index;
-        },
-        onUpdate: updateNativeProgress,
-      }),
-    );
-
-    updateNativeProgress();
-    ScrollTrigger.refresh();
+    updateProgress();
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
 
     return () => {
-      for (const trigger of triggers) {
-        trigger.kill();
-      }
-      lenis.off("scroll", onLenisScroll);
-      gsap.ticker.remove(tickLenis);
-      lenis.destroy();
+      window.removeEventListener("scroll", updateProgress);
+      window.removeEventListener("pointermove", onPointerMove);
     };
-  }, [quality, reduced]);
+  }, [incomingProgress]);
 
-  return { progress, section, pointer };
+  return { progress, pointer };
 }
 
 function seededNoise(index: number) {
@@ -201,139 +140,367 @@ function seededNoise(index: number) {
   return value - Math.floor(value);
 }
 
-function useParticlePositions(count: number) {
-  return useMemo(() => {
-    const positions = new Float32Array(count * 3);
-    for (let index = 0; index < count; index += 1) {
-      positions[index * 3] = (seededNoise(index) - 0.5) * 24;
-      positions[index * 3 + 1] = (seededNoise(index + 93) - 0.5) * 10.5;
-      positions[index * 3 + 2] = -8.5 + seededNoise(index + 197) * 11;
-    }
-    return positions;
-  }, [count]);
+/**
+ * Layout of the GPT-2-style transformer residual stream. The model reads left
+ * to right: token embeddings enter at the left, pass through a stack of
+ * residual transformer blocks (attention + MLP sublayers), and exit as the
+ * output logit distribution on the right.
+ */
+const LANES = 5; // residual streams (one per token position)
+const LANE_GAP = 1.05;
+const STREAM_START = -4.4;
+const STREAM_END = 4.4;
+const TOKEN_X = STREAM_START - 0.95;
+const LOGIT_X = STREAM_END + 0.95;
+const BLOCK_COUNT = 6; // representative GPT-2 transformer stack
+const LOGIT_BARS = 9;
+
+function laneY(index: number) {
+  return (index - (LANES - 1) / 2) * LANE_GAP;
 }
 
-function makeFlowCurve(points: [number, number, number][]) {
-  return new THREE.CatmullRomCurve3(
-    points.map(([x, y, z]) => new THREE.Vector3(x, y, z)),
-    false,
-    "catmullrom",
-    0.38,
+function blockX(index: number) {
+  const t = (index + 0.5) / BLOCK_COUNT;
+  return STREAM_START + 0.7 + t * (STREAM_END - STREAM_START - 1.4);
+}
+
+/** Horizontal rails carrying each token's residual vector across the stack. */
+function ResidualRails() {
+  const length = STREAM_END - STREAM_START;
+  const midX = (STREAM_START + STREAM_END) / 2;
+  return (
+    <group>
+      {Array.from({ length: LANES }, (_, lane) => (
+        <mesh
+          key={lane}
+          position={[midX, laneY(lane), 0]}
+          rotation={[0, 0, Math.PI / 2]}
+        >
+          <cylinderGeometry args={[0.016, 0.016, length, 6]} />
+          <meshBasicMaterial
+            color={palette.teal}
+            transparent
+            opacity={0.38}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
+        </mesh>
+      ))}
+    </group>
   );
 }
 
-function buildFlowPathDefinitions(mobile: boolean): FlowPathDefinition[] {
-  const inputIndices = mobile ? [1, 3, 5] : [0, 1, 2, 3, 4, 5];
-  const residualIndices = mobile ? [1, 3, 4] : [0, 1, 2, 3, 4, 5];
-  const outputIndices = mobile ? [0, 2, 3, 4] : [0, 1, 2, 3, 4];
+/** Token embeddings entering the stack on the left. */
+function TokenInputs({ reduced }: { reduced: boolean }) {
+  const groupRef = useRef<THREE.Group>(null);
 
-  const inputPaths = inputIndices.map((rowIndex) => {
-    const y = tokenRows[rowIndex];
-    return {
-      id: `input-${rowIndex}`,
-      kind: "input" as const,
-      color: rowIndex % 2 === 0 ? palette.teal : palette.blue,
-      opacity: mobile ? 0.22 : 0.28,
-      width: mobile ? 1.05 : 1.45,
-      speed: 0.92 + rowIndex * 0.025,
-      carrierScale: 0.94,
-      points: [
-        [-8.65, y, -0.05],
-        [-8.05, y + Math.sin(rowIndex * 0.8) * 0.16, -0.12],
-        [-7.25, y + (rowIndex % 2 === 0 ? 0.12 : -0.12), -0.26],
-        [blockColumns[0] - 0.52, y * 0.94 + Math.sin(rowIndex) * 0.12, -0.22],
-      ] satisfies [number, number, number][],
-    };
+  useFrame(({ clock }) => {
+    const group = groupRef.current;
+    if (!group || reduced) {
+      return;
+    }
+    const elapsed = clock.getElapsedTime();
+    group.children.forEach((child, index) => {
+      const pulse = 0.85 + Math.sin(elapsed * 2 + index * 0.9) * 0.18;
+      child.scale.setScalar(pulse);
+    });
   });
 
-  const residualPaths = residualIndices.map((rowIndex) => {
-    const y = tokenRows[rowIndex];
-    return {
-      id: `residual-${rowIndex}`,
-      kind: "residual" as const,
-      color: rowIndex === 1 ? palette.ink : rowIndex % 2 === 0 ? "#d7e7ff" : "#b9d2f7",
-      opacity: rowIndex === 1 ? (mobile ? 0.22 : 0.3) : mobile ? 0.16 : 0.22,
-      width: rowIndex === 1 ? (mobile ? 1.35 : 2.2) : mobile ? 1.05 : 1.55,
-      speed: 1 + rowIndex * 0.03,
-      carrierScale: rowIndex === 1 ? 1.1 : 1,
-      points: [
-        [-8.5, y + 0.08, -0.9],
-        [-4.2, y + Math.sin(rowIndex * 1.4) * 0.34, -2.65],
-        [1.45, y + Math.cos(rowIndex) * 0.28, -2.35],
-        [6.45, y * 0.52, -1.18],
-      ] satisfies [number, number, number][],
-    };
-  });
-
-  const secondaryResidualPaths = mobile
-    ? []
-    : residualIndices
-        .filter((rowIndex) => rowIndex % 2 === 0)
-        .map((rowIndex, index) => {
-          const y = tokenRows[rowIndex];
-          const alternateY = tokenRows[(rowIndex + 2) % tokenRows.length];
-          return {
-            id: `residual-secondary-${rowIndex}`,
-            kind: "residual" as const,
-            color: palette.ink,
-            opacity: 0.14,
-            width: 0.78,
-            speed: 0.86 + index * 0.04,
-            carrierScale: 0.86,
-            secondary: true,
-            points: [
-              [blockColumns[0] - 0.2, y, -0.72],
-              [-1.8, (y + alternateY) / 2 - 0.34, -1.9],
-              [blockColumns[2] + 0.55, alternateY, -0.9],
-              [6.05, alternateY * 0.58, -0.48],
-            ] satisfies [number, number, number][],
-          };
-        });
-
-  const outputPaths = outputIndices.map((outputIndex) => {
-    const y = flowBarRows[outputIndex];
-    return {
-      id: `output-${outputIndex}`,
-      kind: "output" as const,
-      color: outputIndex === 0 ? palette.amberHot : "#ffc79b",
-      opacity: mobile ? 0.34 : 0.44,
-      width: outputIndex === 0 ? (mobile ? 1.2 : 1.55) : mobile ? 0.96 : 1.18,
-      speed: 1.08 + outputIndex * 0.035,
-      carrierScale: outputIndex === 0 ? 1.08 : 0.95,
-      points: [
-        [4.25, -1.35 + outputIndex * 0.64, 0.12],
-        [5.25, -1.35 + outputIndex * 0.64 + Math.sin(outputIndex) * 0.22, -0.1],
-        [6.5, (-1.35 + outputIndex * 0.64) * 0.62, -0.02],
-        [7.18 + flowProgressionValues[outputIndex] * 0.92, y, 0.38],
-      ] satisfies [number, number, number][],
-    };
-  });
-
-  return [...inputPaths, ...residualPaths, ...secondaryResidualPaths, ...outputPaths];
+  return (
+    <group ref={groupRef}>
+      {Array.from({ length: LANES }, (_, lane) => (
+        <mesh key={lane} position={[TOKEN_X, laneY(lane), 0]}>
+          <icosahedronGeometry args={[0.2, 1]} />
+          <meshStandardMaterial
+            color={palette.tealHot}
+            emissive={palette.tealHot}
+            emissiveIntensity={1.1}
+            roughness={0.3}
+            metalness={0.4}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
 }
 
-function buildFlowCarrierSpecs(paths: ResolvedFlowPath[], mobile: boolean) {
-  const counts = mobile ? FLOW_CARRIER_COUNT.mobile : FLOW_CARRIER_COUNT.desktop;
-  const carriers: FlowCarrierSpec[] = [];
+/**
+ * One transformer block straddling the residual stream: a translucent slab
+ * (attention + MLP sublayers) with curved attention couplings between lanes.
+ */
+function TransformerBlock({
+  index,
+  reduced,
+}: {
+  index: number;
+  reduced: boolean;
+}) {
+  const fillRef = useRef<THREE.MeshStandardMaterial>(null);
+  const x = blockX(index);
+  const height = (LANES - 1) * LANE_GAP + 0.7;
 
-  (["input", "residual", "output"] as const).forEach((kind) => {
-    const candidates = paths.filter((path) => path.kind === kind && !path.secondary);
-    const count = counts[kind];
+  // A few attention couplings: curves that mix one lane into another.
+  const arcs = useMemo(() => {
+    const pairs = 3;
+    return Array.from({ length: pairs }, (_, pairIndex) => {
+      const from = Math.floor(seededNoise(index * 17 + pairIndex) * LANES);
+      let to = Math.floor(seededNoise(index * 31 + pairIndex + 5) * LANES);
+      if (to === from) {
+        to = (to + 1) % LANES;
+      }
+      const start = new THREE.Vector3(x - 0.32, laneY(from), 0);
+      const end = new THREE.Vector3(x + 0.32, laneY(to), 0);
+      const control = new THREE.Vector3(
+        x,
+        (laneY(from) + laneY(to)) / 2,
+        0.6 + seededNoise(index + pairIndex) * 0.5,
+      );
+      const curve = new THREE.QuadraticBezierCurve3(start, control, end);
+      return curve.getPoints(22).map((point) => [point.x, point.y, point.z] as [number, number, number]);
+    });
+  }, [index, x]);
 
-    for (let index = 0; index < count; index += 1) {
-      const path = candidates[index % candidates.length];
-      const noise = seededNoise(index + kind.length * 17);
-      carriers.push({
-        id: `${kind}-carrier-${index}`,
-        pathId: path.id,
-        offset: (index / count + noise * 0.17) % 1,
-        speedJitter: 0.88 + noise * 0.36,
-        scale: path.carrierScale * (0.88 + seededNoise(index + 211) * 0.2),
-      });
+  useFrame(({ clock }) => {
+    if (!fillRef.current) {
+      return;
     }
+    const elapsed = reduced ? 0 : clock.getElapsedTime();
+    // Activation wave travels left to right through the stack.
+    const wave = 0.5 + 0.5 * Math.sin(elapsed * 1.4 - index * 0.85);
+    fillRef.current.emissiveIntensity = 0.25 + wave * 0.85;
+    fillRef.current.opacity = 0.12 + wave * 0.16;
   });
 
-  return carriers;
+  return (
+    <group>
+      <RoundedBox
+        args={[0.62, height, 1.05]}
+        radius={0.08}
+        smoothness={3}
+        position={[x, 0, 0]}
+      >
+        <meshStandardMaterial
+          ref={fillRef}
+          color={palette.violet}
+          emissive={palette.violet}
+          emissiveIntensity={0.4}
+          transparent
+          opacity={0.18}
+          roughness={0.4}
+          metalness={0.2}
+          depthWrite={false}
+        />
+      </RoundedBox>
+
+      {/* Wireframe edges to read the block as a discrete layer. */}
+      <RoundedBox args={[0.62, height, 1.05]} radius={0.08} smoothness={3} position={[x, 0, 0]}>
+        <meshBasicMaterial color={palette.blue} wireframe transparent opacity={0.22} />
+      </RoundedBox>
+
+      {/* Multi-head markers down the block (attention heads). */}
+      {Array.from({ length: LANES }, (_, lane) => (
+        <mesh key={lane} position={[x, laneY(lane), 0.55]}>
+          <boxGeometry args={[0.16, 0.16, 0.16]} />
+          <meshStandardMaterial
+            color={palette.amber}
+            emissive={palette.amberHot}
+            emissiveIntensity={0.5}
+            roughness={0.35}
+          />
+        </mesh>
+      ))}
+
+      {arcs.map((points, arcIndex) => (
+        <Line
+          key={arcIndex}
+          points={points}
+          color={palette.tealHot}
+          lineWidth={1.4}
+          transparent
+          opacity={0.5}
+        />
+      ))}
+    </group>
+  );
+}
+
+/** Output logit distribution emitted on the right. */
+function OutputLogits({ reduced }: { reduced: boolean }) {
+  const groupRef = useRef<THREE.Group>(null);
+  const heights = useMemo(
+    () =>
+      Array.from(
+        { length: LOGIT_BARS },
+        (_, index) => 0.18 + seededNoise(index * 3 + 1) * 1.1,
+      ),
+    [],
+  );
+  const top = ((LOGIT_BARS - 1) / 2) * 0.34;
+
+  useFrame(({ clock }) => {
+    const group = groupRef.current;
+    if (!group || reduced) {
+      return;
+    }
+    const elapsed = clock.getElapsedTime();
+    group.children.forEach((child, index) => {
+      const wobble = 1 + Math.sin(elapsed * 1.6 + index * 0.7) * 0.12;
+      child.scale.x = wobble;
+    });
+  });
+
+  return (
+    <group ref={groupRef}>
+      {heights.map((height, index) => {
+        const isTop = height === Math.max(...heights);
+        return (
+          <mesh
+            key={index}
+            position={[LOGIT_X + height / 2, top - index * 0.34, 0]}
+          >
+            <boxGeometry args={[height, 0.2, 0.2]} />
+            <meshStandardMaterial
+              color={isTop ? palette.amberHot : palette.amber}
+              emissive={isTop ? palette.amberHot : palette.amber}
+              emissiveIntensity={isTop ? 1.3 : 0.45}
+              roughness={0.3}
+              metalness={0.3}
+            />
+          </mesh>
+        );
+      })}
+    </group>
+  );
+}
+
+/** Activations streaming left to right along the residual rails. */
+function ResidualFlow({
+  quality,
+  reduced,
+}: {
+  quality: MotionQuality;
+  reduced: boolean;
+}) {
+  const pointsRef = useRef<THREE.Points>(null);
+  const count = quality === "mobile" ? 90 : 200;
+
+  const flow = useMemo(() => {
+    const lanes = new Float32Array(count);
+    const phases = new Float32Array(count);
+    const speeds = new Float32Array(count);
+    for (let index = 0; index < count; index += 1) {
+      lanes[index] = Math.floor(seededNoise(index) * LANES);
+      phases[index] = seededNoise(index + 7);
+      speeds[index] = 0.04 + seededNoise(index + 19) * 0.1;
+    }
+    return { lanes, phases, speeds };
+  }, [count]);
+
+  const positions = useMemo(() => new Float32Array(count * 3), [count]);
+
+  useFrame(({ clock }) => {
+    const points = pointsRef.current;
+    if (!points) {
+      return;
+    }
+    const elapsed = reduced ? 0 : clock.getElapsedTime();
+    const span = STREAM_END - STREAM_START;
+    const attribute = points.geometry.getAttribute("position") as THREE.BufferAttribute;
+    const array = attribute.array as Float32Array;
+    for (let index = 0; index < count; index += 1) {
+      const progress = (flow.phases[index] + elapsed * flow.speeds[index]) % 1;
+      const x = STREAM_START + progress * span;
+      array[index * 3] = x;
+      array[index * 3 + 1] =
+        laneY(flow.lanes[index]) + Math.sin((x + elapsed) * 1.6) * 0.04;
+      array[index * 3 + 2] = Math.sin(index * 1.3 + elapsed) * 0.05;
+    }
+    attribute.needsUpdate = true;
+  });
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+      </bufferGeometry>
+      <pointsMaterial
+        color={palette.tealHot}
+        size={0.1}
+        transparent
+        opacity={0.95}
+        sizeAttenuation
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </points>
+  );
+}
+
+/**
+ * The signature object: a GPT-2-style transformer residual stream. Token
+ * embeddings flow in from the left, traverse the residual blocks, and resolve
+ * into the output logit distribution on the right.
+ */
+function TransformerResidual({
+  quality,
+  reduced,
+  refs,
+}: {
+  quality: MotionQuality;
+  reduced: boolean;
+  refs: CinematicRefs;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const pointer = useRef(new THREE.Vector2());
+  const mobile = quality === "mobile";
+
+  useFrame((_, delta) => {
+    const group = groupRef.current;
+    if (!group) {
+      return;
+    }
+    const progress = refs.progress.current;
+    pointer.current.lerp(refs.pointer.current, reduced ? 0.02 : 0.05);
+
+    // Subtle parallax: keep the left-to-right axis legible, no full spin.
+    group.rotation.y = THREE.MathUtils.damp(
+      group.rotation.y,
+      pointer.current.x * 0.22 + progress * 0.2,
+      2.4,
+      delta,
+    );
+    group.rotation.x = THREE.MathUtils.damp(
+      group.rotation.x,
+      0.04 + pointer.current.y * -0.14 + progress * 0.12,
+      2.4,
+      delta,
+    );
+    group.position.y = THREE.MathUtils.damp(
+      group.position.y,
+      progress * (mobile ? -0.4 : -0.8),
+      2.2,
+      delta,
+    );
+  });
+
+  return (
+    <Float
+      speed={reduced ? 0 : 0.8}
+      rotationIntensity={reduced ? 0 : 0.08}
+      floatIntensity={reduced ? 0 : 0.4}
+      floatingRange={[-0.12, 0.12]}
+    >
+      <group ref={groupRef} scale={mobile ? 0.62 : 0.92}>
+        <ResidualRails />
+        <TokenInputs reduced={reduced} />
+        {Array.from({ length: BLOCK_COUNT }, (_, index) => (
+          <TransformerBlock key={index} index={index} reduced={reduced} />
+        ))}
+        <OutputLogits reduced={reduced} />
+        <ResidualFlow quality={quality} reduced={reduced} />
+      </group>
+    </Float>
+  );
 }
 
 function StageCamera({
@@ -348,6 +515,7 @@ function StageCamera({
   refs: CinematicRefs;
 }) {
   const currentPointer = useRef(new THREE.Vector2());
+  const mobile = quality === "mobile";
 
   useFrame((_, delta) => {
     const camera = cameraRef.current;
@@ -355,726 +523,20 @@ function StageCamera({
       return;
     }
 
-    currentPointer.current.lerp(refs.pointer.current, reduced ? 0.02 : 0.055);
+    currentPointer.current.lerp(refs.pointer.current, reduced ? 0.02 : 0.05);
     const progress = refs.progress.current;
-    const section = refs.section.current;
-    const mobile = quality === "mobile";
-    const targetZ = mobile ? 32 : 24;
-    const orbit = reduced ? 0 : Math.sin(progress * Math.PI) * (mobile ? 0.55 : 1.35);
-    const targetX = orbit + currentPointer.current.x * (mobile ? 0.08 : 0.28);
-    const targetY = 0.8 - progress * (mobile ? 0.18 : 0.56) + currentPointer.current.y * (mobile ? -0.06 : -0.18);
-    const targetFov = mobile ? 38 : 33 + Math.min(section, 4) * 0.22;
 
-    camera.position.x = THREE.MathUtils.damp(camera.position.x, targetX, 2.8, delta);
-    camera.position.y = THREE.MathUtils.damp(camera.position.y, targetY, 2.8, delta);
-    camera.position.z = THREE.MathUtils.damp(camera.position.z, targetZ, 2.8, delta);
+    const targetX = currentPointer.current.x * (mobile ? 0.4 : 0.9);
+    const targetY = 0.4 + currentPointer.current.y * (mobile ? -0.2 : -0.5);
+    const targetZ = (mobile ? 16 : 12.5) - progress * (mobile ? 0.6 : 1.6);
 
-    camera.fov = THREE.MathUtils.damp(camera.fov, targetFov, 2.6, delta);
-    camera.updateProjectionMatrix();
-
-    camera.lookAt(0.2, -0.2, -1.85);
+    camera.position.x = THREE.MathUtils.damp(camera.position.x, targetX, 2.4, delta);
+    camera.position.y = THREE.MathUtils.damp(camera.position.y, targetY, 2.4, delta);
+    camera.position.z = THREE.MathUtils.damp(camera.position.z, targetZ, 2.4, delta);
+    camera.lookAt(0, 0, 0);
   });
 
   return null;
-}
-
-function TokenColumn({ quality }: { quality: MotionQuality }) {
-  const mobile = quality === "mobile";
-
-  return (
-    <group>
-      {tokenRows.map((y, index) => (
-        <group key={y}>
-          <mesh position={[-8.85, y, 0.2]} scale={index === 1 ? 1.16 : 1}>
-            <sphereGeometry args={[0.14, mobile ? 16 : 24, mobile ? 10 : 16]} />
-            <meshPhysicalMaterial
-              color={palette.ink}
-              emissive={palette.blue}
-              emissiveIntensity={0.24}
-              metalness={0.18}
-              roughness={0.26}
-              transparent
-              opacity={0.78}
-              clearcoat={0.8}
-            />
-          </mesh>
-          {!mobile ? (
-            <Text
-              position={[-9.38, y - 0.03, 0.28]}
-              rotation={[0.02, -0.16, 0]}
-              fontSize={0.16}
-              color={palette.ink}
-              anchorX="right"
-              anchorY="middle"
-              fillOpacity={0.6}
-            >
-              {tokenLabels[index]}
-            </Text>
-          ) : null}
-          <Line
-            points={[
-              [-8.65, y, -0.05],
-              [-7.7, y + Math.sin(index) * 0.18, -0.28],
-              [-6.6, tokenRows[(index + 1) % tokenRows.length] * 0.95, -0.35],
-            ]}
-            color={palette.ink}
-            transparent
-            opacity={0.2}
-            lineWidth={mobile ? 0.9 : 1.4}
-          />
-        </group>
-      ))}
-    </group>
-  );
-}
-
-function ParameterBlockLabels({ quality }: { quality: MotionQuality }) {
-  const mobile = quality === "mobile";
-  const positions: [number, number, number][] = [
-    [-4.85, 2.8, 0.58],
-    [-4.85, 2.26, 0.58],
-    [-4.85, 1.72, 0.58],
-    [-1.58, 2.46, 0.78],
-    [1.68, 2.2, 0.96],
-    [4.85, 1.86, 1.14],
-  ];
-
-  return (
-    <group>
-      {parameterLabels.map((label, index) => (
-        <group key={label} position={positions[index]} rotation={[0.03, -0.2, 0.02]}>
-          <RoundedBox
-            args={[mobile ? 0.36 : 0.5, mobile ? 0.18 : 0.24, 0.05]}
-            radius={0.025}
-            smoothness={2}
-          >
-            <meshBasicMaterial
-              color={index < 3 ? palette.blue : index === 4 ? palette.amberHot : palette.tealHot}
-              transparent
-              opacity={index < 3 ? 0.26 : 0.22}
-              blending={THREE.AdditiveBlending}
-              depthWrite={false}
-            />
-          </RoundedBox>
-          <Text
-            position={[0, 0, 0.035]}
-            fontSize={mobile ? 0.105 : 0.14}
-            color={palette.ink}
-            anchorX="center"
-            anchorY="middle"
-            fillOpacity={0.82}
-          >
-            {label}
-          </Text>
-        </group>
-      ))}
-    </group>
-  );
-}
-
-function TransformerBlocks({ quality }: { quality: MotionQuality }) {
-  const mobile = quality === "mobile";
-
-  return (
-    <group>
-      {blockColumns.map((x, columnIndex) => (
-        <group key={x}>
-          <RoundedBox args={[1.02, 7.25, 0.16]} radius={0.05} smoothness={3} position={[x, 0, -0.55 + columnIndex * 0.35]} rotation={[0.03, -0.16, 0.01]}>
-            <meshPhysicalMaterial
-              color={columnIndex < 2 ? "#dceaff" : "#9ebdff"}
-              emissive={columnIndex < 2 ? "#304769" : "#5168d8"}
-              emissiveIntensity={0.18}
-              metalness={0.12}
-              roughness={0.32}
-              transparent
-              opacity={columnIndex < 2 ? 0.22 : 0.38}
-              clearcoat={0.76}
-            />
-          </RoundedBox>
-
-          {tokenRows.map((y, rowIndex) => (
-            <group key={`${x}-${y}`}>
-              <mesh position={[x, y, 0.1 + columnIndex * 0.15]} scale={0.92 + ((rowIndex + columnIndex) % 3) * 0.1}>
-                <sphereGeometry args={[0.105, mobile ? 14 : 18, mobile ? 8 : 12]} />
-                <meshPhysicalMaterial color={palette.ink} emissive={palette.blue} emissiveIntensity={0.24} roughness={0.28} transparent opacity={0.78} />
-              </mesh>
-              {columnIndex < 2 ? (
-                <group position={[x + 0.43, y, 0.28 + columnIndex * 0.12]} scale={0.36}>
-                  {[
-                    [0.22, palette.blue],
-                    [0, palette.red],
-                    [-0.22, palette.green],
-                  ].map(([offsetY, color]) => (
-                    <RoundedBox key={`${color}-${offsetY}`} args={[0.08, 0.22, 0.08]} radius={0.01} smoothness={2} position={[0, Number(offsetY), 0]}>
-                      <meshBasicMaterial color={String(color)} transparent opacity={0.58} blending={THREE.AdditiveBlending} depthWrite={false} />
-                    </RoundedBox>
-                  ))}
-                </group>
-              ) : null}
-            </group>
-          ))}
-
-          {columnIndex < 2
-            ? [0, 1, 2, 3].map((head) => (
-                <mesh key={head} position={[x + 1.35, -2.45 + head * 1.62, -0.08 + columnIndex * 0.18]} rotation={[Math.PI / 2.45, 0.08, 0.12]} scale={[1.1, 0.5, 1]}>
-                  <torusGeometry args={[0.45, 0.014, mobile ? 6 : 8, mobile ? 32 : 48]} />
-                  <meshBasicMaterial color={head % 2 === 0 ? palette.blue : palette.green} transparent opacity={0.44} blending={THREE.AdditiveBlending} depthWrite={false} />
-                </mesh>
-              ))
-            : null}
-        </group>
-      ))}
-    </group>
-  );
-}
-
-function FlowLayer({
-  quality,
-  reduced,
-  refs,
-  outputPulseRef,
-}: {
-  quality: MotionQuality;
-  reduced: boolean;
-  refs: CinematicRefs;
-  outputPulseRef: MutableRefObject<number>;
-}) {
-  const groupRef = useRef<THREE.Group>(null);
-  const mobile = quality === "mobile";
-  const carrierRefs = useRef<(THREE.Group | null)[]>([]);
-  const pulse = useRef(FLOW_IDLE_DRIFT);
-  const smoothedPointer = useRef(new THREE.Vector2());
-  const previousPointer = useRef(new THREE.Vector2());
-  const unitX = useMemo(() => new THREE.Vector3(1, 0, 0), []);
-  const tempTangent = useMemo(() => new THREE.Vector3(), []);
-  const tempQuaternion = useMemo(() => new THREE.Quaternion(), []);
-
-  const flowPaths = useMemo(() => {
-    const definitions = buildFlowPathDefinitions(mobile);
-    return definitions.map((path) => ({
-      ...path,
-      curve: makeFlowCurve(path.points),
-    }));
-  }, [mobile]);
-  const flowPathMap = useMemo(
-    () => new Map(flowPaths.map((path) => [path.id, path])),
-    [flowPaths],
-  );
-
-  const carrierSpecs = useMemo(
-    () => (reduced ? [] : buildFlowCarrierSpecs(flowPaths, mobile)),
-    [flowPaths, mobile, reduced],
-  );
-
-  useFrame(({ clock }) => {
-    if (!groupRef.current || reduced) {
-      return;
-    }
-    const elapsed = clock.getElapsedTime();
-    groupRef.current.position.z = Math.sin(elapsed * 0.27) * 0.24;
-  });
-
-  useFrame(({ clock }, delta) => {
-    if (reduced) {
-      outputPulseRef.current = THREE.MathUtils.damp(outputPulseRef.current, 0, 5, delta);
-      return;
-    }
-
-    const elapsed = clock.getElapsedTime();
-    const progress = refs.progress.current;
-    const section = Math.min(refs.section.current, 4);
-
-    smoothedPointer.current.lerp(refs.pointer.current, mobile ? 0.05 : 0.08);
-    const pointerVelocity = smoothedPointer.current.distanceTo(previousPointer.current) / Math.max(delta, 0.001);
-    previousPointer.current.copy(smoothedPointer.current);
-
-    const pointerPulse = THREE.MathUtils.clamp(pointerVelocity * FLOW_POINTER_PULSE, 0, mobile ? 0.38 : 0.62);
-    const scrollPulse =
-      progress * 0.18 + Math.sin(progress * Math.PI) * FLOW_SCROLL_PULSE + section * FLOW_SECTION_PULSE;
-    const pulseTarget =
-      FLOW_IDLE_DRIFT +
-      (mobile ? 0.06 : 0.1) * Math.sin(elapsed * 0.62) +
-      scrollPulse +
-      pointerPulse;
-
-    pulse.current = THREE.MathUtils.damp(
-      pulse.current,
-      THREE.MathUtils.clamp(pulseTarget, 0.48, mobile ? 1.02 : 1.28),
-      3.4,
-      delta,
-    );
-
-    let outputPulseTarget = 0;
-
-    carrierSpecs.forEach((carrier, index) => {
-      const carrierGroup = carrierRefs.current[index];
-      const path = flowPathMap.get(carrier.pathId);
-
-      if (!carrierGroup || !path) {
-        return;
-      }
-
-      const speed =
-        FLOW_BASE_SPEED *
-        path.speed *
-        carrier.speedJitter *
-        (mobile ? 0.82 : 1) *
-        (0.58 + pulse.current * 0.68);
-      const travel = (carrier.offset + elapsed * speed) % 1;
-      const point = path.curve.getPointAt(travel);
-      path.curve.getTangentAt(travel, tempTangent).normalize();
-      tempQuaternion.setFromUnitVectors(unitX, tempTangent);
-
-      carrierGroup.position.copy(point);
-      carrierGroup.position.z +=
-        Math.sin(elapsed * (path.kind === "residual" ? 1.24 : 1.52) + index * 0.72) *
-        (path.kind === "residual" ? 0.045 : 0.024);
-      carrierGroup.quaternion.slerp(tempQuaternion, 0.24);
-
-      const emphasis = path.kind === "output" ? 1.08 : path.kind === "residual" ? 1 : 0.92;
-      const scale = carrier.scale * emphasis * (1 + pulse.current * 0.14);
-      carrierGroup.scale.set(scale, 1 + pulse.current * 0.08, 1 + pulse.current * 0.08);
-
-      if (path.kind === "output") {
-        outputPulseTarget = Math.max(
-          outputPulseTarget,
-          THREE.MathUtils.smoothstep(travel, 0.74, 0.99) * (0.54 + pulse.current * 0.3),
-        );
-      }
-    });
-
-    outputPulseRef.current = THREE.MathUtils.damp(outputPulseRef.current, outputPulseTarget, 6, delta);
-  });
-
-  return (
-    <group ref={groupRef}>
-      {flowPaths.map((path) => (
-        <Line
-          key={path.id}
-          points={path.points}
-          color={path.color}
-          transparent
-          opacity={path.opacity}
-          lineWidth={path.width}
-        />
-      ))}
-      <Line
-        points={[
-          [0.25, -0.15, 0.84],
-          [1.55, -0.02, 0.52],
-          [2.75, 0.05, 0.34],
-        ]}
-        color={palette.violet}
-        transparent
-        opacity={0.58}
-        lineWidth={mobile ? 2.2 : 3.8}
-      />
-      {!reduced
-        ? carrierSpecs.map((carrier, index) => {
-            const path = flowPathMap.get(carrier.pathId);
-            if (!path) {
-              return null;
-            }
-
-            const glowColor = path.kind === "output" ? palette.amberHot : path.color;
-            const glowOpacity =
-              (path.kind === "residual" ? 0.86 : 0.74) * FLOW_GLOW_INTENSITY[mobile ? "mobile" : "desktop"];
-            const dashLength = path.kind === "residual" ? 0.38 : 0.28;
-
-            return (
-              <group
-                key={carrier.id}
-                ref={(node) => {
-                  carrierRefs.current[index] = node;
-                }}
-              >
-                <RoundedBox args={[dashLength, 0.06, 0.06]} radius={0.024} smoothness={2} position={[-dashLength * 0.34, 0, 0]}>
-                  <meshBasicMaterial
-                    color={glowColor}
-                    transparent
-                    opacity={glowOpacity}
-                    blending={THREE.AdditiveBlending}
-                    depthWrite={false}
-                  />
-                </RoundedBox>
-                <mesh position={[0.02, 0, 0]}>
-                  <sphereGeometry args={[path.kind === "output" ? 0.082 : 0.074, mobile ? 14 : 18, mobile ? 10 : 14]} />
-                  <meshBasicMaterial
-                    color={glowColor}
-                    transparent
-                    opacity={0.92 * FLOW_GLOW_INTENSITY[mobile ? "mobile" : "desktop"]}
-                    blending={THREE.AdditiveBlending}
-                    depthWrite={false}
-                  />
-                </mesh>
-              </group>
-            );
-          })
-        : null}
-    </group>
-  );
-}
-
-function EvaluationGate({
-  quality,
-  outputPulseRef,
-}: {
-  quality: MotionQuality;
-  outputPulseRef: MutableRefObject<number>;
-}) {
-  const mobile = quality === "mobile";
-  const values = mobile ? flowProgressionValues.slice(0, 4) : flowProgressionValues;
-  const barRefs = useRef<(THREE.Mesh | null)[]>([]);
-  const nodeRefs = useRef<(THREE.Mesh | null)[]>([]);
-
-  useFrame((_, delta) => {
-    values.forEach((_, index) => {
-      const emphasis = index === 0 ? 1 : index === 3 ? 0.9 : 0.56;
-      const pulse = outputPulseRef.current * emphasis;
-      const bar = barRefs.current[index];
-      const node = nodeRefs.current[index];
-
-      if (bar) {
-        bar.scale.x = THREE.MathUtils.damp(bar.scale.x, 1 + pulse * 0.12, 5.2, delta);
-        const material = Array.isArray(bar.material) ? bar.material[0] : bar.material;
-        if (material instanceof THREE.MeshBasicMaterial) {
-          const baseOpacity = index === 3 ? 0.48 : 0.22;
-          material.opacity = THREE.MathUtils.damp(material.opacity, baseOpacity + pulse * 0.28, 5.2, delta);
-        }
-      }
-
-      if (node) {
-        const baseScale = index === 3 ? 0.8 : 0.5;
-        const currentScale = node.scale.x;
-        const targetScale = baseScale * (1 + pulse * 0.2);
-        const nextScale = THREE.MathUtils.damp(currentScale, targetScale, 5.2, delta);
-        node.scale.setScalar(nextScale);
-        const material = Array.isArray(node.material) ? node.material[0] : node.material;
-        if (material instanceof THREE.MeshBasicMaterial) {
-          material.opacity = THREE.MathUtils.damp(material.opacity, 0.72 + pulse * 0.18, 5.2, delta);
-        }
-      }
-    });
-  });
-
-  return (
-    <group>
-      {values.map((value, index) => {
-        const y = 2.25 - index * 0.62;
-        const isRelease = index === 3;
-        return (
-          <group key={value}>
-            <RoundedBox
-              ref={(node) => {
-                barRefs.current[index] = node;
-              }}
-              args={[value * 2.8, 0.075, 0.075]}
-              radius={0.01}
-              smoothness={2}
-              position={[7.15 + value * 1.35, y, 0.38]}
-              rotation={[0.02, -0.18, 0]}
-            >
-              <meshBasicMaterial color={isRelease ? palette.amberHot : palette.ink} transparent opacity={isRelease ? 0.48 : 0.22} blending={THREE.AdditiveBlending} depthWrite={false} />
-            </RoundedBox>
-            <mesh
-              ref={(node) => {
-                nodeRefs.current[index] = node;
-              }}
-              position={[7.02, y, 0.42]}
-              scale={isRelease ? 0.8 : 0.5}
-            >
-              <sphereGeometry args={[0.105, mobile ? 14 : 18, mobile ? 8 : 12]} />
-              <meshBasicMaterial color={isRelease ? palette.amberHot : palette.ink} transparent opacity={0.72} blending={THREE.AdditiveBlending} depthWrite={false} />
-            </mesh>
-            {!mobile && index < logitLabels.length ? (
-              <Text
-                position={[8.35, y, 0.48]}
-                rotation={[0.02, -0.2, 0]}
-                fontSize={0.13}
-                color={isRelease ? palette.amberHot : palette.ink}
-                anchorX="left"
-                anchorY="middle"
-                fillOpacity={isRelease ? 0.8 : 0.48}
-              >
-                {`${logitLabels[index]} ${(value * 100).toFixed(1)}%`}
-              </Text>
-            ) : null}
-          </group>
-        );
-      })}
-    </group>
-  );
-}
-
-function ResearchCues({ quality }: { quality: MotionQuality }) {
-  const mobile = quality === "mobile";
-
-  return (
-    <group>
-      <RoundedBox args={[2.35, 2.35, 0.06]} radius={0.04} smoothness={3} position={[-0.95, -0.15, 0.9]} rotation={[0.04, -0.2, 0.04]}>
-        <meshBasicMaterial color="#eadfff" transparent opacity={0.12} blending={THREE.AdditiveBlending} depthWrite={false} />
-      </RoundedBox>
-      {Array.from({ length: mobile ? 16 : 36 }, (_, index) => {
-        const xIndex = index % (mobile ? 4 : 6);
-        const yIndex = Math.floor(index / (mobile ? 4 : 6));
-        return (
-          <mesh key={index} position={[-1.92 + xIndex * 0.36, -1.15 + yIndex * 0.36, 1.12]} scale={0.58 + ((xIndex + yIndex) % 4) * 0.08}>
-            <sphereGeometry args={[0.105, mobile ? 12 : 18, mobile ? 8 : 12]} />
-            <meshBasicMaterial color={(xIndex + yIndex) % 3 === 0 ? palette.violet : palette.ink} transparent opacity={0.62} blending={THREE.AdditiveBlending} depthWrite={false} />
-          </mesh>
-        );
-      })}
-    </group>
-  );
-}
-
-function DeploymentRails({
-  quality,
-  reduced,
-}: {
-  quality: MotionQuality;
-  reduced: boolean;
-}) {
-  const groupRef = useRef<THREE.Group>(null);
-  const mobile = quality === "mobile";
-
-  useFrame(({ clock }) => {
-    if (!groupRef.current || reduced) {
-      return;
-    }
-    groupRef.current.rotation.y = Math.sin(clock.getElapsedTime() * 0.22) * 0.035;
-  });
-
-  return (
-    <group ref={groupRef} position={[0.45, -0.08, -2.8]}>
-      {[-2.6, -1.3, 0, 1.3, 2.6].map((offset, index) => (
-        <Line
-          key={offset}
-          points={[
-            [-8.8, offset, -0.6 - index * 0.08],
-            [-2.8, offset * 0.74, -1.35],
-            [3.4, offset * 0.52, -1.05],
-            [8.6, offset * 0.32, -0.55],
-          ]}
-          color={index === 3 ? palette.amberHot : palette.tealHot}
-          transparent
-          opacity={index === 3 ? 0.34 : 0.16}
-          lineWidth={mobile ? 0.8 : 1.2}
-        />
-      ))}
-      {!mobile ? (
-        <gridHelper args={[17, 24, "#355861", "#203137"]} position={[0, -3.2, -0.4]} rotation={[0.03, 0, 0.01]}>
-          <meshBasicMaterial transparent opacity={0.12} />
-        </gridHelper>
-      ) : null}
-    </group>
-  );
-}
-
-function AtmosphericField({
-  quality,
-  reduced,
-}: {
-  quality: MotionQuality;
-  reduced: boolean;
-}) {
-  const groupRef = useRef<THREE.Group>(null);
-  const mobile = quality === "mobile";
-
-  useFrame(({ clock }, delta) => {
-    if (!groupRef.current || reduced) {
-      return;
-    }
-
-    const elapsed = clock.getElapsedTime();
-    groupRef.current.rotation.z = THREE.MathUtils.damp(
-      groupRef.current.rotation.z,
-      Math.sin(elapsed * 0.18) * 0.035,
-      2,
-      delta,
-    );
-    groupRef.current.position.x = THREE.MathUtils.damp(
-      groupRef.current.position.x,
-      Math.cos(elapsed * 0.14) * 0.28,
-      2,
-      delta,
-    );
-  });
-
-  return (
-    <group ref={groupRef} position={[0.25, 0.45, -5.8]}>
-      <mesh position={[-5.8, 2.6, -0.4]} rotation={[0.18, 0.22, -0.12]}>
-        <planeGeometry args={mobile ? [8.4, 5.8] : [10.8, 7.2]} />
-        <meshBasicMaterial
-          color={palette.teal}
-          transparent
-          opacity={mobile ? 0.06 : 0.085}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
-      </mesh>
-      <mesh position={[6.4, -2.15, -0.8]} rotation={[-0.14, -0.24, 0.22]}>
-        <planeGeometry args={mobile ? [7.2, 5.2] : [9.8, 6.6]} />
-        <meshBasicMaterial
-          color={palette.amber}
-          transparent
-          opacity={mobile ? 0.045 : 0.072}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
-      </mesh>
-      <mesh position={[0.65, -0.55, -1.2]} rotation={[0.06, -0.18, 0.02]}>
-        <ringGeometry args={[mobile ? 1.55 : 1.7, mobile ? 1.62 : 1.78, 64]} />
-        <meshBasicMaterial
-          color={palette.tealHot}
-          transparent
-          opacity={0.18}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
-      </mesh>
-    </group>
-  );
-}
-
-function Particles({ quality, reduced }: { quality: MotionQuality; reduced: boolean }) {
-  const groupRef = useRef<THREE.Points>(null);
-  const count = quality === "mobile" ? 120 : 320;
-  const positions = useParticlePositions(count);
-
-  useFrame(({ clock }) => {
-    if (!groupRef.current || reduced) {
-      return;
-    }
-    groupRef.current.rotation.y = clock.getElapsedTime() * 0.018;
-  });
-
-  return (
-    <points ref={groupRef}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-      </bufferGeometry>
-      <pointsMaterial color={palette.ink} size={0.024} transparent opacity={0.46} sizeAttenuation />
-    </points>
-  );
-}
-
-function CinematicStage({
-  quality,
-  reduced,
-  refs,
-}: {
-  quality: MotionQuality;
-  reduced: boolean;
-  refs: CinematicRefs;
-}) {
-  const rootRef = useRef<THREE.Group>(null);
-  const foregroundRef = useRef<THREE.Group>(null);
-  const pointer = useRef(new THREE.Vector2());
-  const outputPulse = useRef(0);
-  const mobile = quality === "mobile";
-
-  useFrame(({ clock }, delta) => {
-    if (!rootRef.current || !foregroundRef.current) {
-      return;
-    }
-
-    const elapsed = reduced ? 0 : clock.getElapsedTime();
-    const progress = refs.progress.current;
-    pointer.current.lerp(refs.pointer.current, reduced ? 0.018 : 0.05);
-
-    const rootScale = mobile ? 0.66 : 1;
-    rootRef.current.scale.setScalar(THREE.MathUtils.damp(rootRef.current.scale.x, rootScale, 3, delta));
-    rootRef.current.position.x = THREE.MathUtils.damp(
-      rootRef.current.position.x,
-      mobile ? 0.86 : 1.04,
-      3,
-      delta,
-    );
-    rootRef.current.position.y = THREE.MathUtils.damp(
-      rootRef.current.position.y,
-      0.38 - progress * (mobile ? 1.45 : 3.2) + pointer.current.y * -0.11,
-      2.8,
-      delta,
-    );
-    rootRef.current.rotation.x = THREE.MathUtils.damp(
-      rootRef.current.rotation.x,
-      -0.065 + progress * (mobile ? 0.08 : 0.18) + pointer.current.y * 0.028,
-      2.8,
-      delta,
-    );
-    rootRef.current.rotation.y = THREE.MathUtils.damp(
-      rootRef.current.rotation.y,
-      -0.31 + progress * (mobile ? 0.32 : 0.68) + pointer.current.x * 0.066,
-      2.8,
-      delta,
-    );
-    rootRef.current.rotation.z = THREE.MathUtils.damp(
-      rootRef.current.rotation.z,
-      -0.012 + pointer.current.x * 0.012,
-      2.8,
-      delta,
-    );
-
-    foregroundRef.current.position.x = Math.sin(elapsed * 0.34) * (mobile ? 0.04 : 0.12) + pointer.current.x * (mobile ? 0.06 : 0.18);
-    foregroundRef.current.position.y = Math.cos(elapsed * 0.28) * (mobile ? 0.03 : 0.08) + pointer.current.y * (mobile ? -0.05 : -0.14);
-  });
-
-  return (
-    <group ref={rootRef}>
-      <AtmosphericField quality={quality} reduced={reduced} />
-      <DeploymentRails quality={quality} reduced={reduced} />
-      <TokenColumn quality={quality} />
-      <TransformerBlocks quality={quality} />
-      <ParameterBlockLabels quality={quality} />
-      <FlowLayer quality={quality} reduced={reduced} refs={refs} outputPulseRef={outputPulse} />
-      <group ref={foregroundRef}>
-        <ResearchCues quality={quality} />
-        <EvaluationGate quality={quality} outputPulseRef={outputPulse} />
-      </group>
-      <Particles quality={quality} reduced={reduced} />
-      <Sparkles
-        count={mobile ? 12 : 30}
-        scale={[18, 7, 5]}
-        size={mobile ? 1 : 1.35}
-        speed={reduced ? 0 : 0.18}
-        opacity={0.16}
-        color={palette.amberHot}
-      />
-    </group>
-  );
-}
-
-function SceneLabels() {
-  return (
-    <Html fullscreen zIndexRange={[2, 0]} prepend>
-      <div className="landing-transformer-labels" aria-hidden>
-        <span className="scene-label scene-label-embedding">Input embeddings</span>
-        <span className="scene-label scene-label-block">Transformer blocks</span>
-        <span className="scene-label scene-label-attention">Attention heads</span>
-        <span className="scene-label scene-label-mlp">MLP + Norm</span>
-        <span className="scene-label scene-label-probabilities">Output logits</span>
-        <span className="scene-label scene-label-residual">Residual stream</span>
-        <span className="scene-chip scene-chip-q">Wq</span>
-        <span className="scene-chip scene-chip-k">Wk</span>
-        <span className="scene-chip scene-chip-v">Wv</span>
-        <span className="scene-chip scene-chip-o">Wo</span>
-        <span className="scene-chip scene-chip-mlp">MLP</span>
-        <span className="scene-chip scene-chip-norm">Norm</span>
-        <div className="scene-token-list">
-          {tokenLabels.map((label) => (
-            <span key={label}>{label}</span>
-          ))}
-        </div>
-        <div className="scene-probability-list">
-          <span>serve logit 54.67</span>
-          <span>adapt logit 20.87</span>
-          <span>audit logit 12.09</span>
-          <strong>ship logit 6.26</strong>
-        </div>
-      </div>
-    </Html>
-  );
 }
 
 function SceneContents({
@@ -1087,55 +549,104 @@ function SceneContents({
   refs: CinematicRefs;
 }) {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
+  const mobile = quality === "mobile";
 
   return (
     <>
-      <PerspectiveCamera ref={cameraRef} makeDefault position={[0, 0.8, quality === "mobile" ? 32 : 24]} fov={quality === "mobile" ? 38 : 33} near={0.1} far={160} />
+      <PerspectiveCamera
+        ref={cameraRef}
+        makeDefault
+        position={[0, 0.4, mobile ? 16 : 12.5]}
+        fov={mobile ? 46 : 40}
+        near={0.1}
+        far={120}
+      />
       <StageCamera cameraRef={cameraRef} quality={quality} reduced={reduced} refs={refs} />
-      <fogExp2 attach="fog" args={[palette.paper, quality === "mobile" ? 0.036 : 0.03]} />
-      <ambientLight color="#f4eee4" intensity={0.74} />
-      <pointLight color={palette.blue} intensity={4.1} distance={36} position={[-4.5, 5.2, 8]} />
-      <pointLight color={palette.amberHot} intensity={2.9} distance={34} position={[5.2, -3.4, 7]} />
-      <pointLight color={palette.violet} intensity={3.1} distance={32} position={[1.2, 2, 9]} />
-      <mesh position={[1.85, 0.15, -1.2]} rotation={[0.16, -0.32, 0.05]}>
-        <torusGeometry args={[1.45, 0.018, 10, 96]} />
-        <meshBasicMaterial color={palette.tealHot} transparent opacity={0.46} blending={THREE.AdditiveBlending} depthWrite={false} />
-      </mesh>
-      <mesh position={[2.05, 0.15, -1.22]} rotation={[0.16, -0.32, 0.05]}>
-        <planeGeometry args={[2.8, 2.8]} />
-        <meshBasicMaterial color={palette.teal} transparent opacity={0.055} blending={THREE.AdditiveBlending} depthWrite={false} />
-      </mesh>
-      <CinematicStage quality={quality} reduced={reduced} refs={refs} />
-      <SceneLabels />
+
+      <fogExp2 attach="fog" args={[palette.paper, mobile ? 0.05 : 0.04]} />
+      <ambientLight color="#dce4ea" intensity={0.5} />
+      <pointLight color={palette.tealHot} intensity={3.2} distance={40} position={[-6, 5, 8]} />
+      <pointLight color={palette.amberHot} intensity={2.4} distance={36} position={[7, -3, 6]} />
+      <pointLight color={palette.violet} intensity={1.8} distance={30} position={[2, 6, 9]} />
+      <pointLight color="#f7eee1" intensity={1} distance={22} position={[0, 0, 7]} />
+
+      <TransformerResidual quality={quality} reduced={reduced} refs={refs} />
+      <Sparkles
+        count={mobile ? 14 : 36}
+        scale={[16, 9, 9]}
+        size={mobile ? 1 : 1.4}
+        speed={reduced ? 0 : 0.22}
+        opacity={0.12}
+        color={palette.tealHot}
+      />
     </>
   );
 }
 
-export function LandingCinematicScene({ reduced: explicitReduced, quality: explicitQuality, scrollProgress }: LandingCinematicSceneProps) {
+export function LandingCinematicScene({
+  reduced: explicitReduced,
+  quality: explicitQuality,
+  scrollProgress,
+  posterSrc = "/images/transformer-background-poster.png",
+}: LandingCinematicSceneProps) {
   const { reduced, quality } = useMotionPreferences(explicitReduced, explicitQuality);
-  const refs = useCinematicScroll(reduced, quality, scrollProgress);
+  const refs = useCinematicScroll(scrollProgress);
   const dpr: [number, number] = quality === "mobile" ? [1, 1.2] : [1, 1.55];
+  const rendererCleanupRef = useRef<(() => void) | null>(null);
+  const [fallbackActive, setFallbackActive] = useState(false);
+  const showPoster = reduced || fallbackActive;
+
+  useEffect(() => () => {
+    rendererCleanupRef.current?.();
+  }, []);
 
   return (
-    <div className="landing-transformer-scene" data-reduced-motion={reduced ? "true" : "false"}>
-      <Canvas
-        className="landing-cinematic-canvas"
-        data-testid="landing-cinematic-canvas"
-        dpr={dpr}
-        frameloop="always"
-        gl={{
-          alpha: false,
-          antialias: false,
-          powerPreference: "high-performance",
-          preserveDrawingBuffer: true,
-        }}
-        onCreated={({ gl }) => {
-          gl.setClearColor(palette.paper, 1);
-          gl.outputColorSpace = THREE.SRGBColorSpace;
-        }}
-      >
-        <SceneContents quality={quality} reduced={reduced} refs={refs} />
-      </Canvas>
+    <div
+      className="landing-transformer-scene"
+      data-reduced-motion={reduced ? "true" : "false"}
+      data-scene-source={showPoster ? "poster" : "glb"}
+    >
+      {showPoster ? <PosterLayer posterSrc={posterSrc} /> : null}
+      {!showPoster ? (
+        <SceneErrorBoundary onError={() => setFallbackActive(true)}>
+          <Canvas
+            className="landing-cinematic-canvas"
+            data-testid="landing-cinematic-canvas"
+            dpr={dpr}
+            frameloop="always"
+            gl={{
+              alpha: true,
+              antialias: true,
+              powerPreference: "high-performance",
+              preserveDrawingBuffer: true,
+            }}
+            onCreated={({ gl }) => {
+              const canvas = gl.domElement;
+              const handleContextLost = (event: Event) => {
+                event.preventDefault();
+                setFallbackActive(true);
+              };
+
+              rendererCleanupRef.current?.();
+              canvas.addEventListener("webglcontextlost", handleContextLost, { once: true });
+              rendererCleanupRef.current = () => {
+                canvas.removeEventListener("webglcontextlost", handleContextLost);
+              };
+
+              gl.setClearColor(palette.paper, 0);
+              gl.outputColorSpace = THREE.SRGBColorSpace;
+              gl.toneMapping = THREE.ACESFilmicToneMapping;
+              gl.toneMappingExposure = 1.05;
+            }}
+          >
+            <SceneErrorBoundary onError={() => setFallbackActive(true)}>
+              <Suspense fallback={null}>
+                <SceneContents quality={quality} reduced={reduced} refs={refs} />
+              </Suspense>
+            </SceneErrorBoundary>
+          </Canvas>
+        </SceneErrorBoundary>
+      ) : null}
       <div className="landing-cinema-grade" data-testid="landing-cinema-grade" aria-hidden>
         <span className="landing-cinema-vignette" />
         <span className="landing-cinema-light-sweep" />
