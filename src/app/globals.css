@@ -50,6 +50,9 @@
 html,
 body {
   position: relative;
+  /* Content flies in from off-screen (CinematicReveal); clip to avoid a
+     transient horizontal scrollbar without trapping vertical scroll. */
+  overflow-x: clip;
 }
 
 body {
@@ -137,8 +140,10 @@ a {
   z-index: 0;
   overflow: hidden;
   background:
-    linear-gradient(180deg, rgba(3, 4, 5, 0.08), rgba(3, 4, 5, 0.38) 72%, rgba(3, 4, 5, 0.82)),
-    linear-gradient(112deg, rgba(0, 58, 67, 0.72), rgba(4, 6, 8, 0.18) 44%, rgba(83, 38, 28, 0.42));
+    radial-gradient(54% 42% at 72% 34%, rgba(255, 185, 116, 0.16), transparent 68%),
+    radial-gradient(44% 36% at 18% 24%, rgba(52, 189, 195, 0.16), transparent 72%),
+    linear-gradient(180deg, rgba(3, 4, 5, 0.04), rgba(3, 4, 5, 0.24) 72%, rgba(3, 4, 5, 0.66)),
+    linear-gradient(112deg, rgba(0, 58, 67, 0.54), rgba(4, 6, 8, 0.12) 44%, rgba(83, 38, 28, 0.34));
 }
 
 .landing-cinema-background::after {
@@ -157,13 +162,53 @@ a {
   inset: 0;
   overflow: hidden;
   background:
-    linear-gradient(90deg, rgba(3, 4, 5, 0.68), rgba(3, 4, 5, 0.08) 48%, rgba(3, 4, 5, 0.5)),
-    image-set(
-      url("/images/transformer-background-preview.png") 1x,
-      url("/images/transformer-background-4k.png") 2x
-    );
-  background-position: center;
-  background-size: cover;
+    radial-gradient(58% 54% at 74% 44%, rgba(196, 135, 76, 0.16), transparent 72%),
+    radial-gradient(46% 42% at 20% 18%, rgba(52, 173, 186, 0.18), transparent 74%),
+    linear-gradient(118deg, rgba(5, 8, 11, 0.96) 0%, rgba(4, 6, 9, 0.84) 44%, rgba(10, 9, 8, 0.94) 100%),
+    #040607;
+}
+
+.landing-cinematic-media {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.landing-cinematic-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(38% 30% at 70% 46%, rgba(255, 208, 150, 0.08), transparent 74%),
+    radial-gradient(30% 28% at 22% 40%, rgba(96, 196, 214, 0.08), transparent 76%);
+  mix-blend-mode: screen;
+}
+
+.landing-cinematic-video,
+.landing-cinematic-poster,
+.landing-cinematic-poster-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.landing-cinematic-video {
+  object-fit: cover;
+  object-position: center;
+}
+
+.landing-cinematic-poster {
+  opacity: 0.97;
+  animation: cinematicPosterDrift 18s var(--motion-ease-drift) infinite alternate;
+}
+
+.landing-cinematic-poster-image {
+  object-fit: cover;
+  object-position: 64% 47%;
+  filter: saturate(1.14) contrast(1.16) brightness(0.9);
 }
 
 .landing-transformer-scene::before,
@@ -177,26 +222,30 @@ a {
 .landing-transformer-scene::before {
   z-index: 1;
   background:
-    radial-gradient(72% 58% at 78% 42%, rgba(143, 184, 199, 0.08), transparent 70%),
-    linear-gradient(90deg, rgba(3, 4, 5, 0.66), rgba(3, 4, 5, 0.18) 48%, rgba(3, 4, 5, 0.56)),
-    linear-gradient(180deg, rgba(3, 4, 5, 0.08), transparent 44%, rgba(3, 4, 5, 0.78));
+    radial-gradient(52% 44% at 73% 40%, rgba(106, 194, 208, 0.1), transparent 72%),
+    radial-gradient(34% 36% at 78% 60%, rgba(255, 198, 132, 0.08), transparent 82%),
+    linear-gradient(90deg, rgba(4, 6, 8, 0.78) 0%, rgba(4, 6, 8, 0.44) 30%, rgba(4, 6, 8, 0.08) 58%, rgba(4, 6, 8, 0.18) 100%),
+    linear-gradient(180deg, rgba(3, 4, 5, 0.18), transparent 26%, rgba(3, 4, 5, 0.54) 100%);
 }
 
 .landing-transformer-scene::after {
   z-index: 3;
-  opacity: 0.48;
+  opacity: 0.22;
   background:
-    linear-gradient(90deg, transparent 0 8%, rgba(244, 238, 228, 0.06) 8.05%, transparent 8.1% 91.9%, rgba(244, 238, 228, 0.05) 92%, transparent 92.05%),
-    radial-gradient(circle at 52% 44%, transparent 0 30%, rgba(3, 4, 5, 0.3) 75%);
-  mix-blend-mode: screen;
+    linear-gradient(90deg, transparent 0 7%, rgba(244, 238, 228, 0.028) 7.05%, transparent 7.1% 92.9%, rgba(244, 238, 228, 0.026) 93%, transparent 93.05%),
+    radial-gradient(circle at 56% 44%, transparent 0 30%, rgba(3, 4, 5, 0.3) 78%);
+  mix-blend-mode: normal;
 }
 
-.landing-cinematic-canvas {
+.landing-cinematic-canvas,
+.landing-cinematic-canvas > canvas {
   position: absolute;
   inset: 0;
+  z-index: 2;
   width: 100%;
   height: 100%;
-  opacity: 1;
+  opacity: 0.82;
+  filter: saturate(1.08) contrast(1.04) brightness(0.88);
 }
 
 .landing-cinema-grade {
@@ -214,15 +263,15 @@ a {
 
 .landing-cinema-vignette {
   background:
-    radial-gradient(circle at 53% 43%, transparent 0 30%, rgba(3, 4, 5, 0.22) 66%, rgba(3, 4, 5, 0.78) 100%),
-    linear-gradient(90deg, rgba(3, 4, 5, 0.62), transparent 24% 74%, rgba(3, 4, 5, 0.56));
+    radial-gradient(circle at 58% 44%, transparent 0 26%, rgba(3, 4, 5, 0.14) 62%, rgba(3, 4, 5, 0.78) 100%),
+    linear-gradient(90deg, rgba(3, 4, 5, 0.82) 0%, rgba(3, 4, 5, 0.36) 28%, rgba(3, 4, 5, 0.1) 58%, rgba(3, 4, 5, 0.52) 100%);
 }
 
 .landing-cinema-light-sweep {
-  opacity: 0.52;
+  opacity: 0.18;
   background:
-    linear-gradient(111deg, transparent 0 27%, rgba(143, 184, 199, 0.08) 35%, transparent 48%),
-    linear-gradient(89deg, transparent 0 11%, rgba(255, 210, 139, 0.045) 11.4%, transparent 11.8% 88.2%, rgba(79, 229, 224, 0.04) 88.6%, transparent 89%);
+    linear-gradient(111deg, transparent 0 34%, rgba(143, 184, 199, 0.045) 42%, transparent 54%),
+    linear-gradient(89deg, transparent 0 14%, rgba(255, 210, 139, 0.026) 14.4%, transparent 14.8% 87.2%, rgba(79, 229, 224, 0.022) 87.6%, transparent 88%);
   mix-blend-mode: screen;
   animation: cinematicSweep 14s var(--motion-ease-drift) infinite alternate;
 }
@@ -232,10 +281,25 @@ a {
   transform: none;
 }
 
+.landing-transformer-scene[data-reduced-motion="true"] .landing-cinematic-poster {
+  animation: none;
+  transform: scale(1.03) translate3d(0, 0, 0);
+}
+
 .landing-cinema-letterbox {
   background:
-    linear-gradient(180deg, rgba(3, 4, 5, 0.96), rgba(3, 4, 5, 0.66) 2.6rem, transparent 8.6rem),
-    linear-gradient(0deg, rgba(3, 4, 5, 0.98), rgba(3, 4, 5, 0.76) 2.9rem, transparent 9rem);
+    linear-gradient(180deg, rgba(3, 4, 5, 0.94), rgba(3, 4, 5, 0.54) 2.4rem, transparent 7.6rem),
+    linear-gradient(0deg, rgba(3, 4, 5, 0.98), rgba(3, 4, 5, 0.78) 2.9rem, transparent 9rem);
+}
+
+@keyframes cinematicPosterDrift {
+  0% {
+    transform: scale(1.03) translate3d(1.2%, -0.6%, 0);
+  }
+
+  100% {
+    transform: scale(1.06) translate3d(3.4%, -1.8%, 0);
+  }
 }
 
 @keyframes cinematicSweep {
@@ -252,6 +316,7 @@ a {
   position: absolute;
   inset: 0;
   z-index: 2;
+  opacity: 0;
   color: rgba(226, 235, 239, 0.56);
   font-size: clamp(0.62rem, 0.75vw, 0.86rem);
   font-weight: 700;
@@ -386,6 +451,13 @@ a {
   display: block;
 }
 
+.scene-token-list strong,
+.scene-probability-list span:first-child {
+  color: rgba(244, 238, 228, 0.9);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
 .scene-probability-list {
   right: 4.1%;
   top: 27%;
@@ -469,8 +541,8 @@ a {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(3, 4, 5, 0.9) 0%, rgba(3, 4, 5, 0.62) 36%, rgba(3, 4, 5, 0.08) 68%, rgba(3, 4, 5, 0.42) 100%),
-    linear-gradient(180deg, rgba(3, 4, 5, 0.06), rgba(3, 4, 5, 0.24) 74%, rgba(3, 4, 5, 0.74));
+    linear-gradient(90deg, rgba(3, 4, 5, 0.9) 0%, rgba(3, 4, 5, 0.68) 28%, rgba(3, 4, 5, 0.2) 58%, rgba(3, 4, 5, 0.26) 100%),
+    linear-gradient(180deg, rgba(3, 4, 5, 0.06), rgba(3, 4, 5, 0.16) 68%, rgba(3, 4, 5, 0.58));
 }
 
 .cinematic-hero-content {
@@ -522,7 +594,106 @@ a {
 }
 
 .cinematic-hero-title {
+  position: relative;
+  display: block;
+  max-width: 100%;
   text-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.52);
+}
+
+.animated-hero-title__visual {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  isolation: isolate;
+}
+
+.animated-hero-title__text {
+  position: relative;
+  z-index: 2;
+}
+
+.animated-hero-title__cluster {
+  position: relative;
+  display: inline-grid;
+  vertical-align: baseline;
+}
+
+.animated-hero-title__cluster > span {
+  grid-area: 1 / 1;
+}
+
+.animated-hero-title__cluster--grouped {
+  white-space: nowrap;
+}
+
+.animated-hero-title__cluster-base {
+  position: relative;
+  z-index: 3;
+  color: rgba(244, 238, 228, 0.98);
+  will-change: opacity, transform, filter;
+}
+
+.animated-hero-title__cluster-ghost,
+.animated-hero-title__cluster-echo {
+  pointer-events: none;
+  user-select: none;
+  will-change: opacity, transform, filter;
+}
+
+.animated-hero-title__cluster-ghost {
+  z-index: 2;
+  color: rgba(196, 231, 242, 0.34);
+  text-shadow:
+    0 0 1.2rem rgba(143, 184, 199, 0.2),
+    0 0 2.7rem rgba(79, 229, 224, 0.1);
+  mix-blend-mode: screen;
+}
+
+.animated-hero-title__cluster-echo {
+  z-index: 1;
+  color: rgba(223, 191, 139, 0.2);
+  text-shadow: 0 0 2.2rem rgba(208, 186, 150, 0.16);
+  mix-blend-mode: screen;
+}
+
+.animated-hero-title__whitespace {
+  position: relative;
+  z-index: 2;
+}
+
+.animated-hero-title__mask,
+.animated-hero-title__sweep {
+  pointer-events: none;
+  position: absolute;
+  inset: -0.18em -0.1em;
+  z-index: 4;
+  border-radius: 999px;
+}
+
+.animated-hero-title__mask {
+  background:
+    linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.04) 28%, rgba(255, 255, 255, 0.36) 50%, rgba(255, 255, 255, 0.04) 72%, transparent 100%);
+  filter: blur(20px);
+  mix-blend-mode: screen;
+}
+
+.animated-hero-title__sweep {
+  background:
+    linear-gradient(90deg, transparent 0%, rgba(143, 184, 199, 0.08) 20%, rgba(244, 238, 228, 0.56) 49%, rgba(208, 186, 150, 0.2) 67%, transparent 100%);
+  filter: blur(12px);
+  mix-blend-mode: screen;
+}
+
+[data-hero-loop-state="active"] .animated-hero-title__cluster[data-cluster-active="true"] .animated-hero-title__cluster-base {
+  text-shadow:
+    0 0 0.6rem rgba(244, 238, 228, 0.2),
+    0 0 1.4rem rgba(143, 184, 199, 0.12);
+}
+
+[data-hero-phase="revealing"] .animated-hero-title__cluster-base {
+  text-shadow:
+    0 0 0.8rem rgba(244, 238, 228, 0.18),
+    0 0 2rem rgba(143, 184, 199, 0.08);
 }
 
 .cinematic-hero-statement {
@@ -603,6 +774,13 @@ a {
   display: grid;
   gap: clamp(4rem, 7vw, 6rem);
   padding: clamp(2rem, 5vw, 4rem) 0 clamp(4rem, 8vw, 7rem);
+}
+
+.cinematic-reveal {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 .section-parallax {

@@ -245,96 +245,85 @@ export const navLinks: Record<Language, NavLink[]> = {
 export const services: Record<Language, Service[]> = {
   en: [
     {
-      title: "Agentic solutions",
+      title: "AI agents & RAG systems",
       problem:
-        "Many teams have demos, but not a reliable agent workflow connected to real tools and data.",
+        "A chatbot demo is easy. A reliable agent or RAG system that works on your real data is not.",
       response:
-        "We design permissions, orchestration, memory, escalation, and human review together.",
-      outcome:
-        "You get an agent system ready for controlled rollout.",
+        "We build multi-agent apps and RAG pipelines with strong harness and loop engineering.",
+      outcome: "Agents that use your tools and data dependably in production.",
+    },
+    {
+      title: "Model training & fine-tuning",
+      problem:
+        "Off-the-shelf models don't always fit your domain, cost, or privacy needs.",
+      response:
+        "We pre-train transformer models from scratch and fine-tune any open or closed model.",
+      outcome: "A model tuned to your task, with evaluation you can trust.",
+    },
+    {
+      title: "Inference stacks & deployment",
+      problem:
+        "Latency and GPU cost decide whether a model survives real traffic.",
+      response:
+        "We design high-throughput inference stacks — runtime, tools, and infrastructure — using 5D parallelism.",
+      outcome: "Fast, efficient serving you can run at scale.",
+    },
+    {
+      title: "Custom AI applications",
+      problem: "AI only helps when it fits how your team actually works.",
+      response:
+        "We build focused applications with the right context design and integrations.",
+      outcome: "Software your team uses every day, not just a demo.",
     },
     {
       title: "Enterprise AI architecture",
       problem:
-        "Generic adoption plans rarely answer data boundaries, ownership, or long-term operating control.",
+        "Adopting AI raises hard questions about data, ownership, and control.",
       response:
-        "We define the right architecture, model path, and governance boundary before build work starts.",
-      outcome:
-        "Teams move with a clearer plan and fewer avoidable risks.",
-    },
-    {
-      title: "LLM and SLM training",
-      problem:
-        "Training plans become expensive quickly when data, evaluation, and release goals are not aligned.",
-      response:
-        "We shape pre-training and fine-tuning programs around data quality, objectives, and evaluation.",
-      outcome:
-        "Model work stays tied to product goals and release readiness.",
-    },
-    {
-      title: "Custom AI applications",
-      problem:
-        "AI value drops fast when software does not fit existing workflows.",
-      response:
-        "We build focused applications with strong context design, integration, and evaluation loops.",
-      outcome:
-        "Users get software they can use day to day, not just a demo.",
-    },
-    {
-      title: "Inference stacks and secure deployment",
-      problem:
-        "Latency, GPU cost, and deployment control decide whether a system can hold up in production.",
-      response:
-        "We design serving paths, parallelism, isolation, and release controls for real environments.",
-      outcome:
-        "The system stays responsive, governable, and easier to operate.",
+        "We define the architecture, model path, and data boundaries before the build.",
+      outcome: "A clear plan with fewer surprises later.",
     },
   ],
   ja: [
     {
-      title: "エージェントソリューション",
+      title: "AIエージェント・RAG",
       problem:
-        "デモはあっても、実データや実ツールに接続した安定運用まで進んでいないケースが多くあります。",
+        "デモは簡単でも、実データで安定して動くエージェントやRAGの構築は別物です。",
       response:
-        "権限、オーケストレーション、メモリ、エスカレーション、人の確認工程をまとめて設計します。",
-      outcome:
-        "本番導入しやすいエージェント運用基盤を構築します。",
+        "ハーネス・ループエンジニアリングを軸に、マルチエージェントアプリとRAGを構築します。",
+      outcome: "実ツールと実データを安定して扱えるエージェントを本番導入します。",
     },
     {
-      title: "エンタープライズAI設計",
+      title: "モデル学習・ファインチューニング",
       problem:
-        "汎用的な導入だけでは、データ境界や運用責任が曖昧になりがちです。",
+        "既製モデルでは、業務ドメインやコスト、機密要件に合わないことがあります。",
       response:
-        "構成、モデル方針、統制境界を整理してから実装に入ります。",
-      outcome:
-        "導入判断が明確になり、無駄な手戻りを減らせます。",
+        "トランスフォーマーをゼロから事前学習し、オープン・クローズドを問わず微調整します。",
+      outcome: "用途に合わせたモデルを、信頼できる評価とともに用意します。",
     },
     {
-      title: "LLM・SLMの学習",
+      title: "推論基盤と導入",
       problem:
-        "学習計画は、データ設計と評価基準が弱いとすぐに非効率になります。",
+        "レイテンシとGPUコストが、本番トラフィックに耐えられるかを左右します。",
       response:
-        "事前学習とファインチューニングを、データ品質と評価設計を含めて進めます。",
-      outcome:
-        "モデル開発を事業目標と本番判断につなげます。",
+        "5D並列を活用し、ランタイム・ツール・インフラまで高スループット推論基盤を設計します。",
+      outcome: "大規模でも高速で効率的な推論を実現します。",
     },
     {
       title: "カスタムAIアプリ",
       problem:
-        "AIの価値は、現場の業務フローに乗らないと継続利用されません。",
+        "AIは、現場の業務フローに合って初めて価値になります。",
       response:
-        "コンテキスト設計、連携、評価ループを含む実用的なアプリを構築します。",
-      outcome:
-        "単発デモではなく、日常業務で使える形にします。",
+        "コンテキスト設計と連携を重視した、用途特化のアプリを構築します。",
+      outcome: "単発デモではなく、日常業務で使える形にします。",
     },
     {
-      title: "推論基盤と安全な配備",
+      title: "エンタープライズAI設計",
       problem:
-        "レイテンシ、GPUコスト、配備統制が弱いと本番運用は安定しません。",
+        "AI導入には、データ、責任範囲、統制という難しい論点が伴います。",
       response:
-        "推論経路、GPU並列化、隔離設計、リリース統制を本番前提で整えます。",
-      outcome:
-        "応答性と統制を両立した導入が可能になります。",
+        "構成、モデル方針、データ境界を実装前に整理します。",
+      outcome: "見通しが立ち、後工程の手戻りを減らせます。",
     },
   ],
 };
@@ -344,21 +333,21 @@ export const expertiseAreas: Record<Language, ExpertiseArea[]> = {
     {
       title: "Enterprise AI architecture",
       summary:
-        "We turn business constraints into architecture decisions teams can actually operate.",
+        "We turn business constraints into an architecture you can actually run.",
       points: [
-        "Map business goals, data boundaries, and control needs early.",
-        "Choose where AI belongs in the workflow and where it does not.",
-        "Fit delivery to existing systems, approvals, and ownership.",
+        "Map goals, data boundaries, and control needs early.",
+        "Decide where AI belongs in the workflow — and where it doesn't.",
+        "Fit delivery to your systems, approvals, and ownership.",
       ],
     },
     {
       title: "Inference engineering",
       summary:
-        "We design serving systems around latency, throughput, memory, and cost.",
+        "We build serving stacks for speed, scale, and cost.",
       points: [
-        "Select the right parallelism for model size and traffic shape.",
-        "Tune batching, KV cache, and memory behavior for production use.",
-        "Carry serving decisions into observability and deployment operations.",
+        "5D parallelism for efficient large-model training and serving.",
+        "Runtime, tools, and infrastructure designed for high throughput.",
+        "Batching, KV cache, and memory tuned for production traffic.",
       ],
     },
   ],
@@ -366,7 +355,7 @@ export const expertiseAreas: Record<Language, ExpertiseArea[]> = {
     {
       title: "エンタープライズAI設計",
       summary:
-        "事業制約を、実装しやすく運用しやすいAI設計へ落とし込みます。",
+        "事業制約を、実際に運用できるAI設計へ落とし込みます。",
       points: [
         "事業目標、データ境界、統制要件を早い段階で整理します。",
         "AIを入れる場所と入れない場所を明確にします。",
@@ -376,11 +365,11 @@ export const expertiseAreas: Record<Language, ExpertiseArea[]> = {
     {
       title: "推論エンジニアリング",
       summary:
-        "レイテンシ、GPUメモリ、運用コストを踏まえて推論基盤を設計します。",
+        "速度・規模・コストを両立する推論基盤を構築します。",
       points: [
-        "モデル規模と負荷に合う並列化を選びます。",
-        "バッチング、KVキャッシュ、メモリ挙動を最適化します。",
-        "推論判断を監視や配備運用まで接続します。",
+        "5D並列で大規模モデルの学習と推論を効率化します。",
+        "高スループット前提でランタイム・ツール・インフラを設計します。",
+        "バッチング、KVキャッシュ、メモリを本番負荷に合わせて最適化します。",
       ],
     },
   ],
@@ -390,75 +379,75 @@ export const researchLabNotes: Record<Language, ResearchLabNote[]> = {
   en: [
     {
       label: "Pre-training",
-      title: "LLM and SLM training programs",
-      focus: "Data quality, objective design, and training efficiency.",
-      method: "Review datasets, block weak runs early, and align experiments to target use cases.",
-      signal: "Training work that stays connected to product value.",
+      title: "Training models from scratch",
+      focus: "Transformer architecture, data quality, and training efficiency.",
+      method: "We design the architecture and data, then train at scale with 5D parallelism.",
+      signal: "Models built for the task, not borrowed and forced to fit.",
     },
     {
       label: "Fine-tuning",
-      title: "Adaptation with evaluation attached",
-      focus: "Domain behavior, tool use, and policy alignment.",
-      method: "Run fine-tuning beside regression checks and task scorecards.",
-      signal: "Model changes can be measured before release.",
+      title: "Adapting open and closed models",
+      focus: "Domain behavior, tool use, and alignment.",
+      method: "We fine-tune any model alongside regression checks and task scorecards.",
+      signal: "Changes you can measure before release.",
     },
     {
       label: "Inference",
-      title: "Serving and inference stack design",
-      focus: "Latency, GPU efficiency, and deployment limits.",
-      method: "Study batching, KV cache, memory pressure, and traffic patterns together.",
-      signal: "More predictable performance in production.",
+      title: "High-throughput serving",
+      focus: "Latency, GPU efficiency, and scale.",
+      method: "We study batching, KV cache, parallelism, and traffic together.",
+      signal: "Predictable performance under real load.",
     },
     {
-      label: "Agents",
-      title: "Agent reliability and control",
-      focus: "Tool boundaries, review paths, and failure handling.",
-      method: "Replay traces, test permissions, and measure recovery behavior.",
-      signal: "Agents stay useful without losing operational control.",
+      label: "Agents & RAG",
+      title: "Reliable agentic systems",
+      focus: "Tool use, retrieval quality, and loop control.",
+      method: "We replay traces, test permissions, and tune harness and loop behavior.",
+      signal: "Agents that stay useful and in control.",
     },
   ],
   ja: [
     {
       label: "事前学習",
-      title: "LLM・SLMの学習プログラム",
-      focus: "データ品質、学習目的、学習効率。",
-      method: "データセットを精査し、弱い実験は早めに止めて用途に合わせます。",
-      signal: "学習投資をプロダクト価値につなげます。",
+      title: "モデルをゼロから学習",
+      focus: "トランスフォーマー設計、データ品質、学習効率。",
+      method: "アーキテクチャとデータを設計し、5D並列で大規模に学習します。",
+      signal: "借り物ではなく、用途に合わせたモデルを作ります。",
     },
     {
       label: "ファインチューニング",
-      title: "評価と一体の適応設計",
-      focus: "業務ドメイン、ツール挙動、ポリシー整合。",
-      method: "回帰テストとタスク評価を併走させます。",
+      title: "オープン・クローズドモデルの適応",
+      focus: "業務ドメイン、ツール挙動、整合性。",
+      method: "回帰テストとタスク評価を併走させて微調整します。",
       signal: "変更の良し悪しを本番前に判断できます。",
     },
     {
       label: "推論",
-      title: "配信と推論スタック設計",
-      focus: "レイテンシ、GPU効率、配備制約。",
-      method: "バッチング、KVキャッシュ、メモリ制約、負荷特性をまとめて見ます。",
-      signal: "本番で予測しやすい性能を目指します。",
+      title: "高スループット推論",
+      focus: "レイテンシ、GPU効率、スケール。",
+      method: "バッチング、KVキャッシュ、並列化、負荷特性をまとめて検討します。",
+      signal: "本番負荷でも予測しやすい性能を目指します。",
     },
     {
-      label: "エージェント",
-      title: "エージェントの信頼性と統制",
-      focus: "ツール境界、確認経路、障害時の挙動。",
-      method: "実行トレースを再生し、権限や復旧挙動を検証します。",
-      signal: "運用統制を保ったまま使えるエージェントを目指します。",
+      label: "エージェント・RAG",
+      title: "信頼できるエージェント",
+      focus: "ツール利用、検索品質、ループ制御。",
+      method: "実行トレースを再生し、権限やハーネス・ループ挙動を調整します。",
+      signal: "統制を保ったまま使えるエージェントを目指します。",
     },
   ],
 };
 
 export const principles: Record<Language, string[]> = {
   en: [
-    "Technical rigor over AI theater",
-    "Research translated into deployable systems",
+    "Real engineering over AI hype",
+    "Research turned into systems you can run",
     "Security and control designed in early",
-    "Measured outcomes over inflated claims",
+    "Measured results, not inflated claims",
   ],
   ja: [
-    "流行語より技術的な整合性を重視する",
-    "研究を実装可能な価値へ変換する",
+    "流行語より、実際のエンジニアリングを重視する",
+    "研究を運用できるシステムへ変換する",
     "セキュリティと統制を最初の設計から組み込む",
     "誇張ではなく測定可能な成果で示す",
   ],
@@ -466,16 +455,16 @@ export const principles: Record<Language, string[]> = {
 
 export const teamStrengths: Record<Language, string[]> = {
   en: [
-    "Research, product, and implementation stay closely connected",
-    "Ownership remains clear from architecture review through launch",
-    "We know when to prototype, adapt, or build deeper infrastructure",
-    "Sensitive client context is handled carefully",
+    "Deep expertise in transformer models and inference",
+    "Research, product, and engineering under one roof",
+    "We know when to prototype and when to build real infrastructure",
+    "Production delivery, not demos left on a shelf",
   ],
   ja: [
-    "研究、プロダクト、実装を近い距離でつなぐ体制",
-    "設計レビューから導入準備まで責任範囲を明確にする進め方",
-    "試作、適応、基盤構築の優先順位を見極める判断力",
-    "顧客の制約や機密性を慎重に扱う体制",
+    "トランスフォーマーモデルと推論に関する深い専門性",
+    "研究、プロダクト、実装を一つのチームでつなぐ体制",
+    "試作と本格的な基盤構築を見極める判断力",
+    "デモで終わらせず、本番まで届ける実行力",
   ],
 };
 
@@ -483,53 +472,45 @@ export const labCapabilities: Record<Language, LabCapability[]> = {
   en: [
     {
       label: "01 / Agents",
-      title: "Agentic solution development",
-      body:
-        "Production workflows with tool permissions, orchestration, and review paths.",
+      title: "AI agents & RAG",
+      body: "Multi-agent apps and RAG pipelines with harness and loop engineering.",
     },
     {
-      label: "02 / Pre-training",
-      title: "LLM and SLM training programs",
-      body:
-        "Training, fine-tuning, and evaluation handled as one system.",
+      label: "02 / Models",
+      title: "Training & fine-tuning",
+      body: "Pre-training from scratch and fine-tuning open or closed models.",
     },
     {
       label: "03 / Inference",
-      title: "Inference stack architecture",
-      body:
-        "Serving paths shaped for latency, GPU efficiency, and deployment control.",
+      title: "Inference stacks",
+      body: "High-throughput serving: runtime, tools, and infrastructure.",
     },
     {
-      label: "04 / Reliability",
-      title: "Enterprise delivery discipline",
-      body:
-        "Quality, latency, safety, and failure modes measured before launch.",
+      label: "04 / Delivery",
+      title: "Production delivery",
+      body: "Tested, deployed systems — not just proofs of concept.",
     },
   ],
   ja: [
     {
       label: "01 / エージェント",
-      title: "エージェントソリューション開発",
-      body:
-        "権限設計、オーケストレーション、確認経路を本番前提で整えます。",
+      title: "AIエージェント・RAG",
+      body: "ハーネス・ループエンジニアリングを軸にエージェントとRAGを構築します。",
     },
     {
-      label: "02 / 事前学習",
-      title: "LLM・SLMの学習プログラム設計",
-      body:
-        "事前学習、ファインチューニング、評価を一体で扱います。",
+      label: "02 / モデル",
+      title: "学習・ファインチューニング",
+      body: "ゼロからの事前学習と、オープン・クローズドモデルの微調整。",
     },
     {
       label: "03 / 推論",
-      title: "推論スタックアーキテクチャ",
-      body:
-        "レイテンシ、GPU効率、配備統制に合う推論経路を設計します。",
+      title: "推論基盤",
+      body: "ランタイム・ツール・インフラまで含む高スループット推論。",
     },
     {
-      label: "04 / 信頼性",
-      title: "エンタープライズ導入規律",
-      body:
-        "品質、安全性、障害モードを測定して導入基準を明確にします。",
+      label: "04 / 導入",
+      title: "本番導入",
+      body: "検証から本番導入まで。デモで終わらせません。",
     },
   ],
 };
@@ -538,109 +519,67 @@ export const productionProofs: Record<Language, ProductionProof[]> = {
   en: [
     {
       label: "Research",
-      value: "Model programs",
-      body: "Pre-training, fine-tuning, and controllability work.",
+      value: "We train models",
+      body: "Transformer architecture, pre-training, and fine-tuning.",
     },
     {
-      label: "Architecture",
-      value: "Inference boundaries",
-      body: "Model, data, serving, and deployment choices tied to real constraints.",
+      label: "Inference",
+      value: "We serve at scale",
+      body: "High-throughput stacks built with 5D parallelism.",
     },
     {
-      label: "Implementation",
-      value: "Working systems",
-      body: "Focused MVPs, agentic systems, and custom AI software.",
+      label: "Agents",
+      value: "We build agents",
+      body: "Multi-agent apps and RAG pipelines on your data.",
     },
     {
-      label: "Operation",
-      value: "Reliable rollout",
-      body: "Release criteria, observability, and steady improvement.",
+      label: "Delivery",
+      value: "We ship",
+      body: "From PoC to production, with monitoring and clear release criteria.",
     },
   ],
   ja: [
     {
       label: "研究",
-      value: "モデルプログラム",
-      body: "事前学習、ファインチューニング、制御性を扱います。",
+      value: "モデルを学習",
+      body: "トランスフォーマー設計、事前学習、ファインチューニング。",
     },
     {
-      label: "設計",
-      value: "推論境界",
-      body: "事業制約をモデル、データ、推論、配備の判断へ落とし込みます。",
+      label: "推論",
+      value: "大規模に提供",
+      body: "5D並列で構築する高スループット推論基盤。",
     },
     {
-      label: "実装",
-      value: "動くシステム",
-      body: "MVP、エージェント、専用AIアプリを構築します。",
+      label: "エージェント",
+      value: "エージェントを構築",
+      body: "実データで動くマルチエージェントとRAG。",
     },
     {
-      label: "運用",
-      value: "信頼できる展開",
-      body: "リリース基準、監視、継続改善をつなぎます。",
+      label: "導入",
+      value: "本番へ届ける",
+      body: "PoCから本番まで。監視と明確なリリース基準を伴います。",
     },
   ],
 };
 
 export const systemMapSteps: Record<Language, SystemMapStep[]> = {
   en: [
-    {
-      label: "01",
-      title: "Business problem",
-    },
-    {
-      label: "02",
-      title: "Data boundary",
-    },
-    {
-      label: "03",
-      title: "Model strategy",
-    },
-    {
-      label: "04",
-      title: "Inference stack",
-    },
-    {
-      label: "05",
-      title: "Agent workflow",
-    },
-    {
-      label: "06",
-      title: "Evaluation",
-    },
-    {
-      label: "07",
-      title: "Secure deployment",
-    },
+    { label: "01", title: "Your problem" },
+    { label: "02", title: "Data boundary" },
+    { label: "03", title: "Model strategy" },
+    { label: "04", title: "Inference stack" },
+    { label: "05", title: "Agent workflow" },
+    { label: "06", title: "Evaluation" },
+    { label: "07", title: "Secure deployment" },
   ],
   ja: [
-    {
-      label: "01",
-      title: "事業課題",
-    },
-    {
-      label: "02",
-      title: "データ境界",
-    },
-    {
-      label: "03",
-      title: "モデル戦略",
-    },
-    {
-      label: "04",
-      title: "推論スタック",
-    },
-    {
-      label: "05",
-      title: "エージェント業務",
-    },
-    {
-      label: "06",
-      title: "評価",
-    },
-    {
-      label: "07",
-      title: "セキュア配備",
-    },
+    { label: "01", title: "課題の把握" },
+    { label: "02", title: "データ境界" },
+    { label: "03", title: "モデル戦略" },
+    { label: "04", title: "推論基盤" },
+    { label: "05", title: "エージェント業務" },
+    { label: "06", title: "評価" },
+    { label: "07", title: "セキュア導入" },
   ],
 };
 
@@ -648,37 +587,37 @@ export const deliverySteps: Record<Language, DeliveryStep[]> = {
   en: [
     {
       phase: "01. Discovery",
-      detail: "Align on constraints, data boundaries, and success metrics.",
+      detail: "Align on goals, data boundaries, and what success looks like.",
     },
     {
       phase: "02. Design",
-      detail: "Set the model path, integrations, evaluation, and control model.",
+      detail: "Choose the model, inference path, and integrations.",
     },
     {
-      phase: "03. Implementation",
-      detail: "Build with evaluation loops and production controls from the start.",
+      phase: "03. Build",
+      detail: "Build with evaluation and production controls from the start.",
     },
     {
-      phase: "04. Operations",
-      detail: "Launch with observability, governance checks, and a practical improvement path.",
+      phase: "04. Launch",
+      detail: "Deploy with monitoring and a clear path to improve.",
     },
   ],
   ja: [
     {
       phase: "01. 現状整理",
-      detail: "業務制約、データ境界、成功指標を整理します。",
+      detail: "目標、データ境界、成功の定義をそろえます。",
     },
     {
       phase: "02. 設計",
-      detail: "モデル方針、連携、評価、統制設計をまとめて決めます。",
+      detail: "モデル、推論経路、連携方針を決めます。",
     },
     {
-      phase: "03. 実装",
-      detail: "評価ループと本番統制を含めて段階的に構築します。",
+      phase: "03. 構築",
+      detail: "評価ループと本番統制を最初から組み込んで構築します。",
     },
     {
-      phase: "04. 運用",
-      detail: "監視、ガバナンス確認、継続改善とともに本番へ進めます。",
+      phase: "04. 導入",
+      detail: "監視と改善の道筋を伴って本番へ展開します。",
     },
   ],
 };
@@ -686,7 +625,7 @@ export const deliverySteps: Record<Language, DeliveryStep[]> = {
 export const footerContent: Record<Language, FooterContent> = {
   en: {
     summary:
-      "Tokyo-based AI R&D company building usable enterprise AI systems.",
+      "Tokyo AI lab. We train models, build agents, and ship inference stacks for production.",
     location: "Tokyo, Japan",
     email: "hello@bitlabs.site",
     copyright: "All rights reserved.",
@@ -694,7 +633,7 @@ export const footerContent: Record<Language, FooterContent> = {
   },
   ja: {
     summary:
-      "東京を拠点とするAI研究開発企業。企業で使えるAIシステムを構築します。",
+      "東京のAIラボ。モデル学習、エージェント構築、推論基盤の本番導入を行います。",
     location: "東京、日本",
     email: "hello@bitlabs.site",
     copyright: "無断転載・無断使用を禁じます。",
@@ -704,185 +643,185 @@ export const footerContent: Record<Language, FooterContent> = {
 
 export const homeContent: Record<Language, HomeContent> = {
   en: {
-    location: "Tokyo AI Research and Engineering Lab",
+    location: "Tokyo AI Research & Engineering Lab",
     heroTitle: "Agentic systems, model programs, and inference stacks for real deployment.",
     heroBody:
-      "BitLabs designs and builds enterprise AI systems with a lighter path from concept to production.",
-    heroStatementLabel: "Research to production",
+      "BitLabs is a Tokyo AI lab. We train models, build AI agents, and ship the inference stacks that run them in production.",
+    heroStatementLabel: "What we do",
     heroStatement:
-      "We keep model, product, and deployment choices tied to business goals and control boundaries.",
-    heroReadout: ["Agent systems", "Model training", "Inference design", "Secure rollout"],
-    heroHighlightsLabel: "What matters",
+      "From transformer pre-training to high-throughput serving, we take AI from idea to production — not just a demo.",
+    heroReadout: ["AI agents & RAG", "Model training", "Inference stacks", "Production delivery"],
+    heroHighlightsLabel: "Why BitLabs",
     heroHighlights: [
       {
-        label: "Scope",
-        value: "Clear first",
-        body: "We define the target, the limits, and the success measure early.",
+        label: "Depth",
+        value: "We train models",
+        body: "Pre-training from scratch and fine-tuning, open or closed source.",
       },
       {
-        label: "Ownership",
-        value: "One path",
-        body: "Architecture, build, and rollout stay connected.",
+        label: "Scale",
+        value: "We serve fast",
+        body: "High-throughput inference with runtime, tools, and infrastructure.",
       },
       {
-        label: "Judgment",
-        value: "Measured",
-        body: "Progress is driven by evidence, not AI theater.",
+        label: "Delivery",
+        value: "We ship",
+        body: "Production systems, not proofs of concept left on a shelf.",
       },
     ],
     primaryCta: "Talk to BitLabs",
     secondaryCta: "Explore expertise",
     missionLabel: "Mission",
     missionBody:
-      "Turn advanced AI work into dependable systems teams can operate.",
+      "Turn deep AI research into systems teams can run every day.",
     missionAttribution: "- BitLabs CEO David Bong",
     visionLabel: "Vision",
     visionBody:
-      "Make rigorous AI deployment feel as disciplined as any critical production system.",
+      "Make production AI as dependable as any core system you rely on.",
     visionAttribution: "- BitLabs CEO David Bong",
-    labLabel: "Expert Lab",
-    labTitle: "Focused capability across agent systems, model work, and inference.",
+    labLabel: "What we do",
+    labTitle: "One team for models, agents, and inference.",
     labBody:
-      "BitLabs connects model decisions, application design, and deployment discipline in one delivery path.",
-    productionLabel: "Research to Production",
-    productionTitle: "From research direction to working system.",
+      "We handle the full path: train or fine-tune the model, build the agent or app, and deploy the inference stack that serves it.",
+    productionLabel: "PoC to production",
+    productionTitle: "We don't stop at the demo.",
     productionBody:
-      "We use focused MVPs to validate value, then harden what works.",
-    systemMapLabel: "System Map",
-    systemMapTitle: "One path from business problem to secure AI deployment.",
+      "We prove value with a focused build, then harden it into a production system you can operate.",
+    systemMapLabel: "How we work",
+    systemMapTitle: "From your problem to a deployed AI system.",
     systemMapBody:
-      "We map the operating path before implementation so the core decisions stay aligned.",
+      "We map the whole path up front so the big decisions stay aligned.",
     capabilitiesLabel: "Capabilities",
     capabilitiesTitle: "What BitLabs builds.",
     approachLabel: "Approach",
-    approachTitle: "We start with the problem, then choose the right model and serving path.",
+    approachTitle: "Start with your problem, then pick the right model and serving path.",
     approachBody:
-      "We begin with the operating problem, then shape the model, inference, and application architecture around it.",
+      "We shape the model, inference, and application around your actual workflow and constraints.",
     approachSteps: [
       {
         phase: "01. Workshop",
-        title: "Clarify the operating problem.",
-        body: "Map workflow pain points, systems, and hard constraints.",
-        marker: "Pain points",
+        title: "Understand the problem.",
+        body: "We map your workflow, systems, and constraints.",
+        marker: "Discovery",
       },
       {
-        phase: "02. Solution Design",
+        phase: "02. Design",
         title: "Choose the right stack.",
-        body: "Set the architecture, model approach, inference path, and control boundary.",
-        marker: "Best-fit proposal",
+        body: "Model approach, inference path, and architecture.",
+        marker: "Plan",
       },
       {
-        phase: "03. MVP Development",
-        title: "Build the focused MVP.",
-        body: "Ship the smallest system that can validate fit and value.",
-        marker: "Focused MVP",
+        phase: "03. Build",
+        title: "Ship a focused MVP.",
+        body: "The smallest system that proves real value.",
+        marker: "MVP",
       },
     ],
     approachVisualLabel: "BitLabs flow",
     approachVisualValue: "Workshop to MVP",
     approachOutcomeLabel: "Outcome",
-    approachOutcomeTitle: "A clearer path from operating problem to production-ready AI.",
+    approachOutcomeTitle: "A clear path from problem to production AI.",
     approachOutcomeBody:
-      "Clients move forward with a solution shaped around their environment and operating limits.",
+      "You move forward with a system built for your environment.",
     securityLabel: "Security & Deployment",
-    securityTitle: "Production AI starts with control boundaries, evaluation, and deployment discipline.",
+    securityTitle: "Built for production from day one.",
     securityBody:
-      "Security, data handling, and release checks are part of the first architecture pass.",
+      "We design data handling, access, and release checks into the first architecture pass.",
     securityPoints: [
-      "Private or regional deployment options with explicit trust boundaries",
-      "Integration patterns for model access, tool use, and sensitive data handling",
-      "Release criteria for regulated or high-accountability environments",
+      "Private or regional deployment with clear trust boundaries",
+      "Controlled model access, tool use, and sensitive data handling",
+      "Release checks for regulated, high-accountability environments",
     ],
   },
   ja: {
     location: "東京のAI研究開発・エンジニアリングラボ",
     heroTitle: "エージェント、モデル開発、推論基盤を本番導入まで設計するAIパートナー。",
     heroBody:
-      "BitLabsは、構想段階のAIを実際に運用できるシステムへ落とし込みます。",
-    heroStatementLabel: "MVPから本番へ",
+      "BitLabsは東京のAIラボです。モデルを学習し、AIエージェントを構築し、それを動かす推論基盤を本番導入します。",
+    heroStatementLabel: "私たちの仕事",
     heroStatement:
-      "モデル、プロダクト、配備の判断を事業目標と統制要件に結びつけます。",
-    heroReadout: ["エージェント", "モデル学習", "推論設計", "安全な導入"],
-    heroHighlightsLabel: "重視する点",
+      "トランスフォーマーの事前学習から高スループット推論まで、デモではなく本番までやり切ります。",
+    heroReadout: ["AIエージェント・RAG", "モデル学習", "推論基盤", "本番導入"],
+    heroHighlightsLabel: "BitLabsを選ぶ理由",
     heroHighlights: [
       {
-        label: "スコープ",
-        value: "先に明確化",
-        body: "目的、対象外、成功指標を最初にそろえます。",
+        label: "深さ",
+        value: "モデルを学習",
+        body: "ゼロからの事前学習と、オープン・クローズド両方の微調整。",
       },
       {
-        label: "責任範囲",
-        value: "一つの流れ",
-        body: "設計、実装、導入判断を分断しません。",
+        label: "規模",
+        value: "高速に提供",
+        body: "ランタイム・ツール・インフラを備えた高スループット推論。",
       },
       {
-        label: "判断",
-        value: "測定重視",
-        body: "進め方は検証結果と制約条件で決めます。",
+        label: "実行力",
+        value: "本番へ届ける",
+        body: "デモで終わらせず、本番運用できるシステムを作ります。",
       },
     ],
     primaryCta: "BitLabsに相談する",
     secondaryCta: "専門領域を見る",
     missionLabel: "ミッション",
     missionBody:
-      "高度なAIを、継続運用できる信頼性の高いシステムへ変換すること。",
+      "深いAI研究を、毎日運用できるシステムへ変換すること。",
     missionAttribution: "- BitLabs CEO David Bong",
     visionLabel: "ビジョン",
     visionBody:
-      "高度なAI導入が、厳格な運用規律とともに進む状態を当たり前にすること。",
+      "本番のAIを、基幹システムと同じくらい信頼できるものにすること。",
     visionAttribution: "- BitLabs CEO David Bong",
-    labLabel: "専門ラボ",
-    labTitle: "エージェント、モデル開発、推論基盤を横断する専門性。",
+    labLabel: "私たちの仕事",
+    labTitle: "モデル、エージェント、推論を一つのチームで。",
     labBody:
-      "モデル判断、アプリ設計、導入規律を一つの流れで扱います。",
-    productionLabel: "研究から本番へ",
-    productionTitle: "研究の方向性から動くシステムへ。",
+      "モデルの学習・微調整、エージェントやアプリの構築、それを動かす推論基盤の導入まで一貫して担います。",
+    productionLabel: "PoCから本番へ",
+    productionTitle: "デモで終わらせません。",
     productionBody:
-      "まずMVPで価値を確かめ、機能する部分を本番品質へ進めます。",
-    systemMapLabel: "システムマップ",
-    systemMapTitle: "事業課題からセキュアなAI配備までを一つの経路として設計する。",
+      "まず小さな構成で価値を確かめ、機能する部分を本番運用できる形へ仕上げます。",
+    systemMapLabel: "進め方",
+    systemMapTitle: "課題から、導入済みのAIシステムまで。",
     systemMapBody:
-      "実装前に、事業目的から配備判断までを一つの流れで整理します。",
+      "実装前に全体の道筋を描き、重要な判断をぶれさせません。",
     capabilitiesLabel: "対応領域",
     capabilitiesTitle: "BitLabsが構築するもの。",
     approachLabel: "進め方",
-    approachTitle: "まず課題を捉え、そのうえで最適な構成を決めます。",
+    approachTitle: "まず課題を捉え、最適なモデルと推論経路を選びます。",
     approachBody:
-      "既成パターンを当てはめるのではなく、業務課題に合うモデル、推論、アプリ構成を選びます。",
+      "実際の業務フローと制約に合わせて、モデル、推論、アプリ構成を組み立てます。",
     approachSteps: [
       {
         phase: "01. ワークショップ",
-        title: "業務課題を明確にする。",
-        body: "痛点、既存システム、制約条件を整理します。",
+        title: "課題を理解する。",
+        body: "業務フロー、既存システム、制約を整理します。",
         marker: "課題整理",
       },
       {
-        phase: "02. 解決策の設計",
-        title: "最適な構成を決める。",
-        body: "アーキテクチャ、モデル方針、推論経路、統制境界を定義します。",
-        marker: "最適提案",
+        phase: "02. 設計",
+        title: "最適な構成を選ぶ。",
+        body: "モデル方針、推論経路、アーキテクチャを決めます。",
+        marker: "設計",
       },
       {
-        phase: "03. MVP開発",
-        title: "価値検証用のMVPを構築する。",
-        body: "技術適合性と利用価値を確認できる最小構成を作ります。",
-        marker: "MVP開発",
+        phase: "03. 構築",
+        title: "価値検証用のMVPを作る。",
+        body: "価値を確認できる最小構成を構築します。",
+        marker: "MVP",
       },
     ],
     approachVisualLabel: "進行フロー",
     approachVisualValue: "課題整理からMVPへ",
     approachOutcomeLabel: "進行結果",
-    approachOutcomeTitle: "課題から本番導入につながる道筋を明確にする。",
+    approachOutcomeTitle: "課題から本番AIまでの道筋を明確にする。",
     approachOutcomeBody:
       "環境に合う形で、次の開発判断へ無理なく進めます。",
     securityLabel: "セキュリティと配備",
-    securityTitle: "本番品質のAIは、設計段階から統制と評価を組み込みます。",
+    securityTitle: "最初から本番前提で設計します。",
     securityBody:
-      "アクセス境界、データ取り扱い、推論隔離、評価基準を初期設計から組み込みます。",
+      "データ取り扱い、アクセス、リリース確認を初期設計から組み込みます。",
     securityPoints: [
-      "プライベート基盤を含む配備構成と明確な信頼境界",
-      "モデル利用、ツール実行、データ取り扱いを統制する連携設計",
-      "説明責任が求められる環境を前提にした評価とリリース設計",
+      "プライベート／リージョン配備と明確な信頼境界",
+      "モデル利用、ツール実行、機密データの統制",
+      "説明責任が求められる環境向けのリリース確認",
     ],
   },
 };
@@ -892,9 +831,9 @@ export const aboutContent: Record<Language, AboutContent> = {
     metadataTitle: "About",
     metadataDescription: "Company profile for BitLabs, a Tokyo-based AI research and engineering lab.",
     eyebrow: "About",
-    title: "A Tokyo-based AI research and engineering lab.",
+    title: "A Tokyo AI research and engineering lab.",
     body:
-      "BitLabs works with teams that need careful technical judgment and practical AI delivery.",
+      "We are a small team with deep model and infrastructure expertise. We help companies that need real AI built and shipped — not just advised.",
     profileLabel: "Corporate Information",
     profileTitle: "Company profile.",
     companyNameLabel: "Company Name",
@@ -912,9 +851,9 @@ export const aboutContent: Record<Language, AboutContent> = {
     metadataTitle: "会社情報",
     metadataDescription: "東京拠点のAI研究開発・エンジニアリングラボ、BitLabsの会社概要です。",
     eyebrow: "会社情報",
-    title: "東京を拠点に、AIの研究開発と実装を行うラボです。",
+    title: "東京のAI研究開発・エンジニアリングラボです。",
     body:
-      "BitLabsは東京を拠点に、慎重な技術判断と現実的なAI実装を重視しています。",
+      "モデルと基盤に深い専門性を持つ少数精鋭のチームです。助言だけでなく、実際のAIを構築し本番まで届けます。",
     profileLabel: "会社情報",
     profileTitle: "会社プロフィール。",
     companyNameLabel: "会社名",
@@ -934,30 +873,30 @@ export const servicesPageContent: Record<Language, ServicesPageContent> = {
   en: {
     metadataTitle: "Services",
     metadataDescription:
-      "BitLabs services for agentic systems, enterprise AI architecture, pre-training, fine-tuning, inference stack design, and secure deployment.",
+      "BitLabs services: AI agents and RAG, model training and fine-tuning, inference stacks, custom AI apps, and enterprise AI architecture.",
     eyebrow: "Services",
-    title: "Services for teams building serious AI systems.",
+    title: "Services for teams building real AI systems.",
     body:
-      "We keep scope tight, focus on the operating problem, and build only what moves the system forward.",
-    problemLabel: "Need",
-    responseLabel: "BitLabs",
-    outcomeLabel: "Result",
+      "We keep scope tight and build what moves your system toward production.",
+    problemLabel: "When to call us",
+    responseLabel: "What we do",
+    outcomeLabel: "What you get",
     processLabel: "Build Path",
-    processTitle: "Short path: align, design, build, launch.",
+    processTitle: "A short path: align, design, build, launch.",
   },
   ja: {
     metadataTitle: "サービス",
     metadataDescription:
-      "BitLabsの本番AIエージェント、MVP開発、エンタープライズAI設計、モデル適応、セキュア導入に関するサービス紹介。",
+      "BitLabsのサービス。AIエージェントとRAG、モデル学習・ファインチューニング、推論基盤、カスタムAIアプリ、エンタープライズAI設計。",
     eyebrow: "サービス",
-    title: "本番導入を見据えたAIサービス。",
+    title: "本番のAIを作るチームのためのサービス。",
     body:
-      "スコープを絞り、運用課題に直結するものから構築します。",
-    problemLabel: "ニーズ",
+      "スコープを絞り、本番に近づくものから構築します。",
+    problemLabel: "こんなとき",
     responseLabel: "BitLabsの対応",
-    outcomeLabel: "結果",
+    outcomeLabel: "得られるもの",
     processLabel: "構築ステップ",
-    processTitle: "短い流れで進めます。整理、設計、実装、導入。",
+    processTitle: "短い流れで進めます。整理、設計、構築、導入。",
   },
 };
 
@@ -965,53 +904,53 @@ export const expertisePageContent: Record<Language, ExpertisePageContent> = {
   en: {
     metadataTitle: "Expertise",
     metadataDescription:
-      "BitLabs expertise across enterprise AI architecture, pre-training, fine-tuning, inference engineering, and agentic systems.",
+      "BitLabs expertise: transformer model training, fine-tuning, 5D parallelism, high-throughput inference, RAG, and agentic systems.",
     eyebrow: "Expertise",
-    title: "Architecture, model programs, inference stacks, and agentic systems.",
+    title: "Models, inference, agents, and the architecture around them.",
     body:
-      "BitLabs connects model work, serving design, and application control so enterprise teams can move with clarity.",
-    advisoryLabel: "Business Advisory",
-    advisoryTitle: "Design AI systems that fit real business constraints.",
+      "BitLabs goes deep on transformer models, high-throughput inference, and agentic systems — and ships them to production.",
+    advisoryLabel: "Enterprise architecture",
+    advisoryTitle: "AI that fits your business and data rules.",
     advisoryBody:
-      "We shape architecture around the existing business, systems, approvals, and data rules.",
-    parallelismLabel: "Inference Engineering",
-    parallelismTitle: "Inference engineering for high-throughput, low-latency AI.",
+      "We design the architecture around your systems, approvals, and data boundaries.",
+    parallelismLabel: "Inference engineering",
+    parallelismTitle: "High-throughput, low-latency inference.",
     parallelismBody:
-      "We design serving paths that balance latency, GPU efficiency, and deployment constraints.",
-    frameworkLabel: "Agentic Solutions",
-    frameworkTitle: "Design agentic systems with control and traceability.",
+      "We design the serving stack — runtime, tools, and infrastructure — and use 5D parallelism to train and serve large models efficiently.",
+    frameworkLabel: "Agents & RAG",
+    frameworkTitle: "Agentic systems you can trust and trace.",
     frameworkBody:
-      "We align orchestration, tool access, escalation, and model behavior with operating control requirements.",
+      "We build multi-agent apps and RAG pipelines with strong harness and loop engineering.",
     frameworkPoints: [
-      "Explicit permissions, escalation paths, and auditability.",
-      "Model adaptation tied to domain behavior and release criteria.",
-      "Secure integration for internal data, tools, and human review.",
+      "Multi-agent orchestration with clear permissions and audit trails.",
+      "RAG pipelines tuned for accuracy on your data.",
+      "Harness and loop engineering for reliable, repeatable behavior.",
     ],
   },
   ja: {
     metadataTitle: "専門領域",
     metadataDescription:
-      "BitLabsの専門領域。エンタープライズAI設計、事前学習、ファインチューニング、推論エンジニアリング、AIエージェント設計。",
+      "BitLabsの専門領域。トランスフォーマーモデルの学習、ファインチューニング、5D並列、高スループット推論、RAG、AIエージェント。",
     eyebrow: "専門領域",
-    title: "AI設計、モデル開発、推論基盤、AIエージェント設計。",
+    title: "モデル、推論、エージェント、そしてその周辺設計。",
     body:
-      "BitLabsは、モデル開発、推論設計、アプリ制御を一体で扱います。",
-    advisoryLabel: "事業課題への適用",
-    advisoryTitle: "実際の事業制約に合うAIシステムを設計する。",
+      "BitLabsはトランスフォーマーモデル、高スループット推論、AIエージェントを深く掘り下げ、本番まで届けます。",
+    advisoryLabel: "エンタープライズ設計",
+    advisoryTitle: "事業とデータルールに合うAIを設計する。",
     advisoryBody:
-      "既存業務、承認フロー、システム制約に合う導入方針を組み立てます。",
+      "既存システム、承認フロー、データ境界に合わせてアーキテクチャを設計します。",
     parallelismLabel: "推論エンジニアリング",
-    parallelismTitle: "高スループット・低レイテンシAIのための推論設計。",
+    parallelismTitle: "高スループット・低レイテンシの推論。",
     parallelismBody:
-      "モデル規模、負荷特性、本番制約に合わせて推論経路を設計します。",
-    frameworkLabel: "エージェントソリューション",
-    frameworkTitle: "統制と追跡性を備えたAIエージェント設計。",
+      "ランタイム・ツール・インフラまで推論基盤を設計し、5D並列で大規模モデルを効率的に学習・提供します。",
+    frameworkLabel: "エージェント・RAG",
+    frameworkTitle: "信頼でき、追跡できるAIエージェント。",
     frameworkBody:
-      "説明責任が必要な環境で、オーケストレーション、権限、確認経路を設計します。",
+      "ハーネス・ループエンジニアリングを軸に、マルチエージェントアプリとRAGを構築します。",
     frameworkPoints: [
-      "権限管理、承認フロー、監査可能性を備えた設計。",
-      "業務ドメインに合わせたモデル適応とリリース基準の接続。",
-      "社内データ、外部ツール、人の確認工程を安全につなぐ統合設計。",
+      "権限と監査ログが明確なマルチエージェント・オーケストレーション。",
+      "自社データで精度を高めたRAGパイプライン。",
+      "安定して再現する挙動のためのハーネス・ループエンジニアリング。",
     ],
   },
 };
@@ -1020,58 +959,58 @@ export const researchContent: Record<Language, ResearchContent> = {
   en: {
     metadataTitle: "Research",
     metadataDescription:
-      "Research areas at BitLabs across Diffusion Language Models, pre-training, fine-tuning, inference engineering, and reliability for production AI systems.",
+      "BitLabs research across transformer architecture, pre-training, fine-tuning, 5D parallelism, inference, and reliability for production AI.",
     eyebrow: "Research",
-    title: "Research that makes AI systems more usable in production.",
+    title: "Research that makes AI work in production.",
     body:
-      "At BitLabs, we actively research AI and build PoCs to test model behavior, inference design, and reliability before production decisions are made.",
+      "We research transformer models, inference, and agent reliability, and prove ideas with PoCs before they reach production.",
     labLabel: "Public Lab Notes",
-    labTitle: "Research and PoC work help us separate promising ideas from deployable systems.",
+    labTitle: "We separate promising ideas from systems that actually ship.",
     focusLabel: "Focus",
     methodLabel: "Method",
     signalLabel: "Signal",
-    inferenceLabel: "Model and Inference Research",
-    inferenceTitle: "We study both the model program and the serving layer.",
+    inferenceLabel: "Model & inference research",
+    inferenceTitle: "We study the model and the serving layer together.",
     inferencePoints: [
-      "Which data quality signals should stop a training run early.",
-      "Which evaluation results actually predict usefulness in the target workflow.",
-      "How serving limits should shape model choice before product work starts.",
+      "How transformer architecture choices affect quality and cost.",
+      "How 5D parallelism makes large-model training and serving efficient.",
+      "How serving limits should shape model choice before the build.",
     ],
     reliabilityLabel: "Reliability",
-    reliabilityTitle: "Research matters because AI systems need evidence before they earn production trust.",
+    reliabilityTitle: "Production trust has to be earned with evidence.",
     reliabilityPoints: [
-      "Evaluation across quality, latency, safety, and controllability.",
-      "Reliability testing for tool use, planning behavior, and escalation paths.",
-      "Release criteria aligned to governance and deployment requirements.",
+      "Evaluation across quality, latency, safety, and control.",
+      "Reliability testing for tools, planning, and escalation.",
+      "Release criteria tied to governance and deployment needs.",
     ],
-    note: "Some research and PoC work stays private because of confidentiality constraints.",
+    note: "Some research and PoC work stays private under confidentiality.",
   },
   ja: {
     metadataTitle: "研究",
     metadataDescription:
-      "BitLabsが取り組むDiffusion Language Model、事前学習、ファインチューニング、推論エンジニアリング、信頼性に関する研究領域。",
+      "BitLabsの研究領域。トランスフォーマー設計、事前学習、ファインチューニング、5D並列、推論、本番AIの信頼性。",
     eyebrow: "研究",
-    title: "AIシステムを本番で使える形に近づける研究。",
+    title: "AIを本番で動かすための研究。",
     body:
-      "BitLabsでは、AIの研究とPoC構築を継続的に行い、モデル挙動、推論設計、信頼性を本番判断の前に検証しています。",
+      "トランスフォーマーモデル、推論、エージェントの信頼性を研究し、本番投入の前にPoCで検証します。",
     labLabel: "公開ラボノート",
-    labTitle: "研究とPoCは、有望なアイデアと本番導入できる仕組みを切り分けるために重要です。",
+    labTitle: "有望なアイデアと、実際に本番へ届く仕組みを切り分けます。",
     focusLabel: "焦点",
     methodLabel: "方法",
     signalLabel: "確認する兆候",
     inferenceLabel: "モデル・推論研究",
     inferenceTitle: "モデル設計と配信層の両方を研究します。",
     inferencePoints: [
-      "どのデータ品質シグナルで学習実験を早めに止めるべきか。",
-      "どの評価結果が実業務の有用性を予測できるか。",
-      "配信制約がモデル選定にどう影響するか。",
+      "トランスフォーマー設計の選択が品質とコストにどう影響するか。",
+      "5D並列が大規模モデルの学習と提供をどう効率化するか。",
+      "配信制約がモデル選定にどう影響すべきか。",
     ],
     reliabilityLabel: "信頼性",
-    reliabilityTitle: "AI研究が重要なのは、本番投入の前に根拠を持って判断する必要があるためです。",
+    reliabilityTitle: "本番での信頼は、根拠を持って積み上げるものです。",
     reliabilityPoints: [
       "品質、遅延、安全性、制御性を横断する評価。",
-      "ツール利用、計画挙動、確認経路に対する信頼性検証。",
-      "本番利用前に行うガバナンス要件に沿ったリリース判定。",
+      "ツール、計画、エスカレーションの信頼性検証。",
+      "ガバナンスと導入要件に沿ったリリース基準。",
     ],
     note: "一部の研究やPoC案件は機密性のため公開していません。",
   },
@@ -1081,11 +1020,11 @@ export const contactContent: Record<Language, ContactContent> = {
   en: {
     metadataTitle: "Contact",
     metadataDescription:
-      "Contact BitLabs about enterprise AI architecture, pre-training, fine-tuning, inference stack design, and sovereign deployment.",
+      "Contact BitLabs about model training, fine-tuning, inference stacks, AI agents, RAG, and production deployment.",
     eyebrow: "Contact",
-    title: "Start a focused technical conversation.",
+    title: "Tell us what you want to build.",
     body:
-      "Tell us what you want to build and the key constraints. We will reply with a practical next step.",
+      "Reach out if you need to train or fine-tune a model, scale up inference, or build an AI agent or RAG system. Share your goal and constraints — we'll reply with a practical next step.",
     emailLabel: "Email",
     locationLabel: "Location",
     responseLabel: "Typical response",
@@ -1093,11 +1032,12 @@ export const contactContent: Record<Language, ContactContent> = {
   },
   ja: {
     metadataTitle: "お問い合わせ",
-    metadataDescription: "AIエージェント、事前学習、ファインチューニング、推論基盤、研究開発、エンタープライズ導入についてBitLabsへお問い合わせください。",
+    metadataDescription:
+      "モデル学習、ファインチューニング、推論基盤、AIエージェント、RAG、本番導入についてBitLabsへお問い合わせください。",
     eyebrow: "お問い合わせ",
-    title: "技術前提を含めてご相談ください。",
+    title: "作りたいものをお聞かせください。",
     body:
-      "実現したいことと重視する制約条件をご共有ください。初期の進め方をご提案します。",
+      "モデルの学習・微調整、推論のスケール、AIエージェントやRAGの構築をご検討中ならご相談ください。目標と制約をお知らせいただければ、現実的な次の一歩をご提案します。",
     emailLabel: "メール",
     locationLabel: "所在地",
     responseLabel: "通常のご返信目安",
@@ -1145,11 +1085,11 @@ export const chatContent: Record<Language, ChatContent> = {
     title: "Adam Consultant",
     subtitle: "",
     closeLabel: "Close chat",
-    intro: "Hi, I’m Adam. Ask about BitLabs services, AI architecture, or your production AI plans.",
+    intro: "Hi, I'm Adam. Ask about BitLabs — model training, inference, AI agents, or your production AI plans.",
     quickReplies: [
-      "Tell me about BitLabs technical capabilities",
-      "How do you approach enterprise AI architecture?",
-      "We are exploring an AI agent for internal workflows",
+      "What can BitLabs build?",
+      "Can you train or fine-tune a model for us?",
+      "We want an AI agent for our workflows",
     ],
     inputPlaceholder: "Type your question...",
     sendLabel: "Send",
@@ -1160,11 +1100,11 @@ export const chatContent: Record<Language, ChatContent> = {
     title: "Adamコンサルタント",
     subtitle: "",
     closeLabel: "チャットを閉じる",
-    intro: "こんにちは、Adamです。BitLabsの技術領域や、AIシステムの設計・導入についてご相談ください。",
+    intro: "こんにちは、Adamです。モデル学習、推論、AIエージェント、本番導入など、BitLabsについてご相談ください。",
     quickReplies: [
-      "BitLabsの技術力について知りたい",
-      "エンタープライズAIの設計はどう進めますか？",
-      "社内業務向けのAIエージェントを検討しています",
+      "BitLabsは何を作れますか？",
+      "モデルの学習や微調整は可能ですか？",
+      "業務向けのAIエージェントを検討しています",
     ],
     inputPlaceholder: "質問を入力してください...",
     sendLabel: "送信",

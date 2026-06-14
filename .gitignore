@@ -40,3 +40,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# blender / 3d pipeline artifacts (not used by the live Three.js scene)
+/artifacts
+/tools
+/public/models
+/public/videos

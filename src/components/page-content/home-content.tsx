@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { ApproachFlowVisual } from "@/components/approach-flow-visual";
 import { AnimatedHeroTitle } from "@/components/animated-hero-title";
 import { LandingScrollFade } from "@/components/landing-scroll-fade";
+import { CinematicReveal } from "@/components/cinematic-reveal";
 import { SectionParallax } from "@/components/section-parallax";
 import { useLanguage } from "@/components/language-provider";
 import {
@@ -92,6 +93,7 @@ export function HomeContent() {
             <AnimatedHeroTitle
               text={copy.heroTitle}
               className="cinematic-hero-title max-w-5xl text-4xl leading-[1.05] md:text-6xl"
+              language={language}
             />
             <p className="max-w-3xl text-base leading-8 text-[color:var(--muted-ink)] md:text-lg">{copy.heroBody}</p>
             <p className="cinematic-hero-statement">
@@ -133,7 +135,7 @@ export function HomeContent() {
       </LandingScrollFade>
 
       <div className="cinematic-scroll-track">
-        <LandingScrollFade>
+        <CinematicReveal direction="left">
           <SectionParallax
             className="cinematic-section-parallax cinematic-section-parallax-lab"
             background={labBackground}
@@ -162,9 +164,9 @@ export function HomeContent() {
               </div>
             </section>
           </SectionParallax>
-        </LandingScrollFade>
+        </CinematicReveal>
 
-        <LandingScrollFade>
+        <CinematicReveal direction="right">
           <SectionParallax
             className="cinematic-section-parallax cinematic-section-parallax-system"
             background={systemBackground}
@@ -197,9 +199,9 @@ export function HomeContent() {
               </div>
             </section>
           </SectionParallax>
-        </LandingScrollFade>
+        </CinematicReveal>
 
-        <LandingScrollFade>
+        <CinematicReveal direction="left">
           <section className="cinematic-section cinematic-approach">
             <div className="cinematic-section-glint" aria-hidden />
             <div className="relative grid gap-8 lg:grid-cols-[0.96fr_1.04fr] lg:items-start">
@@ -237,9 +239,9 @@ export function HomeContent() {
               />
             </div>
           </section>
-        </LandingScrollFade>
+        </CinematicReveal>
 
-        <LandingScrollFade>
+        <CinematicReveal direction="right">
           <SectionParallax
             className="cinematic-section-parallax cinematic-section-parallax-proof"
             background={proofBackground}
@@ -270,9 +272,9 @@ export function HomeContent() {
               </div>
             </section>
           </SectionParallax>
-        </LandingScrollFade>
+        </CinematicReveal>
 
-        <LandingScrollFade>
+        <CinematicReveal direction="left">
           <section className="cinematic-section cinematic-services space-y-6">
             <div className="space-y-2">
               <p className="eyebrow">{copy.capabilitiesLabel}</p>
@@ -290,9 +292,9 @@ export function HomeContent() {
               ))}
             </div>
           </section>
-        </LandingScrollFade>
+        </CinematicReveal>
 
-        <LandingScrollFade>
+        <CinematicReveal direction="right">
           <section className="cinematic-section cinematic-security grid gap-6 md:grid-cols-[1.15fr_1fr]">
             <div className="space-y-3">
               <p className="eyebrow">{copy.securityLabel}</p>
@@ -310,7 +312,7 @@ export function HomeContent() {
               ))}
             </ul>
           </section>
-        </LandingScrollFade>
+        </CinematicReveal>
       </div>
     </div>
   );
