@@ -135,6 +135,44 @@ export function HomeContent() {
       </LandingScrollFade>
 
       <div className="cinematic-scroll-track">
+        <CinematicReveal direction="up">
+          <section className="cinematic-section cinematic-fullstack">
+            <div className="cinematic-section-glint" aria-hidden />
+            <div className="fullstack-header">
+              <p className="eyebrow">{copy.fullStackLabel}</p>
+              <h2 className="fullstack-title">{copy.fullStackTitle}</h2>
+              <p className="fullstack-lead">{copy.fullStackLead}</p>
+            </div>
+
+            <div className="fullstack-grid">
+              <div className="fullstack-contrast">
+                <article className="fullstack-contrast-card fullstack-contrast-wrapper cinematic-hover-plane">
+                  <p className="proof-kicker">{copy.fullStackWrapperLabel}</p>
+                  <p>{copy.fullStackWrapperBody}</p>
+                </article>
+                <article className="fullstack-contrast-card fullstack-contrast-bitlabs cinematic-hover-plane">
+                  <p className="proof-kicker">{copy.fullStackBitlabsLabel}</p>
+                  <p>{copy.fullStackBitlabsBody}</p>
+                </article>
+              </div>
+
+              <div className="fullstack-stack" aria-label={copy.fullStackLayersLabel}>
+                <p className="proof-kicker fullstack-stack-label">{copy.fullStackLayersLabel}</p>
+                {copy.fullStackLayers.map((layer) => (
+                  <article
+                    key={layer.tier}
+                    className="fullstack-layer cinematic-hover-plane"
+                  >
+                    <p className="fullstack-layer-tier">{layer.tier}</p>
+                    <h3 className="fullstack-layer-title">{layer.title}</h3>
+                    <p className="fullstack-layer-body">{layer.body}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+        </CinematicReveal>
+
         <CinematicReveal direction="left">
           <SectionParallax
             className="cinematic-section-parallax cinematic-section-parallax-lab"

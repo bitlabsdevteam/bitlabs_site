@@ -44,6 +44,12 @@ type LabCapability = {
   body: string;
 };
 
+type StackLayer = {
+  tier: string;
+  title: string;
+  body: string;
+};
+
 type ProductionProof = {
   label: string;
   value: string;
@@ -80,6 +86,15 @@ type HomeContent = {
   heroHighlights: HeroHighlight[];
   primaryCta: string;
   secondaryCta: string;
+  fullStackLabel: string;
+  fullStackTitle: string;
+  fullStackLead: string;
+  fullStackWrapperLabel: string;
+  fullStackWrapperBody: string;
+  fullStackBitlabsLabel: string;
+  fullStackBitlabsBody: string;
+  fullStackLayersLabel: string;
+  fullStackLayers: StackLayer[];
   missionLabel: string;
   missionBody: string;
   missionAttribution: string;
@@ -671,6 +686,39 @@ export const homeContent: Record<Language, HomeContent> = {
     ],
     primaryCta: "Talk to BitLabs",
     secondaryCta: "Explore expertise",
+    fullStackLabel: "End to end",
+    fullStackTitle: "We are not AI model wrappers.",
+    fullStackLead:
+      "Most “AI companies” call someone else’s model API and wrap it in a UI. BitLabs owns the entire stack — from the GPU infrastructure to the application that runs on it. Every layer is ours to design, tune, and operate.",
+    fullStackWrapperLabel: "A model wrapper",
+    fullStackWrapperBody:
+      "Calls a hosted model and ships a thin interface. When cost, latency, privacy, or quality breaks, there is nothing deeper to fix.",
+    fullStackBitlabsLabel: "BitLabs",
+    fullStackBitlabsBody:
+      "Owns infrastructure, models, inference, and the application. We tune the whole system, not just the prompt — so it holds up in production.",
+    fullStackLayersLabel: "The full stack",
+    fullStackLayers: [
+      {
+        tier: "Layer 04 / Application",
+        title: "Agents & applications",
+        body: "The product your team actually uses — AI agents, RAG, and custom apps built around your workflow.",
+      },
+      {
+        tier: "Layer 03 / Models",
+        title: "Models",
+        body: "Pre-trained from scratch or fine-tuned, open or closed source, shaped to your task and data.",
+      },
+      {
+        tier: "Layer 02 / Inference",
+        title: "Inference & serving",
+        body: "High-throughput serving with 5D parallelism — runtime, tooling, and orchestration.",
+      },
+      {
+        tier: "Layer 01 / Infrastructure",
+        title: "Infrastructure",
+        body: "Secure cloud and GPU foundations, provisioned and operated for real production load.",
+      },
+    ],
     missionLabel: "Mission",
     missionBody:
       "Turn deep AI research into systems teams can run every day.",
@@ -762,6 +810,39 @@ export const homeContent: Record<Language, HomeContent> = {
     ],
     primaryCta: "BitLabsに相談する",
     secondaryCta: "専門領域を見る",
+    fullStackLabel: "エンドツーエンド",
+    fullStackTitle: "私たちは、AIモデルのラッパーではありません。",
+    fullStackLead:
+      "多くの「AI企業」は、他社のモデルAPIを呼び出してUIで包むだけです。BitLabsはGPUインフラから、その上で動くアプリケーションまで、スタック全体を自分たちで持ちます。すべての層を、設計し、調整し、運用します。",
+    fullStackWrapperLabel: "モデルラッパー",
+    fullStackWrapperBody:
+      "ホスト型モデルを呼び出し、薄いUIを載せるだけ。コスト、レイテンシ、機密性、品質が崩れても、踏み込んで直せる層がありません。",
+    fullStackBitlabsLabel: "BitLabs",
+    fullStackBitlabsBody:
+      "インフラ、モデル、推論、アプリケーションまで自社で保有。プロンプトだけでなくシステム全体を調整し、本番で通用する形にします。",
+    fullStackLayersLabel: "フルスタック",
+    fullStackLayers: [
+      {
+        tier: "Layer 04 / アプリケーション",
+        title: "エージェント・アプリ",
+        body: "現場が実際に使うプロダクト。業務に合わせたAIエージェント、RAG、カスタムアプリ。",
+      },
+      {
+        tier: "Layer 03 / モデル",
+        title: "モデル",
+        body: "ゼロからの事前学習、またはオープン・クローズドの微調整。用途とデータに合わせて作ります。",
+      },
+      {
+        tier: "Layer 02 / 推論",
+        title: "推論・配信",
+        body: "5D並列による高スループット配信。ランタイム、ツール、オーケストレーションまで。",
+      },
+      {
+        tier: "Layer 01 / インフラ",
+        title: "インフラ",
+        body: "セキュアなクラウドとGPU基盤を、本番負荷に耐える形で構築・運用します。",
+      },
+    ],
     missionLabel: "ミッション",
     missionBody:
       "深いAI研究を、毎日運用できるシステムへ変換すること。",
