@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { LanguageProvider } from "@/components/language-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -44,6 +44,15 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://bitlabs.site",
   },
+};
+
+// Mobile rendering baseline: device-width scaling with zoom left enabled for
+// accessibility, and a theme color so iOS Safari / Android Chrome browser
+// chrome matches the dark editorial surface.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#030405",
 };
 
 export default function RootLayout({
