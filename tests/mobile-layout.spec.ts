@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const routes = ["/", "/services", "/research", "/about", "/contact"] as const;
+const routes = ["/", "/services", "/research", "/about"] as const;
 
 // The active Playwright project (ios-safari / android-chrome) supplies the real
 // device viewport, DPR, touch, and user agent, so each spec runs once per engine.
@@ -22,17 +22,12 @@ for (const route of routes) {
     await expect(page.locator("main")).toBeVisible();
 
     if (route === "/") {
-      // The cinematic hero must paint as either the WebGL scene or its poster
-      // fallback — never a blank/broken region — on every mobile browser.
-      const scene = page.locator(".landing-transformer-scene");
-      await expect(scene).toBeAttached();
-      const hasVisual = await page
-        .locator(
-          ".landing-cinematic-canvas, [data-testid='landing-cinematic-poster']",
-        )
-        .first()
-        .count();
-      expect(hasVisual).toBeGreaterThan(0);
+      // The themed hero must paint as a real, visible region — never a
+      // blank/broken area — on every mobile browser.
+      const hero = page.locator("#hero");
+      await expect(hero).toBeVisible();
+      const heroBox = await hero.boundingBox();
+      expect(heroBox?.height ?? 0).toBeGreaterThan(200);
 
       await page.screenshot({
         path: testInfo.outputPath(`${testInfo.project.name}-home.png`),

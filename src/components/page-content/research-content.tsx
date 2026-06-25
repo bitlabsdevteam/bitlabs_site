@@ -16,7 +16,7 @@ export function ResearchContent() {
         <section className="lab-section grid gap-6 md:grid-cols-[0.9fr_1.1fr] md:items-end">
           <div className="space-y-4">
             <p className="eyebrow">{copy.eyebrow}</p>
-            <h1 className="max-w-5xl text-5xl leading-[1.05] md:text-7xl">{copy.title}</h1>
+            <h1 className="max-w-5xl text-4xl leading-[1.08] md:text-6xl">{copy.title}</h1>
           </div>
           <p className="max-w-3xl text-lg leading-8 text-[color:var(--muted-ink)]">{copy.body}</p>
         </section>
