@@ -1,26 +1,28 @@
 "use client";
 
-import { Cpu, Network, Server } from "lucide-react";
+import { Cpu, Network, Server, Gauge } from "lucide-react";
 import { AnimatedHero } from "@/components/ui/animated-hero";
 import RadialOrbitalTimeline, {
   type TimelineItem,
 } from "@/components/ui/radial-orbital-timeline";
+import { IntegrationHero } from "@/components/ui/integration-hero";
 import { HomeExpertise } from "@/components/page-content/home-expertise";
 import { SectionParallax } from "@/components/section-parallax";
 import { useLanguage } from "@/components/language-provider";
-import { homeContent, labCapabilities } from "@/lib/site-content";
+import { homeContent, homePlatforms, labCapabilities } from "@/lib/site-content";
 
 // Icon per pillar, matched to the order of `labCapabilities`:
-// models / multi-agent / inference servers.
-const pillarIcons = [Cpu, Network, Server];
+// models / agents & RAG / production / evals.
+const pillarIcons = [Cpu, Network, Server, Gauge];
 
 export function HomeContent() {
   const { language } = useLanguage();
   const copy = homeContent[language];
+  const platformsCopy = homePlatforms[language];
 
-  // Map the three capability pillars onto the orbital constellation. Each node
-  // links to the other two, so the central core (models → agents → inference)
-  // reads as one connected stack.
+  // Map the capability pillars onto the orbital constellation. Each node
+  // links to the others, so models, agents, production, and evals read as
+  // one connected stack.
   const capabilities = labCapabilities[language];
   const timelineData: TimelineItem[] = capabilities.map((item, index) => {
     const id = index + 1;
@@ -73,6 +75,15 @@ export function HomeContent() {
       </section>
 
       <HomeExpertise />
+
+      <IntegrationHero
+        eyebrow={platformsCopy.eyebrow}
+        title={platformsCopy.title}
+        body={platformsCopy.body}
+        ctaLabel={platformsCopy.ctaLabel}
+        ctaHref="/about#contact-form"
+        platforms={platformsCopy.platforms}
+      />
     </div>
   );
 }

@@ -121,6 +121,19 @@ type HomeContent = {
   securityPoints: string[];
 };
 
+type PlatformLogo = {
+  name: string;
+  src: string;
+};
+
+type HomePlatformsContent = {
+  eyebrow: string;
+  title: string;
+  body: string;
+  ctaLabel: string;
+  platforms: PlatformLogo[];
+};
+
 type AboutContent = {
   metadataTitle: string;
   metadataDescription: string;
@@ -139,6 +152,8 @@ type AboutContent = {
   address: string;
   capitalLabel: string;
   capital: string;
+  banksLabel: string;
+  banks: string[];
 };
 
 type ServicesPageContent = {
@@ -177,6 +192,35 @@ type ResearchContent = {
   note: string;
 };
 
+type CareerRole = {
+  title: string;
+  type: string;
+  location: string;
+  summary: string;
+  focus: string[];
+};
+
+type CareerContent = {
+  metadataTitle: string;
+  metadataDescription: string;
+  eyebrow: string;
+  title: string;
+  body: string;
+  whyLabel: string;
+  whyTitle: string;
+  whyPoints: string[];
+  rolesLabel: string;
+  rolesTitle: string;
+  rolesBody: string;
+  focusLabel: string;
+  roles: CareerRole[];
+  applyLabel: string;
+  applyTitle: string;
+  applyBody: string;
+  applyEmail: string;
+  applyCtaLabel: string;
+};
+
 type ContactContent = {
   metadataTitle: string;
   metadataDescription: string;
@@ -184,6 +228,9 @@ type ContactContent = {
   title: string;
   body: string;
   emailLabel: string;
+  emailAddress: string;
+  emailHelper: string;
+  emailCtaLabel: string;
   locationLabel: string;
   responseLabel: string;
   responseTime: string;
@@ -202,6 +249,28 @@ type ContactFormContent = {
   submitIdle: string;
   submitBusy: string;
   success: string;
+  error: string;
+  helper: string;
+};
+
+type ApplicationFormContent = {
+  nameLabel: string;
+  emailLabel: string;
+  roleLabel: string;
+  rolePlaceholder: string;
+  messageLabel: string;
+  resumeLabel: string;
+  resumeHint: string;
+  nameError: string;
+  emailError: string;
+  roleError: string;
+  messageError: string;
+  resumeError: string;
+  honeypotError: string;
+  submitIdle: string;
+  submitBusy: string;
+  success: string;
+  error: string;
   helper: string;
 };
 
@@ -221,11 +290,13 @@ export const navLinks: Record<Language, NavLink[]> = {
   en: [
     { href: "/", label: "Home" },
     { href: "/services", label: "Services" },
+    { href: "/career", label: "Careers" },
     { href: "/about", label: "About" },
   ],
   ja: [
     { href: "/", label: "ホーム" },
     { href: "/services", label: "サービス" },
+    { href: "/career", label: "採用情報" },
     { href: "/about", label: "会社情報" },
   ],
 };
@@ -233,46 +304,54 @@ export const navLinks: Record<Language, NavLink[]> = {
 export const services: Record<Language, Service[]> = {
   en: [
     {
-      title: "AI agents & RAG systems",
-      summary: "Multi-agent apps and RAG pipelines that use your tools and data dependably in production.",
+      title: "Enterprise AI, production level",
+      summary: "We build, scale, integrate, and deploy AI systems that hold up under real load, inside your enterprise's actual data and access boundaries.",
     },
     {
-      title: "Model training & fine-tuning",
-      summary: "Transformer models pre-trained from scratch or fine-tuned to your task, with evaluation you can trust.",
+      title: "LLM & SLM pre-training, fine-tuning",
+      summary: "Closed and open-source models pre-trained or fine-tuned with modern techniques including JAX and Unsloth, with eval gates before anything ships.",
     },
     {
-      title: "Inference stacks & deployment",
-      summary: "High-throughput, low-latency serving designed with 5D parallelism to run efficiently at scale.",
+      title: "Agentic systems & RAG pipelines",
+      summary: "Sophisticated multi-agent solutions and RAG pipelines built on Claude Agent SDK, LangChain, LangGraph, and Codex, wired into your real workflows.",
+    },
+    {
+      title: "Inference stacks & secure deployment",
+      summary: "High-throughput, low-latency serving designed with 5D parallelism, integrated and deployed securely at scale.",
     },
     {
       title: "Custom AI applications",
       summary: "Focused applications with the right context design and integrations your team uses every day.",
     },
     {
-      title: "Enterprise AI architecture",
-      summary: "Architecture, model path, and data boundaries defined before the build, with fewer surprises later.",
+      title: "Evaluation & reliability engineering",
+      summary: "We are not just builders. Task scorecards, regression suites, and trace-driven evals that keep improving quality release after release.",
     },
   ],
   ja: [
     {
-      title: "AIエージェント・RAG",
-      summary: "実ツールと実データを安定して扱う、マルチエージェントアプリとRAGを本番導入します。",
+      title: "本番レベルのエンタープライズAI",
+      summary: "実負荷に耐えるAIシステムを、貴社の実際のデータ境界とアクセス制御の中で構築・拡張・連携・導入します。",
     },
     {
-      title: "モデル学習・ファインチューニング",
-      summary: "トランスフォーマーをゼロから事前学習、または微調整し、信頼できる評価とともに用意します。",
+      title: "LLM・SLMの事前学習とファインチューニング",
+      summary: "JAXやUnslothを含む最新技術で、クローズド・オープンソース双方のモデルを事前学習・微調整。リリース前には必ず評価ゲートを通します。",
     },
     {
-      title: "推論基盤と導入",
-      summary: "5D並列を活用し、大規模でも高速で効率的な高スループット推論基盤を設計します。",
+      title: "エージェントシステム・RAGパイプライン",
+      summary: "Claude Agent SDK、LangChain、LangGraph、Codexを基盤にした高度なマルチエージェントとRAGパイプラインを、実際の業務フローに組み込みます。",
+    },
+    {
+      title: "推論基盤とセキュアな導入",
+      summary: "5D並列で設計した高スループット・低レイテンシの推論基盤を、安全に大規模導入します。",
     },
     {
       title: "カスタムAIアプリ",
       summary: "コンテキスト設計と連携を重視し、日常業務で使える用途特化のアプリを構築します。",
     },
     {
-      title: "エンタープライズAI設計",
-      summary: "構成、モデル方針、データ境界を実装前に整理し、後工程の手戻りを減らします。",
+      title: "評価・信頼性エンジニアリング",
+      summary: "私たちは作るだけではありません。タスクスコアカード、回帰テスト、トレース解析による評価で、リリースのたびに品質を高め続けます。",
     },
   ],
 };
@@ -280,36 +359,36 @@ export const services: Record<Language, Service[]> = {
 export const expertiseAreas: Record<Language, ExpertiseArea[]> = {
   en: [
     {
-      title: "Enterprise AI architecture",
+      title: "Production-level enterprise AI",
       summary:
-        "We turn business constraints into an architecture you can actually run, around your systems, approvals, and data boundaries.",
+        "We build, scale, integrate, and deploy AI systems around your real systems, approvals, and data boundaries, then evaluate them before and after release.",
     },
     {
-      title: "Inference engineering",
+      title: "Model pre-training & fine-tuning",
       summary:
-        "We build high-throughput, low-latency serving stacks, using 5D parallelism to train and serve large models efficiently.",
+        "We pre-train and fine-tune LLMs and SLMs, closed or open source, with modern techniques including JAX and Unsloth, scored against task benchmarks, not guesswork.",
     },
     {
-      title: "Agents & RAG",
+      title: "Agentic systems & RAG",
       summary:
-        "We build multi-agent apps and RAG pipelines with strong harness and loop engineering you can trust and trace.",
+        "We build sophisticated multi-agent solutions and RAG pipelines on Claude Agent SDK, LangChain, LangGraph, and Codex, evaluated on traces you can audit.",
     },
   ],
   ja: [
     {
-      title: "エンタープライズAI設計",
+      title: "本番レベルのエンタープライズAI",
       summary:
-        "既存システム、承認フロー、データ境界に合わせ、事業制約を実際に運用できるAI設計へ落とし込みます。",
+        "既存システム、承認フロー、データ境界に合わせてAIを構築・拡張・連携・導入し、リリース前後を通じて評価します。",
     },
     {
-      title: "推論エンジニアリング",
+      title: "モデルの事前学習・ファインチューニング",
       summary:
-        "5D並列で大規模モデルを効率的に学習・提供し、高スループット・低レイテンシの推論基盤を構築します。",
+        "JAXやUnslothを含む最新技術で、クローズド・オープンソース問わずLLM・SLMを事前学習・微調整。勘ではなくタスク評価基準で判断します。",
     },
     {
-      title: "エージェント・RAG",
+      title: "エージェントシステム・RAG",
       summary:
-        "ハーネス・ループエンジニアリングを軸に、信頼でき追跡できるマルチエージェントアプリとRAGを構築します。",
+        "Claude Agent SDK、LangChain、LangGraph、Codexを基盤にした高度なマルチエージェントとRAGパイプラインを構築し、検証可能なトレースで評価します。",
     },
   ],
 };
@@ -412,34 +491,44 @@ export const labCapabilities: Record<Language, LabCapability[]> = {
     {
       label: "01 / Models",
       title: "Pre-train & fine-tune",
-      body: "LLMs and SLMs trained from scratch or fine-tuned, open or closed weights, shaped to your domain, data, and latency budget.",
+      body: "LLMs pre-trained and fine-tuned, open or closed weights, with modern techniques like JAX and Unsloth, shaped to your domain, data, and latency budget.",
     },
     {
       label: "02 / Agents",
-      title: "Enterprise multi-agent",
-      body: "Advanced multi-agent systems with orchestration, tools, RAG, memory, and evaluation, all wired into real enterprise workflows.",
+      title: "Agentic systems & RAG",
+      body: "Sophisticated multi-agent solutions and RAG pipelines built on Claude Agent SDK, LangChain, LangGraph, and Codex, wired into real enterprise workflows.",
     },
     {
-      label: "03 / Inference",
-      title: "Inference servers",
-      body: "LLM inference servers designed and set up for production: optimized runtime, parallelism, and secure, low-latency serving.",
+      label: "03 / Production",
+      title: "Scale, integrate, deploy",
+      body: "Enterprise AI taken to production level: high-throughput inference, secure integration with your existing systems, and deployment at scale.",
+    },
+    {
+      label: "04 / Evals",
+      title: "Evals & quality",
+      body: "We are not just builders, we are experts in evaluation. Task scorecards, regression suites, and trace-driven evals that keep improving quality after launch.",
     },
   ],
   ja: [
     {
       label: "01 / モデル",
       title: "事前学習・微調整",
-      body: "LLM・SLMをゼロから学習、またはファインチューニング。重みはオープン／クローズドを問わず、領域・データ・レイテンシ要件に最適化します。",
+      body: "JAXやUnslothなど最新技術を用い、LLMをオープン・クローズド問わず事前学習・微調整。領域・データ・レイテンシ要件に合わせます。",
     },
     {
       label: "02 / エージェント",
-      title: "企業向けマルチエージェント",
-      body: "オーケストレーション、ツール、RAG、メモリ、評価まで備えた高度なマルチエージェントを、実際の業務フローに組み込みます。",
+      title: "エージェントシステム・RAG",
+      body: "Claude Agent SDK、LangChain、LangGraph、Codexを基盤にした高度なマルチエージェントとRAGパイプラインを、実際の業務フローに組み込みます。",
     },
     {
-      label: "03 / 推論",
-      title: "推論サーバー",
-      body: "本番向けにLLM推論サーバーを設計・構築。最適化ランタイム、並列化、安全で低レイテンシな配信を実現します。",
+      label: "03 / 本番運用",
+      title: "拡張・連携・導入",
+      body: "エンタープライズAIを本番レベルへ。高スループット推論、既存システムとの安全な連携、大規模導入までを実現します。",
+    },
+    {
+      label: "04 / 評価",
+      title: "評価と品質",
+      body: "私たちは作るだけの会社ではなく、評価の専門家です。タスクスコアカード、回帰テスト、トレース解析による評価で、リリース後も品質を高め続けます。",
     },
   ],
 };
@@ -595,9 +684,9 @@ export const homeContent: Record<Language, HomeContent> = {
       "Make production AI as dependable as any core system you rely on.",
     visionAttribution: "- BitLabs CEO David Bong",
     labLabel: "Core capabilities",
-    labTitle: "Three things, done deeply",
+    labTitle: "Four disciplines, done deeply",
     labBody:
-      "We don't wrap someone else's API. We pre-train and fine-tune the models, build the enterprise agents, and run the inference servers behind them.",
+      "We don't wrap someone else's API. We pre-train and fine-tune models with JAX and Unsloth, build agentic systems and RAG on Claude Agent SDK, LangChain, LangGraph, and Codex, run production inference, and evaluate everything we ship.",
     productionLabel: "Deep tech",
     productionTitle: "We own the whole stack",
     productionBody:
@@ -721,9 +810,9 @@ export const homeContent: Record<Language, HomeContent> = {
       "本番のAIを、基幹システムと同じくらい信頼できるものにすること。",
     visionAttribution: "- BitLabs CEO David Bong",
     labLabel: "中核領域",
-    labTitle: "3つの領域を、深く",
+    labTitle: "4つの領域を、深く",
     labBody:
-      "他社APIを包むだけではありません。モデルを自ら事前学習・微調整し、企業向けエージェントを構築し、その推論サーバーまで運用します。",
+      "他社APIを包むだけではありません。JAXやUnslothでモデルを事前学習・微調整し、Claude Agent SDK、LangChain、LangGraph、Codexでエージェントシステムを構築し、本番推論を運用し、そして出荷するすべてを評価します。",
     productionLabel: "ディープテック",
     productionTitle: "スタック全体を自社で保有",
     productionBody:
@@ -796,6 +885,8 @@ export const aboutContent: Record<Language, AboutContent> = {
     address: "東京都渋谷区道玄坂一丁目10番8号渋谷道玄坂東急ビル2F-C",
     capitalLabel: "Startup Capital",
     capital: "300万円",
+    banksLabel: "Banking Partners",
+    banks: ["Sumitomo Mitsui Banking Corporation (SMBC)", "GMO Aozora Net Bank"],
   },
   ja: {
     metadataTitle: "会社情報",
@@ -816,6 +907,120 @@ export const aboutContent: Record<Language, AboutContent> = {
     address: "東京都渋谷区道玄坂一丁目10番8号渋谷道玄坂東急ビル2F-C",
     capitalLabel: "資本金",
     capital: "300万円",
+    banksLabel: "取引銀行",
+    banks: ["三井住友銀行", "GMOあおぞらネット銀行"],
+  },
+};
+
+export const careerContent: Record<Language, CareerContent> = {
+  en: {
+    metadataTitle: "Careers",
+    metadataDescription:
+      "BitLabs is expanding its Tokyo AI lab. We're hiring AI Engineers and AI Researchers who are passionate about building and training production AI systems.",
+    eyebrow: "Careers",
+    title: "We're expanding our team",
+    body:
+      "BitLabs is growing, and we're looking for people who are genuinely passionate and enthusiastic about AI, not just interested in the label. If you want to train models, build agents, and ship real production systems, we want to hear from you.",
+    whyLabel: "Why BitLabs",
+    whyTitle: "Work on the whole stack, not a thin wrapper",
+    whyPoints: [
+      "Own real problems end to end, from model weights to production deployment",
+      "Work alongside a small, senior team with deep model and infrastructure expertise",
+      "Ship systems that reach production, not demos left on a shelf",
+      "Research and engineering under one roof, in the heart of Tokyo",
+    ],
+    rolesLabel: "Open roles",
+    rolesTitle: "AI Engineer & AI Researcher",
+    rolesBody:
+      "We're hiring across engineering and research. Both roles work closely together, so the lines blur by design.",
+    focusLabel: "What you'll focus on",
+    roles: [
+      {
+        title: "AI Engineer",
+        type: "Full-time / Contract",
+        location: "Tokyo, Japan",
+        summary:
+          "Build and ship the agentic systems, RAG pipelines, and inference stacks our clients run in production.",
+        focus: [
+          "Design and build agentic systems and RAG pipelines on modern frameworks",
+          "Build and operate high-throughput inference and serving infrastructure",
+          "Integrate AI systems securely into enterprise environments",
+          "Write evaluation harnesses that keep quality honest release after release",
+        ],
+      },
+      {
+        title: "AI Researcher",
+        type: "Full-time / Contract",
+        location: "Tokyo, Japan",
+        summary:
+          "Push our model training and fine-tuning work forward, and turn promising ideas into systems we can ship.",
+        focus: [
+          "Pre-train and fine-tune LLMs and SLMs, open or closed source",
+          "Research transformer architecture, training efficiency, and evaluation",
+          "Prototype ideas as PoCs and prove them before they reach production",
+          "Publish internal lab notes that inform what we build next",
+        ],
+      },
+    ],
+    applyLabel: "Apply",
+    applyTitle: "Passionate about AI? Let's talk",
+    applyBody:
+      "Email us your background, what you've built, and why AI is what you want to spend your time on. Attach your CV, tell us which role fits, or if you're not sure, tell us anyway.",
+    applyEmail: "david@bitlabs.site",
+    applyCtaLabel: "Email your application",
+  },
+  ja: {
+    metadataTitle: "採用情報",
+    metadataDescription:
+      "BitLabsは東京のAIラボとしてチームを拡大しています。本番AIシステムの構築・学習に情熱を持つAIエンジニア・AIリサーチャーを募集中です。",
+    eyebrow: "採用情報",
+    title: "チームを拡大しています",
+    body:
+      "BitLabsは成長中です。肩書きとしてのAIに興味があるだけでなく、AIそのものに情熱と熱意を持つ方を探しています。モデルを学習し、エージェントを構築し、実際に本番で動くシステムを届けたい方からのご連絡をお待ちしています。",
+    whyLabel: "BitLabsで働く理由",
+    whyTitle: "薄いラッパーではなく、スタック全体に関わる",
+    whyPoints: [
+      "モデルの重みから本番導入まで、実際の課題を一貫して担当できる",
+      "モデルと基盤に深い専門性を持つ少数精鋭のチームと働ける",
+      "デモで終わらせず、本番で動くシステムを届けられる",
+      "研究とエンジニアリングを一つのチームで、東京の中心で行える",
+    ],
+    rolesLabel: "募集職種",
+    rolesTitle: "AIエンジニア・AIリサーチャー",
+    rolesBody: "エンジニアリングと研究の両面で採用しています。両職種は密接に連携するため、境界はあえて明確にしていません。",
+    focusLabel: "主な業務内容",
+    roles: [
+      {
+        title: "AIエンジニア",
+        type: "正社員・業務委託",
+        location: "東京都",
+        summary: "クライアントが本番で運用するエージェントシステム、RAGパイプライン、推論基盤を構築・出荷します。",
+        focus: [
+          "最新フレームワークによるエージェントシステム・RAGパイプラインの設計・構築",
+          "高スループット推論・配信基盤の構築と運用",
+          "AIシステムをエンタープライズ環境へ安全に統合",
+          "リリースのたびに品質を担保する評価ハーネスの構築",
+        ],
+      },
+      {
+        title: "AIリサーチャー",
+        type: "正社員・業務委託",
+        location: "東京都",
+        summary: "モデルの学習・微調整に関する研究を前進させ、有望なアイデアを出荷できるシステムへ変える。",
+        focus: [
+          "オープン・クローズド問わずLLM・SLMの事前学習・微調整",
+          "トランスフォーマー設計、学習効率、評価手法の研究",
+          "アイデアをPoCとして検証し、本番投入前に効果を確認",
+          "社内ラボノートを公開し、次に構築するものの指針とする",
+        ],
+      },
+    ],
+    applyLabel: "応募",
+    applyTitle: "AIに情熱がある方、ぜひご連絡ください",
+    applyBody:
+      "これまでの経歴、作ってきたもの、AIに時間を注ぎたい理由をメールでお送りください。履歴書・職務経歴書（CV）を添付し、希望する職種を教えてください。迷っている場合もお気軽にご連絡ください。",
+    applyEmail: "david@bitlabs.site",
+    applyCtaLabel: "応募メールを送る",
   },
 };
 
@@ -823,20 +1028,49 @@ export const servicesPageContent: Record<Language, ServicesPageContent> = {
   en: {
     metadataTitle: "Services",
     metadataDescription:
-      "BitLabs services: AI agents and RAG, model training and fine-tuning, inference stacks, custom AI apps, and enterprise AI architecture.",
+      "BitLabs services: production-level enterprise AI, LLM/SLM pre-training and fine-tuning with JAX and Unsloth, agentic systems and RAG on Claude Agent SDK, LangChain, LangGraph, and Codex, inference stacks, custom AI apps, and evaluation and reliability engineering.",
     eyebrow: "Services",
-    title: "Services for teams building real AI systems",
+    title: "Deep-tech AI, built, trained, evaluated, and shipped to production",
     body:
-      "We keep scope tight and build what moves your system toward production.",
+      "We build, scale, integrate, and deploy enterprise AI at production level. We pre-train and fine-tune the models, build the agents, and evaluate everything before it ships, not just once, but release after release.",
   },
   ja: {
     metadataTitle: "サービス",
     metadataDescription:
-      "BitLabsのサービス。AIエージェントとRAG、モデル学習・ファインチューニング、推論基盤、カスタムAIアプリ、エンタープライズAI設計。",
+      "BitLabsのサービス。本番レベルのエンタープライズAI、JAXとUnslothによるLLM・SLMの事前学習・ファインチューニング、Claude Agent SDK、LangChain、LangGraph、Codexによるエージェントシステムとの RAG、推論基盤、カスタムAIアプリ、評価・信頼性エンジニアリング。",
     eyebrow: "サービス",
-    title: "本番のAIを作るチームのためのサービス",
+    title: "ディープテックAIを、構築し、学習させ、評価し、本番へ届ける",
     body:
-      "スコープを絞り、本番に近づくものから構築します。",
+      "エンタープライズAIを本番レベルで構築・拡張・連携・導入します。モデルを自ら事前学習・微調整し、エージェントを構築し、出荷前だけでなくリリースのたびに評価し続けます。",
+  },
+};
+
+export const homePlatforms: Record<Language, HomePlatformsContent> = {
+  en: {
+    eyebrow: "Platforms",
+    title: "Experts in enterprise AI, on the platforms you run",
+    body:
+      "We build and deploy on Microsoft Azure, AWS, Anthropic, and OpenAI, matching the model and infrastructure to what your enterprise already relies on.",
+    ctaLabel: "Talk to us",
+    platforms: [
+      { name: "Microsoft Azure", src: "/images/logos/azure.svg" },
+      { name: "AWS", src: "/images/logos/aws.svg" },
+      { name: "Anthropic", src: "/images/logos/anthropic.svg" },
+      { name: "OpenAI", src: "/images/logos/openai.svg" },
+    ],
+  },
+  ja: {
+    eyebrow: "プラットフォーム",
+    title: "お使いの基盤の上で、エンタープライズAIを深く実装する",
+    body:
+      "Microsoft Azure、AWS、Anthropic、OpenAIの上に構築・展開し、貴社が既に依拠するモデルとインフラに合わせて設計します。",
+    ctaLabel: "お問い合わせ",
+    platforms: [
+      { name: "Microsoft Azure", src: "/images/logos/azure.svg" },
+      { name: "AWS", src: "/images/logos/aws.svg" },
+      { name: "Anthropic", src: "/images/logos/anthropic.svg" },
+      { name: "OpenAI", src: "/images/logos/openai.svg" },
+    ],
   },
 };
 
@@ -844,20 +1078,20 @@ export const expertisePageContent: Record<Language, ExpertisePageContent> = {
   en: {
     metadataTitle: "Expertise",
     metadataDescription:
-      "BitLabs expertise: transformer model training, fine-tuning, 5D parallelism, high-throughput inference, RAG, and agentic systems.",
+      "BitLabs expertise: production-level enterprise AI, LLM/SLM pre-training and fine-tuning with JAX and Unsloth, agentic systems and RAG on Claude Agent SDK, LangChain, LangGraph, and Codex, and evaluation to keep improving quality.",
     eyebrow: "Expertise",
-    title: "Models, inference, agents, and the architecture around them",
+    title: "Deep-tech AI expertise, from model weights to production",
     body:
-      "BitLabs goes deep on transformer models, high-throughput inference, and agentic systems, then ships them to production.",
+      "BitLabs goes deep on model training with JAX and Unsloth, agentic systems and RAG on Claude Agent SDK, LangChain, LangGraph, and Codex, and production-level enterprise deployment. We are not just builders. We are experts in evaluation, and we use it to keep improving quality after launch.",
   },
   ja: {
     metadataTitle: "専門領域",
     metadataDescription:
-      "BitLabsの専門領域。トランスフォーマーモデルの学習、ファインチューニング、5D並列、高スループット推論、RAG、AIエージェント。",
+      "BitLabsの専門領域。本番レベルのエンタープライズAI、JAXとUnslothによるLLM・SLMの事前学習・ファインチューニング、Claude Agent SDK、LangChain、LangGraph、CodexによるエージェントシステムとRAG、そして品質を高め続ける評価。",
     eyebrow: "専門領域",
-    title: "モデル、推論、エージェント、そしてその周辺設計",
+    title: "モデルの重みから本番運用まで、ディープテックの専門性",
     body:
-      "BitLabsはトランスフォーマーモデル、高スループット推論、AIエージェントを深く掘り下げ、本番まで届けます。",
+      "BitLabsはJAXとUnslothによるモデル学習、Claude Agent SDK、LangChain、LangGraph、Codexによるエージェントシステム・RAG、そして本番レベルのエンタープライズ導入を深く掘り下げます。私たちは作るだけの会社ではなく、評価の専門家です。出荷後も評価を通じて品質を高め続けます。",
   },
 };
 
@@ -932,6 +1166,9 @@ export const contactContent: Record<Language, ContactContent> = {
     body:
       "Reach out if you need to train or fine-tune a model, scale up inference, or build an AI agent or RAG system. Share your goal and constraints, and we'll reply with a practical next step.",
     emailLabel: "Email",
+    emailAddress: "david@bitlabs.site",
+    emailHelper: "Send your inquiry directly to this address, including your goal, constraints, and any timeline.",
+    emailCtaLabel: "Send inquiry",
     locationLabel: "Location",
     responseLabel: "Typical response",
     responseTime: "Within 1 business day",
@@ -945,6 +1182,9 @@ export const contactContent: Record<Language, ContactContent> = {
     body:
       "モデルの学習・微調整、推論のスケール、AIエージェントやRAGの構築をご検討中ならご相談ください。目標と制約をお知らせいただければ、現実的な次の一歩をご提案します。",
     emailLabel: "メール",
+    emailAddress: "david@bitlabs.site",
+    emailHelper: "目標や制約、ご希望のスケジュールを添えて、こちらのアドレスへ直接お問い合わせください。",
+    emailCtaLabel: "問い合わせを送信",
     locationLabel: "所在地",
     responseLabel: "通常のご返信目安",
     responseTime: "1営業日以内",
@@ -965,6 +1205,7 @@ export const contactFormContent: Record<Language, ContactFormContent> = {
     submitIdle: "Send inquiry",
     submitBusy: "Sending...",
     success: "Your inquiry has been received. We usually reply within one business day.",
+    error: "Something went wrong sending your inquiry. Please try again or email us directly.",
     helper: "Please use a work email. A simple spam check protects this form.",
   },
   ja: {
@@ -980,7 +1221,51 @@ export const contactFormContent: Record<Language, ContactFormContent> = {
     submitIdle: "問い合わせを送信",
     submitBusy: "送信中...",
     success: "お問い合わせを受け付けました。通常1営業日以内にご返信します。",
+    error: "送信中にエラーが発生しました。もう一度お試しいただくか、直接メールでご連絡ください。",
     helper: "勤務先メールアドレスをご利用ください。簡易的なスパム対策を入れています。",
+  },
+};
+
+export const applicationFormContent: Record<Language, ApplicationFormContent> = {
+  en: {
+    nameLabel: "Name",
+    emailLabel: "Email",
+    roleLabel: "Role",
+    rolePlaceholder: "Select a role",
+    messageLabel: "Tell us about yourself",
+    resumeLabel: "Resume / CV (optional)",
+    resumeHint: "PDF, DOC, or DOCX — up to 5MB.",
+    nameError: "Please enter your name.",
+    emailError: "Please enter a valid email address.",
+    roleError: "Please select a role.",
+    messageError: "Please provide at least 20 characters.",
+    resumeError: "Please upload a PDF, DOC, or DOCX file under 5MB.",
+    honeypotError: "Invalid submission.",
+    submitIdle: "Submit application",
+    submitBusy: "Sending...",
+    success: "Your application has been received. We usually reply within one business day.",
+    error: "Something went wrong sending your application. Please try again or email us directly.",
+    helper: "Include your background, what you've built, and why AI is what you want to work on.",
+  },
+  ja: {
+    nameLabel: "氏名",
+    emailLabel: "メールアドレス",
+    roleLabel: "希望職種",
+    rolePlaceholder: "職種を選択してください",
+    messageLabel: "自己紹介",
+    resumeLabel: "履歴書・職務経歴書（任意）",
+    resumeHint: "PDF、DOC、DOCX形式、5MBまで。",
+    nameError: "氏名を入力してください。",
+    emailError: "有効なメールアドレスを入力してください。",
+    roleError: "希望職種を選択してください。",
+    messageError: "20文字以上でご記入ください。",
+    resumeError: "PDF、DOC、DOCX形式で5MB以下のファイルをアップロードしてください。",
+    honeypotError: "無効な送信です。",
+    submitIdle: "応募する",
+    submitBusy: "送信中...",
+    success: "ご応募を受け付けました。通常1営業日以内にご返信します。",
+    error: "送信中にエラーが発生しました。もう一度お試しいただくか、直接メールでご連絡ください。",
+    helper: "経歴、これまでに作られたもの、AIに取り組みたい理由をお聞かせください。",
   },
 };
 

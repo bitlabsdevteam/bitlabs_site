@@ -25,6 +25,7 @@ function LocalizedContactForm({ language }: { language: Language }) {
   const copy = contactFormContent[language];
   const schema = useMemo(() => createContactSchema(language), [language]);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
   const {
     register,
     handleSubmit,
@@ -46,9 +47,24 @@ function LocalizedContactForm({ language }: { language: Language }) {
       return;
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    reset();
-    setSubmitted(true);
+    setSubmitError(false);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send inquiry.");
+      }
+
+      reset();
+      setSubmitted(true);
+    } catch {
+      setSubmitError(true);
+    }
   };
 
   return (
@@ -106,6 +122,7 @@ function LocalizedContactForm({ language }: { language: Language }) {
       </button>
 
       {submitted ? <p className="text-center text-sm text-[color:var(--accent)]">{copy.success}</p> : null}
+      {submitError ? <p className="text-center text-sm text-[color:var(--danger)]">{copy.error}</p> : null}
 
       <p className="text-center text-xs text-[color:var(--muted-ink)]">{copy.helper}</p>
     </form>

@@ -63,7 +63,7 @@ export default function RootLayout({
 }>) {
   return (
     // Dark-only: the `dark` class is fixed on <html> (no theme switching).
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" data-scroll-behavior="smooth">
       <body className="flex min-h-screen flex-col bg-[color:var(--paper)] text-[color:var(--ink)] antialiased">
         <LanguageProvider>
           <div className="page-grain" aria-hidden />

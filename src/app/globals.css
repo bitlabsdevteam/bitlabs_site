@@ -153,6 +153,29 @@
   }
 }
 
+@keyframes platform-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.platform-marquee-track {
+  animation: platform-marquee 28s linear infinite;
+}
+
+.platform-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .platform-marquee-track {
+    animation: none;
+  }
+}
+
 /* Full-bleed escape so the themed hero spans the viewport width even though
    it renders inside the centered `<main>` container. */
 .home-hero-bleed {
