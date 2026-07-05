@@ -309,7 +309,7 @@ export const services: Record<Language, Service[]> = {
     },
     {
       title: "LLM & SLM pre-training, fine-tuning",
-      summary: "Closed and open-source models pre-trained or fine-tuned with modern techniques including JAX and Unsloth, with eval gates before anything ships.",
+      summary: "Closed and open-source models pre-trained at scale with 5D parallelism (data, tensor, pipeline, sequence, and expert) or fine-tuned with modern techniques including JAX and Unsloth, with eval gates before anything ships.",
     },
     {
       title: "Agentic systems & RAG pipelines",
@@ -317,7 +317,7 @@ export const services: Record<Language, Service[]> = {
     },
     {
       title: "Inference stacks & secure deployment",
-      summary: "High-throughput, low-latency serving designed with 5D parallelism, integrated and deployed securely at scale.",
+      summary: "High-throughput, low-latency serving with tensor and pipeline parallelism, tuned batching, and KV cache efficiency, deployed securely at scale.",
     },
     {
       title: "Custom AI applications",
@@ -335,7 +335,7 @@ export const services: Record<Language, Service[]> = {
     },
     {
       title: "LLM・SLMの事前学習とファインチューニング",
-      summary: "JAXやUnslothを含む最新技術で、クローズド・オープンソース双方のモデルを事前学習・微調整。リリース前には必ず評価ゲートを通します。",
+      summary: "データ・テンソル・パイプライン・シーケンス・エキスパートの5D並列で大規模に事前学習、またはJAXやUnslothを含む最新技術で微調整。リリース前には必ず評価ゲートを通します。",
     },
     {
       title: "エージェントシステム・RAGパイプライン",
@@ -343,7 +343,7 @@ export const services: Record<Language, Service[]> = {
     },
     {
       title: "推論基盤とセキュアな導入",
-      summary: "5D並列で設計した高スループット・低レイテンシの推論基盤を、安全に大規模導入します。",
+      summary: "テンソル・パイプライン並列、バッチングとKVキャッシュを最適化した高スループット・低レイテンシの推論基盤を、安全に大規模導入します。",
     },
     {
       title: "カスタムAIアプリ",
@@ -366,7 +366,7 @@ export const expertiseAreas: Record<Language, ExpertiseArea[]> = {
     {
       title: "Model pre-training & fine-tuning",
       summary:
-        "We pre-train and fine-tune LLMs and SLMs, closed or open source, with modern techniques including JAX and Unsloth, scored against task benchmarks, not guesswork.",
+        "We pre-train LLMs and SLMs at scale with 5D parallelism, closed or open source, and fine-tune with modern techniques including JAX and Unsloth, scored against task benchmarks, not guesswork.",
     },
     {
       title: "Agentic systems & RAG",
@@ -383,7 +383,7 @@ export const expertiseAreas: Record<Language, ExpertiseArea[]> = {
     {
       title: "モデルの事前学習・ファインチューニング",
       summary:
-        "JAXやUnslothを含む最新技術で、クローズド・オープンソース問わずLLM・SLMを事前学習・微調整。勘ではなくタスク評価基準で判断します。",
+        "5D並列でLLM・SLMをクローズド・オープンソース問わず大規模に事前学習し、JAXやUnslothを含む最新技術で微調整。勘ではなくタスク評価基準で判断します。",
     },
     {
       title: "エージェントシステム・RAG",
@@ -491,7 +491,7 @@ export const labCapabilities: Record<Language, LabCapability[]> = {
     {
       label: "01 / Models",
       title: "Pre-train & fine-tune",
-      body: "LLMs pre-trained and fine-tuned, open or closed weights, with modern techniques like JAX and Unsloth, shaped to your domain, data, and latency budget.",
+      body: "LLMs and SLMs pre-trained at scale with 5D parallelism, open or closed weights, then fine-tuned with modern techniques like JAX and Unsloth, shaped to your domain, data, and latency budget.",
     },
     {
       label: "02 / Agents",
@@ -513,7 +513,7 @@ export const labCapabilities: Record<Language, LabCapability[]> = {
     {
       label: "01 / モデル",
       title: "事前学習・微調整",
-      body: "JAXやUnslothなど最新技術を用い、LLMをオープン・クローズド問わず事前学習・微調整。領域・データ・レイテンシ要件に合わせます。",
+      body: "5D並列でLLM・SLMをオープン・クローズド問わず大規模に事前学習し、JAXやUnslothなど最新技術で微調整。領域・データ・レイテンシ要件に合わせます。",
     },
     {
       label: "02 / エージェント",
@@ -538,7 +538,7 @@ export const productionProofs: Record<Language, ProductionProof[]> = {
     {
       label: "Research",
       value: "We train, not wrap",
-      body: "Transformer pre-training, custom tokenizers, and fine-tuning pipelines for LLMs and SLMs.",
+      body: "Transformer pre-training with 5D parallelism, custom tokenizers, and fine-tuning pipelines for LLMs and SLMs.",
     },
     {
       label: "Engineering",
@@ -548,14 +548,14 @@ export const productionProofs: Record<Language, ProductionProof[]> = {
     {
       label: "Production",
       value: "We serve at scale",
-      body: "Inference servers with multi-dimensional parallelism and secure deployment, hardened for real load.",
+      body: "Inference servers with tensor and pipeline parallelism and secure deployment, hardened for real load.",
     },
   ],
   ja: [
     {
       label: "研究",
       value: "包むのではなく学習する",
-      body: "トランスフォーマーの事前学習、カスタムトークナイザ、LLM・SLMのファインチューニング基盤。",
+      body: "5D並列によるトランスフォーマーの事前学習、カスタムトークナイザ、LLM・SLMのファインチューニング基盤。",
     },
     {
       label: "エンジニアリング",
@@ -565,7 +565,7 @@ export const productionProofs: Record<Language, ProductionProof[]> = {
     {
       label: "本番運用",
       value: "大規模に提供する",
-      body: "多次元並列とセキュアな配備を備えた推論サーバーを、実負荷向けに堅牢化。",
+      body: "テンソル・パイプライン並列とセキュアな配備を備えた推論サーバーを、実負荷向けに堅牢化。",
     },
   ],
 };
@@ -662,12 +662,12 @@ export const homeContent: Record<Language, HomeContent> = {
       {
         tier: "Layer 03 / Models",
         title: "Models",
-        body: "Pre-trained from scratch or fine-tuned, open or closed source, shaped to your task and data.",
+        body: "Pre-trained from scratch with 5D parallelism or fine-tuned, open or closed source, shaped to your task and data.",
       },
       {
         tier: "Layer 02 / Inference",
         title: "Inference & serving",
-        body: "High-throughput serving with 5D parallelism: runtime, tooling, and orchestration.",
+        body: "High-throughput serving with tensor and pipeline parallelism: runtime, tooling, and orchestration.",
       },
       {
         tier: "Layer 01 / Infrastructure",
@@ -788,12 +788,12 @@ export const homeContent: Record<Language, HomeContent> = {
       {
         tier: "Layer 03 / モデル",
         title: "モデル",
-        body: "ゼロからの事前学習、またはオープン・クローズドの微調整。用途とデータに合わせて作ります。",
+        body: "5D並列によるゼロからの事前学習、またはオープン・クローズドの微調整。用途とデータに合わせて作ります。",
       },
       {
         tier: "Layer 02 / 推論",
         title: "推論・配信",
-        body: "5D並列による高スループット配信。ランタイム、ツール、オーケストレーションまで。",
+        body: "テンソル・パイプライン並列による高スループット配信。ランタイム、ツール、オーケストレーションまで。",
       },
       {
         tier: "Layer 01 / インフラ",
