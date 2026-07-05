@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMotionPreferences } from "@/components/motion-preferences";
 
 type AnimatedHeroTitleProps = {
@@ -17,9 +16,11 @@ type TitleToken = {
   clusterIndex?: number;
 };
 
-const INITIAL_REVEAL_BASE_MS = 1320;
-const LOOP_ACTIVE_MS = 1180;
+// Per-character typing cadence and the pauses around the keep-it-alive loop.
+const TYPE_STEP_MS = 28;
+const ERASE_STEP_MS = 22;
 const LOOP_DELAYS_MS = [6200, 6900, 7600] as const;
+const LOOP_HOLD_MS = 520;
 
 function splitEnglishTokens(text: string): TitleToken[] {
   const characters = Array.from(text);
@@ -107,17 +108,6 @@ function tokenizeTitle(text: string, language: "en" | "ja") {
   });
 }
 
-function buildLoopSelection(totalClusters: number, cycle: number) {
-  if (totalClusters === 0) {
-    return [];
-  }
-
-  const windowSize = Math.min(totalClusters, Math.max(2, Math.ceil(totalClusters * 0.18)));
-  const start = (cycle * 3) % totalClusters;
-
-  return Array.from({ length: windowSize }, (_, offset) => (start + offset) % totalClusters);
-}
-
 export function AnimatedHeroTitle({
   text,
   className,
@@ -157,61 +147,101 @@ function AnimatedHeroTitleMotion({
   language,
 }: AnimatedHeroTitleProps & { language: "en" | "ja" }) {
   const tokens = useMemo(() => tokenizeTitle(text, language), [language, text]);
-  const clusterCount = useMemo(
-    () => tokens.filter((token) => token.kind === "cluster").length,
-    [tokens],
-  );
-  const [phase, setPhase] = useState<"revealing" | "settled">(
-    clusterCount === 0 ? "settled" : "revealing",
-  );
-  const [activeClusters, setActiveClusters] = useState<number[]>([]);
+  // Annotate every token with its starting character offset and exploded
+  // characters so the caret can advance one character at a time during render.
+  const layout = useMemo(() => {
+    const lengths = tokens.map((token) => Array.from(token.value).length);
+    const entries = tokens.map((token, i) => ({
+      token,
+      characters: Array.from(token.value),
+      start: lengths.slice(0, i).reduce((sum, length) => sum + length, 0),
+    }));
+    return { entries, totalChars: lengths.reduce((sum, length) => sum + length, 0) };
+  }, [tokens]);
+  const totalChars = layout.totalChars;
+  // Length of the trailing word, used as the bounded chunk the loop retypes.
+  const trailingChars = useMemo(() => {
+    for (let i = tokens.length - 1; i >= 0; i -= 1) {
+      if (tokens[i].kind === "cluster") {
+        return Array.from(tokens[i].value).length;
+      }
+    }
+    return 0;
+  }, [tokens]);
+
+  const [typed, setTyped] = useState(0);
+  const [settled, setSettled] = useState(totalChars === 0);
+  const [active, setActive] = useState(false);
   const [cycle, setCycle] = useState(0);
-  const [sweepKey, setSweepKey] = useState(1);
-  const [sweepMode, setSweepMode] = useState<"full" | "partial">("full");
+
+  const timers = useRef<number[]>([]);
 
   useEffect(() => {
-    if (clusterCount === 0) {
+    if (totalChars === 0) {
       return;
     }
 
-    const timers: number[] = [];
-    const initialDuration = INITIAL_REVEAL_BASE_MS + Math.min(clusterCount * 36, 840);
+    const pending = timers.current;
+    let frame = 0;
+    const clearAll = () => {
+      for (const id of pending) {
+        window.clearTimeout(id);
+        window.clearInterval(id);
+      }
+      pending.length = 0;
+      if (frame) window.cancelAnimationFrame(frame);
+    };
 
+    // Drive `typed` toward a target from `from`, paced by elapsed wall-clock time
+    // rather than tick count, so a busy main thread (e.g. WebGL init) self-corrects
+    // instead of stalling the caret.
+    const animateTo = (from: number, target: number, stepMs: number, done: () => void) => {
+      const start = performance.now();
+      const distance = Math.abs(target - from);
+      const direction = target >= from ? 1 : -1;
+      const tick = (now: number) => {
+        const steps = Math.min(distance, Math.floor((now - start) / stepMs));
+        setTyped(from + direction * steps);
+        if (steps >= distance) {
+          done();
+          return;
+        }
+        frame = window.requestAnimationFrame(tick);
+      };
+      frame = window.requestAnimationFrame(tick);
+    };
+
+    // Keep-it-alive: erase the trailing word and retype it, on a gentle cadence.
     const scheduleLoop = (cycleIndex: number) => {
       const delay = LOOP_DELAYS_MS[cycleIndex % LOOP_DELAYS_MS.length];
+      const id = window.setTimeout(() => {
+        setActive(true);
+        setCycle(cycleIndex + 1);
+        const eraseTarget = Math.max(0, totalChars - Math.max(1, trailingChars));
 
-      timers.push(
-        window.setTimeout(() => {
-          setCycle(cycleIndex + 1);
-          setActiveClusters(buildLoopSelection(clusterCount, cycleIndex));
-          setSweepMode("partial");
-          setSweepKey((current) => current + 1);
-
-          timers.push(
-            window.setTimeout(() => {
-              setActiveClusters([]);
+        animateTo(totalChars, eraseTarget, ERASE_STEP_MS, () => {
+          const hold = window.setTimeout(() => {
+            animateTo(eraseTarget, totalChars, TYPE_STEP_MS, () => {
+              setActive(false);
               scheduleLoop(cycleIndex + 1);
-            }, LOOP_ACTIVE_MS),
-          );
-        }, delay),
-      );
+            });
+          }, LOOP_HOLD_MS);
+          pending.push(hold);
+        });
+      }, delay);
+      pending.push(id);
     };
 
-    timers.push(
-      window.setTimeout(() => {
-        setPhase("settled");
-        scheduleLoop(0);
-      }, initialDuration),
-    );
+    animateTo(0, totalChars, TYPE_STEP_MS, () => {
+      setSettled(true);
+      scheduleLoop(0);
+    });
 
-    return () => {
-      for (const timer of timers) {
-        window.clearTimeout(timer);
-      }
-    };
-  }, [clusterCount]);
+    return clearAll;
+  }, [totalChars, trailingChars]);
 
-  const loopState = phase === "revealing" ? "revealing" : activeClusters.length > 0 ? "active" : "idle";
+  const phase = settled ? "settled" : "revealing";
+  const loopState = !settled ? "revealing" : active ? "active" : "idle";
 
   return (
     <h1
@@ -226,13 +256,17 @@ function AnimatedHeroTitleMotion({
     >
       <span className="sr-only">{text}</span>
       <span aria-hidden="true" className="animated-hero-title__visual">
+        {/* Invisible full-text copy reserves the final wrapped box so the
+            headline never shifts layout while it types. */}
+        <span className="animated-hero-title__sizer">{text}</span>
         <span className="animated-hero-title__text">
-          {tokens.map((token, index) => {
+          {layout.entries.map(({ token, characters, start }, index) => {
             if (token.kind === "whitespace") {
               return (
                 <span
                   key={`space-${index}`}
                   className="animated-hero-title__whitespace whitespace-pre"
+                  data-typed={start < typed ? "true" : "false"}
                 >
                   {token.value}
                 </span>
@@ -240,11 +274,6 @@ function AnimatedHeroTitleMotion({
             }
 
             const clusterIndex = token.clusterIndex ?? 0;
-            const tokenDelay = clusterIndex * 0.055;
-            const isActive = activeClusters.includes(clusterIndex);
-            const clusterStyle = {
-              "--hero-delay": `${tokenDelay}s`,
-            } as CSSProperties;
             const clusterClassName = token.keepTogether
               ? "animated-hero-title__cluster animated-hero-title__cluster--grouped"
               : "animated-hero-title__cluster";
@@ -253,148 +282,22 @@ function AnimatedHeroTitleMotion({
               <span
                 key={`cluster-${clusterIndex}`}
                 className={clusterClassName}
-                style={clusterStyle}
                 data-cluster-text={token.value}
-                data-cluster-active={isActive ? "true" : "false"}
               >
-                <motion.span
-                  className="animated-hero-title__cluster-base"
-                  initial={{ opacity: 0.16, filter: "blur(14px)", y: 14 }}
-                  animate={
-                    isActive
-                      ? {
-                          opacity: [1, 0.86, 1],
-                          y: [0, -1.5, 0],
-                          transition: { duration: 0.84, ease: [0.2, 1, 0.36, 1] },
-                        }
-                      : phase === "revealing"
-                        ? {
-                            opacity: 1,
-                            filter: "blur(0px)",
-                            y: 0,
-                            transition: {
-                              delay: tokenDelay,
-                              duration: 1.15,
-                              ease: [0.22, 1, 0.36, 1],
-                            },
-                          }
-                        : {
-                            opacity: 1,
-                            filter: "blur(0px)",
-                            y: 0,
-                            transition: { duration: 0.52, ease: [0.22, 1, 0.36, 1] },
-                          }
-                  }
-                >
-                  {token.value}
-                </motion.span>
-                <motion.span
-                  className="animated-hero-title__cluster-ghost"
-                  initial={{ opacity: 0.72, filter: "blur(22px)", x: -8, y: 8 }}
-                  animate={
-                    isActive
-                      ? {
-                          opacity: [0.08, 0.38, 0.12],
-                          x: [0, 2, -0.5, 0],
-                          y: [0, -1, 0.5, 0],
-                          filter: ["blur(4px)", "blur(12px)", "blur(5px)"],
-                          transition: { duration: 1.02, ease: [0.18, 1, 0.3, 1] },
-                        }
-                      : phase === "revealing"
-                        ? {
-                            opacity: [0.72, 0.18, 0.06],
-                            x: [-8, -1, 0],
-                            y: [8, 1, 0],
-                            filter: ["blur(22px)", "blur(11px)", "blur(4px)"],
-                            transition: {
-                              delay: tokenDelay * 0.9,
-                              duration: 1.4,
-                              ease: [0.18, 1, 0.3, 1],
-                            },
-                          }
-                        : {
-                            opacity: 0.07,
-                            x: 0,
-                            y: 0,
-                            filter: "blur(4px)",
-                            transition: { duration: 0.58, ease: [0.18, 1, 0.3, 1] },
-                          }
-                  }
-                >
-                  {token.value}
-                </motion.span>
-                <motion.span
-                  className="animated-hero-title__cluster-echo"
-                  initial={{ opacity: 0.36, filter: "blur(26px)", x: 10, y: -7 }}
-                  animate={
-                    isActive
-                      ? {
-                          opacity: [0.05, 0.24, 0.06],
-                          x: [0, -1.5, 0.4, 0],
-                          y: [0, 1, -0.4, 0],
-                          filter: ["blur(5px)", "blur(15px)", "blur(7px)"],
-                          transition: { duration: 1.08, ease: [0.18, 1, 0.3, 1] },
-                        }
-                      : phase === "revealing"
-                        ? {
-                            opacity: [0.3, 0.12, 0.03],
-                            x: [10, 2, 0],
-                            y: [-7, -1, 0],
-                            filter: ["blur(26px)", "blur(12px)", "blur(5px)"],
-                            transition: {
-                              delay: tokenDelay * 0.92 + 0.04,
-                              duration: 1.52,
-                              ease: [0.18, 1, 0.3, 1],
-                            },
-                          }
-                        : {
-                            opacity: 0.03,
-                            x: 0,
-                            y: 0,
-                            filter: "blur(5px)",
-                            transition: { duration: 0.58, ease: [0.18, 1, 0.3, 1] },
-                          }
-                  }
-                >
-                  {token.value}
-                </motion.span>
+                {characters.map((character, charIndex) => (
+                  <span
+                    key={charIndex}
+                    className="animated-hero-title__char"
+                    data-typed={start + charIndex < typed ? "true" : "false"}
+                  >
+                    {character}
+                  </span>
+                ))}
               </span>
             );
           })}
+          <span className="animated-hero-title__caret" aria-hidden="true" />
         </span>
-
-        <motion.span
-          key={`hero-mask-${sweepMode}-${sweepKey}`}
-          className="animated-hero-title__mask"
-          initial={{
-            opacity: sweepMode === "full" ? 0.56 : 0.3,
-            x: sweepMode === "full" ? "-18%" : "12%",
-          }}
-          animate={{
-            opacity: [sweepMode === "full" ? 0.56 : 0.3, 0.18, 0],
-            x: "112%",
-          }}
-          transition={{
-            duration: sweepMode === "full" ? 1.82 : 1.24,
-            ease: [0.18, 1, 0.3, 1],
-          }}
-        />
-        <motion.span
-          key={`hero-sweep-${sweepMode}-${sweepKey}`}
-          className="animated-hero-title__sweep"
-          initial={{
-            opacity: sweepMode === "full" ? 0.88 : 0.46,
-            x: sweepMode === "full" ? "-20%" : "14%",
-          }}
-          animate={{
-            opacity: [sweepMode === "full" ? 0.88 : 0.46, 0.24, 0],
-            x: "115%",
-          }}
-          transition={{
-            duration: sweepMode === "full" ? 1.56 : 1.08,
-            ease: [0.18, 1, 0.3, 1],
-          }}
-        />
       </span>
     </h1>
   );

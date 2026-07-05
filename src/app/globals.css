@@ -1,7 +1,51 @@
 @import "tailwindcss";
 
+/* Dark-only site: the `dark` class is fixed on <html> in the root layout. */
+@custom-variant dark (&:is(.dark *));
+
+/* shadcn/ui design tokens (HSL channels) for the themed Hero + Button.
+   Namespaced where they would clash with the legacy editorial tokens below
+   (e.g. `--ui-accent` instead of `--accent`, which is the amber brand color). */
 :root {
-  --paper: #030405;
+  --background: 0 0% 100%;
+  --foreground: 0 0% 3.9%;
+  --primary: 0 0% 9%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 96.1%;
+  --secondary-foreground: 0 0% 9%;
+  --muted: 0 0% 96.1%;
+  --muted-foreground: 0 0% 45.1%;
+  --ui-accent: 0 0% 96.1%;
+  --ui-accent-foreground: 0 0% 9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 89.8%;
+  --input: 0 0% 89.8%;
+  --ring: 0 0% 3.9%;
+}
+
+/* The site is dark-only: <html> always carries `.dark`, so these values win.
+   `:root.dark` also outranks the light `:root` blocks regardless of order. */
+:root.dark {
+  /* Pure black to match the hero's dark base (#000). */
+  --background: 0 0% 0%;
+  --foreground: 0 0% 98%;
+  --primary: 0 0% 98%;
+  --primary-foreground: 0 0% 9%;
+  --secondary: 0 0% 14.9%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 0 0% 14.9%;
+  --muted-foreground: 0 0% 63.9%;
+  --ui-accent: 0 0% 14.9%;
+  --ui-accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 14.9%;
+  --input: 0 0% 14.9%;
+  --ring: 0 0% 83.1%;
+
+  /* Editorial tokens, dark theme. --paper matches the hero's black base. */
+  --paper: #000000;
   --surface: #0b0d10;
   --surface-strong: #12161b;
   --surface-elevated: #171c22;
@@ -15,6 +59,25 @@
   --warm: #34281f;
   --graphite: #06080b;
   --danger: #f0a9a0;
+}
+
+:root {
+  /* Editorial tokens, light theme (default). The original dark values now
+     live under `.dark` so the whole site follows the hero's light/dark theme. */
+  --paper: #ffffff;
+  --surface: #f4f4f5;
+  --surface-strong: #e9e9ec;
+  --surface-elevated: #ffffff;
+  --ink: #0b0b0c;
+  --muted-ink: #57575f;
+  --line: rgba(11, 11, 12, 0.12);
+  --line-strong: rgba(11, 11, 12, 0.2);
+  --accent: #8f6d39;
+  --accent-soft: #eef1f3;
+  --accent-cool: #4d7180;
+  --warm: #f1ece3;
+  --graphite: #0b0b0c;
+  --danger: #c0392b;
   --radius-xl: 1.45rem;
   --motion-duration-fast: 220ms;
   --motion-duration-base: 420ms;
@@ -35,16 +98,100 @@
 }
 
 @theme inline {
+  /* One font family across the entire site. The serif/book/mono tokens are
+     kept (still referenced via var() and the font-* utilities) but all resolve
+     to the same sans stack so every surface renders in one typeface. */
   --font-sans:
     "Avenir Next", "IBM Plex Sans", "Segoe UI", "Helvetica Neue", "Noto Sans", sans-serif;
-  --font-serif:
-    "Iowan Old Style", "Cormorant Garamond", "Palatino Linotype", "Book Antiqua", "Georgia", serif;
-  --font-book:
-    "Baskerville", "Goudy Old Style", "Palatino Linotype", "Book Antiqua", "Iowan Old Style", serif;
+  --font-serif: var(--font-sans);
+  --font-book: var(--font-sans);
+  --font-mono: var(--font-sans);
+
+  /* Map the shadcn HSL channels to Tailwind color utilities
+     (bg-background, text-primary-foreground, border-input, ...). */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-card: hsl(var(--background));
+  --color-card-foreground: hsl(var(--foreground));
+  --color-accent: hsl(var(--ui-accent));
+  --color-accent-foreground: hsl(var(--ui-accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --animate-fade-in: fade-in 1s ease forwards;
+  --animate-fade-up: fade-up 1s ease forwards;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes platform-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.platform-marquee-track {
+  animation: platform-marquee 28s linear infinite;
+}
+
+.platform-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .platform-marquee-track {
+    animation: none;
+  }
+}
+
+/* Full-bleed escape so the themed hero spans the viewport width even though
+   it renders inside the centered `<main>` container. */
+.home-hero-bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-top: -3.5rem;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  /* Smooth in-page anchor scrolling (e.g. the hero CTA → #capabilities).
+     The reduced-motion block below forces this back to `auto`. */
+  scroll-behavior: smooth;
 }
 
 html,
@@ -60,11 +207,8 @@ body {
   font-family: var(--font-sans);
   color: var(--ink);
   line-height: 1.55;
-  background:
-    radial-gradient(55% 48% at 10% 0%, rgba(96, 143, 151, 0.22), transparent 78%),
-    radial-gradient(42% 36% at 100% 0%, rgba(208, 186, 150, 0.16), transparent 74%),
-    radial-gradient(58% 52% at 50% 100%, rgba(29, 40, 48, 0.38), transparent 82%),
-    var(--paper);
+  /* Follows the theme (light/dark) instead of a fixed dark gradient. */
+  background: var(--paper);
 }
 
 h1, h2, h3, h4 {
@@ -77,8 +221,12 @@ p {
   text-wrap: pretty;
 }
 
-a {
-  color: inherit;
+/* In @layer base so per-element `text-*` utilities (e.g. on buttons/links)
+   can override it; an unlayered rule would beat layered Tailwind utilities. */
+@layer base {
+  a {
+    color: inherit;
+  }
 }
 
 ::selection {
@@ -100,11 +248,11 @@ a {
   border: 1px solid var(--line);
   border-radius: var(--radius-xl);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 45%),
-    linear-gradient(155deg, rgba(23, 28, 34, 0.96), rgba(11, 14, 18, 0.94));
+    linear-gradient(180deg, color-mix(in srgb, var(--ink) 4%, transparent), transparent 45%),
+    color-mix(in srgb, var(--surface) 94%, transparent);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.03),
-    0 24px 70px -46px rgba(0, 0, 0, 0.92);
+    inset 0 1px 0 color-mix(in srgb, var(--ink) 5%, transparent),
+    0 24px 70px -46px rgba(0, 0, 0, 0.5);
 }
 
 .lab-hero {
@@ -610,53 +758,29 @@ a {
   isolation: isolate;
 }
 
+.animated-hero-title__sizer {
+  visibility: hidden;
+}
+
 .animated-hero-title__text {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 2;
 }
 
 .animated-hero-title__cluster {
   position: relative;
-  display: inline-grid;
+  display: inline-block;
   vertical-align: baseline;
-}
-
-.animated-hero-title__cluster > span {
-  grid-area: 1 / 1;
+  color: rgba(244, 238, 228, 0.98);
 }
 
 .animated-hero-title__cluster--grouped {
   white-space: nowrap;
 }
 
-.animated-hero-title__cluster-base {
-  position: relative;
-  z-index: 3;
-  color: rgba(244, 238, 228, 0.98);
-  will-change: opacity, transform, filter;
-}
-
-.animated-hero-title__cluster-ghost,
-.animated-hero-title__cluster-echo {
-  pointer-events: none;
-  user-select: none;
-  will-change: opacity, transform, filter;
-}
-
-.animated-hero-title__cluster-ghost {
-  z-index: 2;
-  color: rgba(196, 231, 242, 0.34);
-  text-shadow:
-    0 0 1.2rem rgba(143, 184, 199, 0.2),
-    0 0 2.7rem rgba(79, 229, 224, 0.1);
-  mix-blend-mode: screen;
-}
-
-.animated-hero-title__cluster-echo {
-  z-index: 1;
-  color: rgba(223, 191, 139, 0.2);
-  text-shadow: 0 0 2.2rem rgba(208, 186, 150, 0.16);
-  mix-blend-mode: screen;
+.animated-hero-title__char[data-typed="false"] {
+  display: none;
 }
 
 .animated-hero-title__whitespace {
@@ -664,39 +788,37 @@ a {
   z-index: 2;
 }
 
-.animated-hero-title__mask,
-.animated-hero-title__sweep {
-  pointer-events: none;
-  position: absolute;
-  inset: -0.18em -0.1em;
-  z-index: 4;
-  border-radius: 999px;
+.animated-hero-title__whitespace[data-typed="false"] {
+  display: none;
 }
 
-.animated-hero-title__mask {
-  background:
-    linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.04) 28%, rgba(255, 255, 255, 0.36) 50%, rgba(255, 255, 255, 0.04) 72%, transparent 100%);
-  filter: blur(20px);
-  mix-blend-mode: screen;
+/* Blinking typewriter caret; sits at the typing head because untyped
+   characters collapse out of flow (display: none). */
+.animated-hero-title__caret {
+  display: inline-block;
+  width: 0.06em;
+  height: 0.92em;
+  margin-left: 0.04em;
+  vertical-align: -0.08em;
+  background: rgba(244, 238, 228, 0.92);
+  box-shadow: 0 0 0.6rem rgba(143, 184, 199, 0.45);
+  animation: animated-hero-caret-blink 1.05s steps(1, end) infinite;
 }
 
-.animated-hero-title__sweep {
-  background:
-    linear-gradient(90deg, transparent 0%, rgba(143, 184, 199, 0.08) 20%, rgba(244, 238, 228, 0.56) 49%, rgba(208, 186, 150, 0.2) 67%, transparent 100%);
-  filter: blur(12px);
-  mix-blend-mode: screen;
+[data-hero-loop-state="active"] .animated-hero-title__caret {
+  animation: none;
+  opacity: 1;
 }
 
-[data-hero-loop-state="active"] .animated-hero-title__cluster[data-cluster-active="true"] .animated-hero-title__cluster-base {
-  text-shadow:
-    0 0 0.6rem rgba(244, 238, 228, 0.2),
-    0 0 1.4rem rgba(143, 184, 199, 0.12);
-}
-
-[data-hero-phase="revealing"] .animated-hero-title__cluster-base {
-  text-shadow:
-    0 0 0.8rem rgba(244, 238, 228, 0.18),
-    0 0 2rem rgba(143, 184, 199, 0.08);
+@keyframes animated-hero-caret-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
 }
 
 .cinematic-hero-statement {
@@ -804,6 +926,28 @@ a {
   z-index: 1;
 }
 
+.home-expertise {
+  width: 100%;
+  padding-block: 3rem 5rem;
+}
+
+/* Let the parallax-wrapped cards stretch to equal height within the grid row. */
+.home-expertise-parallax,
+.home-expertise-parallax .section-parallax-content,
+.home-expertise-parallax .section-parallax-content > * {
+  height: 100%;
+}
+
+.home-expertise-card {
+  transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+}
+
+.home-expertise-card:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in oklab, var(--foreground) 20%, transparent);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 .section-parallax-orb,
 .section-parallax-grid,
 .section-parallax-rails span,
@@ -865,11 +1009,11 @@ a {
 
 .section-parallax-grid {
   inset: 6% 2%;
-  border: 1px solid rgba(244, 238, 228, 0.06);
+  border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
   border-radius: calc(var(--radius-xl) + 0.25rem);
   background:
-    linear-gradient(90deg, rgba(244, 238, 228, 0.035) 1px, transparent 1px),
-    linear-gradient(rgba(244, 238, 228, 0.025) 1px, transparent 1px);
+    linear-gradient(90deg, color-mix(in srgb, var(--ink) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--ink) 4%, transparent) 1px, transparent 1px);
   background-size: 4.5rem 4.5rem;
   mask-image: linear-gradient(180deg, transparent, black 20%, black 80%, transparent);
 }
@@ -945,7 +1089,7 @@ a {
   position: relative;
   overflow: hidden;
   padding: clamp(1.75rem, 4vw, 3.25rem) 0;
-  border-top: 1px solid rgba(244, 238, 228, 0.12);
+  border-top: 1px solid var(--line);
 }
 
 .cinematic-section::before {
@@ -954,9 +1098,13 @@ a {
   inset: 0 auto 0 calc(50% - 50vw);
   z-index: -1;
   width: 100vw;
-  background:
-    linear-gradient(90deg, rgba(3, 4, 5, 0.66), rgba(7, 11, 14, 0.42) 42%, rgba(3, 4, 5, 0.66)),
-    linear-gradient(180deg, transparent, rgba(38, 240, 255, 0.055), transparent);
+  /* Subtle paper-tinted veil that follows the theme (light or dark). */
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--paper) 72%, transparent),
+    color-mix(in srgb, var(--paper) 42%, transparent) 42%,
+    color-mix(in srgb, var(--paper) 72%, transparent)
+  );
 }
 
 .cinematic-section-glint {
@@ -964,7 +1112,13 @@ a {
   inset: 0 auto auto calc(50% - 50vw);
   width: 100vw;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(38, 240, 255, 0.78), rgba(255, 207, 102, 0.62), rgba(98, 242, 169, 0.58), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--accent) 70%, transparent),
+    color-mix(in srgb, var(--accent-cool) 60%, transparent),
+    transparent
+  );
 }
 
 .cinematic-depth-grid {
@@ -976,10 +1130,8 @@ a {
 .cinematic-depth-card,
 .cinematic-process-card,
 .cinematic-security-point {
-  border-color: rgba(244, 238, 228, 0.14);
-  background:
-    linear-gradient(160deg, rgba(17, 25, 26, 0.76), rgba(12, 13, 17, 0.62)),
-    rgba(5, 8, 10, 0.38);
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
   backdrop-filter: blur(var(--motion-blur-soft));
 }
 
@@ -1023,15 +1175,15 @@ a {
 
 .cinematic-timeline-step,
 .cinematic-ledger-row {
-  border-bottom-color: rgba(244, 238, 228, 0.12);
-  background: linear-gradient(90deg, rgba(8, 12, 14, 0.42), transparent 54%);
+  border-bottom-color: var(--line);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--surface) 70%, transparent), transparent 54%);
   padding-inline: 1rem;
   transform: translateZ(0);
 }
 
 .cinematic-timeline-step:hover,
 .cinematic-ledger-row:hover {
-  background: linear-gradient(90deg, rgba(143, 184, 199, 0.09), rgba(208, 186, 150, 0.04), transparent 70%);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent-cool) 18%, transparent), color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%);
 }
 
 .cinematic-security {
@@ -1290,15 +1442,18 @@ a {
   overflow: hidden;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 48%),
-    rgba(11, 14, 18, 0.86);
+    color-mix(in srgb, var(--surface) 90%, transparent);
 }
 
 .expertise-cell {
   min-height: 13rem;
   padding: 1.35rem;
   border-bottom: 1px solid var(--line);
-  background:
-    linear-gradient(155deg, rgba(27, 33, 39, 0.9), rgba(12, 15, 19, 0.9));
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--surface-strong) 92%, transparent),
+    color-mix(in srgb, var(--surface) 92%, transparent)
+  );
 }
 
 .expertise-cell:last-child {
@@ -1520,10 +1675,10 @@ a {
       translate3d(0, calc(var(--motion-depth-card) * -1), 0)
       rotateX(3deg)
       rotateY(-2deg);
-    border-color: rgba(244, 238, 228, 0.2);
+    border-color: var(--line-strong);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.05),
-      0 calc(var(--motion-depth-card-strong) * 1.75) 3.6rem -2.7rem rgba(0, 0, 0, 0.92);
+      0 calc(var(--motion-depth-card-strong) * 1.75) 3.6rem -2.7rem rgba(0, 0, 0, 0.35);
   }
 }
 
@@ -2215,19 +2370,21 @@ a {
 
 .field-control {
   border: 1px solid var(--line);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 55%),
-    rgba(13, 17, 22, 0.96);
+  background: color-mix(in srgb, var(--surface-elevated) 88%, transparent);
   color: var(--ink);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--ink) 4%, transparent);
 }
 
 .field-control::placeholder {
-  color: rgba(170, 161, 149, 0.72);
+  color: var(--muted-ink);
+  opacity: 0.7;
 }
 
 .field-control:focus {
-  border-color: rgba(208, 186, 150, 0.54);
+  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--ink) 4%, transparent),
+    0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 @media (min-width: 768px) {
@@ -2241,6 +2398,17 @@ a {
 
   .expertise-cell:nth-last-child(2) {
     border-bottom: 0;
+  }
+
+  /* Home renders exactly three pillars: keep a balanced 2-over-1 grid with
+     the last card spanning the full width instead of an empty fourth cell. */
+  .cinematic-depth-grid .expertise-cell:last-child {
+    grid-column: 1 / -1;
+    border-right: 0;
+  }
+
+  .cinematic-depth-grid .expertise-cell:nth-child(2) {
+    border-bottom: 1px solid var(--line);
   }
 
   .production-step {

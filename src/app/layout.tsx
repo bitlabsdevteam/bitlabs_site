@@ -49,10 +49,11 @@ export const metadata: Metadata = {
 // Mobile rendering baseline: device-width scaling with zoom left enabled for
 // accessibility, and a theme color so iOS Safari / Android Chrome browser
 // chrome matches the dark editorial surface.
+// Dark-only site: theme color matches the black editorial surface.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#030405",
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
@@ -61,7 +62,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    // Dark-only: the `dark` class is fixed on <html> (no theme switching).
+    <html lang="en" className="dark" data-scroll-behavior="smooth">
       <body className="flex min-h-screen flex-col bg-[color:var(--paper)] text-[color:var(--ink)] antialiased">
         <LanguageProvider>
           <div className="page-grain" aria-hidden />

@@ -25,6 +25,7 @@ function LocalizedContactForm({ language }: { language: Language }) {
   const copy = contactFormContent[language];
   const schema = useMemo(() => createContactSchema(language), [language]);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
   const {
     register,
     handleSubmit,
@@ -46,34 +47,51 @@ function LocalizedContactForm({ language }: { language: Language }) {
       return;
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    reset();
-    setSubmitted(true);
+    setSubmitError(false);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send inquiry.");
+      }
+
+      reset();
+      setSubmitted(true);
+    } catch {
+      setSubmitError(true);
+    }
   };
 
   return (
-    <form className="surface-card grid gap-4 p-6 md:p-7" onSubmit={handleSubmit(onSubmit)} noValidate>
-      <label className="grid gap-1 text-sm text-[color:var(--muted-ink)]">
-        {copy.nameLabel}
-        <input
-          className="field-control rounded-xl px-4 py-3 outline-none transition-colors"
-          {...register("name")}
-          aria-invalid={Boolean(errors.name)}
-        />
-        {errors.name ? <span className="text-xs text-[color:var(--danger)]">{errors.name.message}</span> : null}
-      </label>
+    <form className="surface-card grid gap-5 p-6 md:p-8" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <label className="grid gap-1.5 text-sm text-[color:var(--muted-ink)]">
+          {copy.nameLabel}
+          <input
+            className="field-control rounded-xl px-4 py-3 outline-none transition-colors"
+            {...register("name")}
+            aria-invalid={Boolean(errors.name)}
+          />
+          {errors.name ? <span className="text-xs text-[color:var(--danger)]">{errors.name.message}</span> : null}
+        </label>
 
-      <label className="grid gap-1 text-sm text-[color:var(--muted-ink)]">
-        {copy.emailLabel}
-        <input
-          className="field-control rounded-xl px-4 py-3 outline-none transition-colors"
-          {...register("email")}
-          aria-invalid={Boolean(errors.email)}
-        />
-        {errors.email ? <span className="text-xs text-[color:var(--danger)]">{errors.email.message}</span> : null}
-      </label>
+        <label className="grid gap-1.5 text-sm text-[color:var(--muted-ink)]">
+          {copy.emailLabel}
+          <input
+            className="field-control rounded-xl px-4 py-3 outline-none transition-colors"
+            {...register("email")}
+            aria-invalid={Boolean(errors.email)}
+          />
+          {errors.email ? <span className="text-xs text-[color:var(--danger)]">{errors.email.message}</span> : null}
+        </label>
+      </div>
 
-      <label className="grid gap-1 text-sm text-[color:var(--muted-ink)]">
+      <label className="grid gap-1.5 text-sm text-[color:var(--muted-ink)]">
         {copy.companyLabel}
         <input
           className="field-control rounded-xl px-4 py-3 outline-none transition-colors"
@@ -83,7 +101,7 @@ function LocalizedContactForm({ language }: { language: Language }) {
         {errors.company ? <span className="text-xs text-[color:var(--danger)]">{errors.company.message}</span> : null}
       </label>
 
-      <label className="grid gap-1 text-sm text-[color:var(--muted-ink)]">
+      <label className="grid gap-1.5 text-sm text-[color:var(--muted-ink)]">
         {copy.briefLabel}
         <textarea
           className="field-control min-h-32 rounded-xl px-4 py-3 outline-none transition-colors"
@@ -98,14 +116,15 @@ function LocalizedContactForm({ language }: { language: Language }) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="button-primary mt-2 px-5 py-3 text-sm font-medium disabled:opacity-70"
+        className="button-primary mt-1 w-full px-5 py-3.5 text-sm font-medium disabled:opacity-70"
       >
         {isSubmitting ? copy.submitBusy : copy.submitIdle}
       </button>
 
-      {submitted ? <p className="text-sm text-[color:var(--accent)]">{copy.success}</p> : null}
+      {submitted ? <p className="text-center text-sm text-[color:var(--accent)]">{copy.success}</p> : null}
+      {submitError ? <p className="text-center text-sm text-[color:var(--danger)]">{copy.error}</p> : null}
 
-      <p className="text-xs text-[color:var(--muted-ink)]">{copy.helper}</p>
+      <p className="text-center text-xs text-[color:var(--muted-ink)]">{copy.helper}</p>
     </form>
   );
 }

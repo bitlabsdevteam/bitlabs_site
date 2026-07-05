@@ -19,7 +19,7 @@ function LanguageToggle({ compact = false }: { compact?: boolean }) {
 
   return (
     <div
-      className="flex w-fit items-center gap-1 rounded-full border border-[color:var(--line)] bg-[color:rgba(18,22,27,0.92)] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+      className="flex w-fit items-center gap-1 rounded-full border border-border bg-secondary/60 p-1"
       role="group"
       aria-label={languageMenuLabel}
     >
@@ -32,8 +32,8 @@ function LanguageToggle({ compact = false }: { compact?: boolean }) {
             onClick={() => setLanguage(option.value)}
             className={`rounded-full px-3 ${compact ? "py-2" : "py-1.5"} text-xs font-semibold tracking-[0.16em] transition-colors ${
               active
-                ? "bg-[color:var(--accent)] text-[color:var(--graphite)]"
-                : "text-[color:var(--muted-ink)] hover:bg-[color:rgba(208,186,150,0.14)] hover:text-[color:var(--ink)]"
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
             }`}
             aria-pressed={active}
           >
@@ -104,7 +104,7 @@ export function SiteHeader() {
   }, [menuOpen]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[color:var(--line)]/80 bg-[color:rgba(6,8,11,0.82)] backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-[1180px] items-center justify-between gap-3 px-4 py-4 md:gap-4 md:px-8">
         <Link href="/" aria-label={homeAriaLabel} className="inline-flex items-center">
           <BitLabsLogo />
@@ -112,7 +112,7 @@ export function SiteHeader() {
 
         {/* Desktop: horizontal pill nav + language toggle */}
         <div className="hidden items-center gap-4 md:flex md:flex-wrap md:justify-end">
-          <nav className="relative flex items-center gap-1 rounded-full border border-[color:var(--line)] bg-[color:rgba(18,22,27,0.88)] p-1.5 text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+          <nav className="relative flex items-center gap-1 rounded-full border border-border bg-secondary/60 p-1.5 text-sm">
             {localizedNavLinks.map((item) => {
               const active = pathname === item.href;
               return (
@@ -122,18 +122,18 @@ export function SiteHeader() {
                   aria-current={active ? "page" : undefined}
                   className={`relative shrink-0 rounded-full px-4 py-1.5 transition-colors ${
                     active
-                      ? "text-[color:var(--ink)]"
-                      : "text-[color:var(--muted-ink)] hover:text-[color:var(--ink)]"
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
+                  {item.label}
                   {active ? (
                     <motion.span
-                      layoutId="active-nav-pill"
-                      className="absolute inset-0 -z-10 rounded-full border border-[color:rgba(208,186,150,0.14)] bg-[color:rgba(208,186,150,0.14)]"
+                      layoutId="active-nav-underline"
+                      className="absolute inset-x-4 bottom-0.5 h-0.5 rounded-full bg-foreground"
                       transition={{ type: "spring", stiffness: 450, damping: 38 }}
                     />
                   ) : null}
-                  {item.label}
                 </Link>
               );
             })}
@@ -151,7 +151,7 @@ export function SiteHeader() {
             aria-expanded={menuOpen}
             aria-controls={mobileNavId}
             aria-label={menuOpen ? closeLabel : openLabel}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[color:var(--line)] bg-[color:rgba(18,22,27,0.92)] text-[color:var(--ink)] shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition-colors hover:bg-[color:rgba(208,186,150,0.14)]"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-secondary/60 text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
           >
             <MenuIcon open={menuOpen} />
           </button>
@@ -168,7 +168,7 @@ export function SiteHeader() {
               aria-hidden="true"
               tabIndex={-1}
               onClick={() => setMenuOpen(false)}
-              className="fixed inset-0 z-30 cursor-default bg-[color:rgba(3,4,5,0.4)] md:hidden"
+              className="fixed inset-0 z-30 cursor-default bg-foreground/30 md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -176,7 +176,7 @@ export function SiteHeader() {
             />
             <motion.nav
               id={mobileNavId}
-              className="relative z-40 border-t border-[color:var(--line)] bg-[color:rgba(6,8,11,0.96)] px-4 pb-4 pt-2 backdrop-blur-xl md:hidden"
+              className="relative z-40 border-t border-border bg-background/95 px-4 pb-4 pt-2 backdrop-blur-xl md:hidden"
               initial={reduceMotion ? false : { opacity: 0, height: 0 }}
               animate={reduceMotion ? {} : { opacity: 1, height: "auto" }}
               exit={reduceMotion ? {} : { opacity: 0, height: 0 }}
@@ -194,8 +194,8 @@ export function SiteHeader() {
                         onClick={() => setMenuOpen(false)}
                         className={`flex min-h-[48px] items-center rounded-xl border px-4 text-base transition-colors ${
                           active
-                            ? "border-[color:rgba(208,186,150,0.24)] bg-[color:rgba(208,186,150,0.12)] text-[color:var(--ink)]"
-                            : "border-transparent text-[color:var(--muted-ink)] hover:bg-[color:rgba(255,255,255,0.04)] hover:text-[color:var(--ink)]"
+                            ? "border-border bg-accent text-foreground"
+                            : "border-transparent text-muted-foreground hover:bg-accent/60 hover:text-foreground"
                         }`}
                       >
                         {item.label}
