@@ -1,6 +1,6 @@
 "use client";
 
-import { Cpu, Network, Server, Gauge } from "lucide-react";
+import { Cpu, Network, Server, Gauge, Wrench } from "lucide-react";
 import { AnimatedHero } from "@/components/ui/animated-hero";
 import RadialOrbitalTimeline, {
   type TimelineItem,
@@ -12,8 +12,8 @@ import { useLanguage } from "@/components/language-provider";
 import { homeContent, homePlatforms, labCapabilities } from "@/lib/site-content";
 
 // Icon per pillar, matched to the order of `labCapabilities`:
-// models / agents & RAG / production / evals.
-const pillarIcons = [Cpu, Network, Server, Gauge];
+// models / agents & RAG / production / evals / harness.
+const pillarIcons = [Cpu, Network, Server, Gauge, Wrench];
 
 export function HomeContent() {
   const { language } = useLanguage();
