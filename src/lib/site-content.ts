@@ -316,6 +316,10 @@ export const services: Record<Language, Service[]> = {
       summary: "Sophisticated multi-agent solutions and RAG pipelines built on Claude Agent SDK, LangChain, LangGraph, and Codex, wired into your real workflows.",
     },
     {
+      title: "Advanced AI agentic solutions with harness engineering",
+      summary: "We build the harness beneath the agent: least-privilege tool scoping and sandboxing, context and memory management, checkpointed recovery, and supervised multi-agent orchestration with human approval gates for regulated, high-accountability environments.",
+    },
+    {
       title: "Inference stacks & secure deployment",
       summary: "High-throughput, low-latency serving with tensor and pipeline parallelism, tuned batching, and KV cache efficiency, deployed securely at scale.",
     },
@@ -340,6 +344,10 @@ export const services: Record<Language, Service[]> = {
     {
       title: "エージェントシステム・RAGパイプライン",
       summary: "Claude Agent SDK、LangChain、LangGraph、Codexを基盤にした高度なマルチエージェントとRAGパイプラインを、実際の業務フローに組み込みます。",
+    },
+    {
+      title: "高度なAIエージェントソリューションとハーネスエンジニアリング",
+      summary: "エージェントを支えるハーネスを構築します。最小権限のツールスコープとサンドボックス化、コンテキストとメモリの管理、チェックポイントによる復旧、そして説明責任が求められる規制環境向けに人間の承認ゲートを備えた監督下のマルチエージェント・オーケストレーションまで。",
     },
     {
       title: "推論基盤とセキュアな導入",
@@ -508,6 +516,11 @@ export const labCapabilities: Record<Language, LabCapability[]> = {
       title: "Evals & quality",
       body: "We are not just builders, we are experts in evaluation. Task scorecards, regression suites, and trace-driven evals that keep improving quality after launch.",
     },
+    {
+      label: "05 / Harness",
+      title: "Harness engineering",
+      body: "The control loop, tool guardrails, context management, and checkpointed recovery that let an agent run in production, with least-privilege scoping and human approval gates where risk demands it.",
+    },
   ],
   ja: [
     {
@@ -529,6 +542,11 @@ export const labCapabilities: Record<Language, LabCapability[]> = {
       label: "04 / 評価",
       title: "評価と品質",
       body: "私たちは作るだけの会社ではなく、評価の専門家です。タスクスコアカード、回帰テスト、トレース解析による評価で、リリース後も品質を高め続けます。",
+    },
+    {
+      label: "05 / ハーネス",
+      title: "ハーネスエンジニアリング",
+      body: "制御ループ、ツールのガードレール、コンテキスト管理、チェックポイントによる復旧まで。エージェントを本番で動かすための基盤を、最小権限のスコープとリスクに応じた人間の承認ゲートとともに構築します。",
     },
   ],
 };
@@ -684,9 +702,9 @@ export const homeContent: Record<Language, HomeContent> = {
       "Make production AI as dependable as any core system you rely on.",
     visionAttribution: "- BitLabs CEO David Bong",
     labLabel: "Core capabilities",
-    labTitle: "Four disciplines, done deeply",
+    labTitle: "Five disciplines, done deeply",
     labBody:
-      "We don't wrap someone else's API. We pre-train and fine-tune models with JAX and Unsloth, build agentic systems and RAG on Claude Agent SDK, LangChain, LangGraph, and Codex, run production inference, and evaluate everything we ship.",
+      "We don't wrap someone else's API. We pre-train and fine-tune models with JAX and Unsloth, build agentic systems and RAG on Claude Agent SDK, LangChain, LangGraph, and Codex, run production inference, evaluate everything we ship, and engineer the harness that keeps agents safe to run.",
     productionLabel: "Deep tech",
     productionTitle: "We own the whole stack",
     productionBody:
@@ -810,9 +828,9 @@ export const homeContent: Record<Language, HomeContent> = {
       "本番のAIを、基幹システムと同じくらい信頼できるものにすること。",
     visionAttribution: "- BitLabs CEO David Bong",
     labLabel: "中核領域",
-    labTitle: "4つの領域を、深く",
+    labTitle: "5つの領域を、深く",
     labBody:
-      "他社APIを包むだけではありません。JAXやUnslothでモデルを事前学習・微調整し、Claude Agent SDK、LangChain、LangGraph、Codexでエージェントシステムを構築し、本番推論を運用し、そして出荷するすべてを評価します。",
+      "他社APIを包むだけではありません。JAXやUnslothでモデルを事前学習・微調整し、Claude Agent SDK、LangChain、LangGraph、Codexでエージェントシステムを構築し、本番推論を運用し、出荷するすべてを評価し、そしてエージェントを安全に動かすハーネスを設計します。",
     productionLabel: "ディープテック",
     productionTitle: "スタック全体を自社で保有",
     productionBody:
