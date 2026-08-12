@@ -11,8 +11,13 @@ test.describe("homepage themed hero", () => {
       page.getByRole("heading", { level: 1, name: /Enterprise AI, engineered to be/i }),
     ).toBeVisible();
 
-    // CTA resolves to the expertises route.
-    const cta = hero.getByRole("link", { name: /more info/i });
+    // Primary CTA leads to the contact form.
+    const primaryCta = hero.getByRole("link", { name: /talk to bitlabs/i });
+    await expect(primaryCta).toBeVisible();
+    await expect(primaryCta).toHaveAttribute("href", "/about#contact-form");
+
+    // Secondary CTA scrolls to the capabilities section.
+    const cta = hero.getByRole("link", { name: /explore our capabilities/i });
     await expect(cta).toBeVisible();
     await expect(cta).toHaveAttribute("href", "#capabilities");
 

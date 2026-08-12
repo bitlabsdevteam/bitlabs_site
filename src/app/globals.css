@@ -1515,10 +1515,35 @@ p {
   padding: 0.35rem 1rem 0.35rem 0.2rem;
 }
 
-.buyer-service-heading h2 {
+.buyer-service-heading h2,
+.buyer-service-heading h3 {
   margin: 0;
   font-size: clamp(1.45rem, 2.5vw, 2.2rem);
   line-height: 1.08;
+}
+
+.service-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+}
+
+.service-tag {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.28rem 0.75rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--muted-ink);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+  white-space: nowrap;
+}
+
+.service-cluster-header {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 46rem;
 }
 
 .buyer-service-grid {
