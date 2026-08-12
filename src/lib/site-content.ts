@@ -8,6 +8,14 @@ type NavLink = {
 type Service = {
   title: string;
   summary: string;
+  tags?: string[];
+};
+
+type ServiceCluster = {
+  label: string;
+  title: string;
+  lead: string;
+  serviceIndexes: number[];
 };
 
 type ExpertiseArea = {
@@ -119,6 +127,10 @@ type HomeContent = {
   securityTitle: string;
   securityBody: string;
   securityPoints: string[];
+  researchLabel: string;
+  researchTitle: string;
+  researchBody: string;
+  researchCtaLabel: string;
 };
 
 type PlatformLogo = {
@@ -162,6 +174,9 @@ type ServicesPageContent = {
   eyebrow: string;
   title: string;
   body: string;
+  ctaTitle: string;
+  ctaBody: string;
+  ctaLabel: string;
 };
 
 type ExpertisePageContent = {
@@ -306,60 +321,119 @@ export const services: Record<Language, Service[]> = {
     {
       title: "Enterprise AI, production level",
       summary: "We build, scale, integrate, and deploy AI systems that hold up under real load, inside your enterprise's actual data and access boundaries.",
+      tags: ["Microsoft Azure", "AWS", "Secure integration", "Data boundaries"],
     },
     {
       title: "LLM & SLM pre-training, fine-tuning",
       summary: "Closed and open-source models pre-trained at scale with 5D parallelism (data, tensor, pipeline, sequence, and expert) or fine-tuned with modern techniques including JAX and Unsloth, with eval gates before anything ships.",
+      tags: ["JAX", "Unsloth", "5D parallelism", "Eval gates"],
     },
     {
       title: "Agentic systems & RAG pipelines",
       summary: "Sophisticated multi-agent solutions and RAG pipelines built on Claude Agent SDK, LangChain, LangGraph, and Codex, wired into your real workflows.",
+      tags: ["Claude Agent SDK", "LangChain", "LangGraph", "Codex"],
     },
     {
       title: "Advanced AI agentic solutions with harness engineering",
       summary: "We build the harness beneath the agent: least-privilege tool scoping and sandboxing, context and memory management, checkpointed recovery, and supervised multi-agent orchestration with human approval gates for regulated, high-accountability environments.",
+      tags: ["Least-privilege tooling", "Sandboxing", "Context management", "Approval gates"],
     },
     {
       title: "Inference stacks & secure deployment",
       summary: "High-throughput, low-latency serving with tensor and pipeline parallelism, tuned batching, and KV cache efficiency, deployed securely at scale.",
+      tags: ["Tensor parallelism", "Pipeline parallelism", "KV cache", "Tuned batching"],
     },
     {
       title: "Custom AI applications",
       summary: "Focused applications with the right context design and integrations your team uses every day.",
+      tags: ["React", "Next.js", "Context design"],
     },
     {
       title: "Evaluation & reliability engineering",
       summary: "We are not just builders. Task scorecards, regression suites, and trace-driven evals that keep improving quality release after release.",
+      tags: ["Task scorecards", "Regression suites", "Trace-driven evals"],
     },
   ],
   ja: [
     {
       title: "本番レベルのエンタープライズAI",
       summary: "実負荷に耐えるAIシステムを、貴社の実際のデータ境界とアクセス制御の中で構築・拡張・連携・導入します。",
+      tags: ["Microsoft Azure", "AWS", "セキュアな連携", "データ境界"],
     },
     {
       title: "LLM・SLMの事前学習とファインチューニング",
       summary: "データ・テンソル・パイプライン・シーケンス・エキスパートの5D並列で大規模に事前学習、またはJAXやUnslothを含む最新技術で微調整。リリース前には必ず評価ゲートを通します。",
+      tags: ["JAX", "Unsloth", "5D並列", "評価ゲート"],
     },
     {
       title: "エージェントシステム・RAGパイプライン",
       summary: "Claude Agent SDK、LangChain、LangGraph、Codexを基盤にした高度なマルチエージェントとRAGパイプラインを、実際の業務フローに組み込みます。",
+      tags: ["Claude Agent SDK", "LangChain", "LangGraph", "Codex"],
     },
     {
       title: "高度なAIエージェントソリューションとハーネスエンジニアリング",
       summary: "エージェントを支えるハーネスを構築します。最小権限のツールスコープとサンドボックス化、コンテキストとメモリの管理、チェックポイントによる復旧、そして説明責任が求められる規制環境向けに人間の承認ゲートを備えた監督下のマルチエージェント・オーケストレーションまで。",
+      tags: ["最小権限ツール", "サンドボックス化", "コンテキスト管理", "承認ゲート"],
     },
     {
       title: "推論基盤とセキュアな導入",
       summary: "テンソル・パイプライン並列、バッチングとKVキャッシュを最適化した高スループット・低レイテンシの推論基盤を、安全に大規模導入します。",
+      tags: ["テンソル並列", "パイプライン並列", "KVキャッシュ", "バッチング最適化"],
     },
     {
       title: "カスタムAIアプリ",
       summary: "コンテキスト設計と連携を重視し、日常業務で使える用途特化のアプリを構築します。",
+      tags: ["React", "Next.js", "コンテキスト設計"],
     },
     {
       title: "評価・信頼性エンジニアリング",
       summary: "私たちは作るだけではありません。タスクスコアカード、回帰テスト、トレース解析による評価で、リリースのたびに品質を高め続けます。",
+      tags: ["タスクスコアカード", "回帰テスト", "トレース評価"],
+    },
+  ],
+};
+
+// Themed practice areas for the services page. `serviceIndexes` reference
+// entries in `services` above so the underlying list stays the single source.
+export const serviceClusters: Record<Language, ServiceCluster[]> = {
+  en: [
+    {
+      label: "01 / Models",
+      title: "Models & Training",
+      lead: "We work at the weights level: pre-training from scratch and fine-tuning open or closed models to your domain.",
+      serviceIndexes: [1],
+    },
+    {
+      label: "02 / Agents",
+      title: "Agentic Systems",
+      lead: "Agents, RAG, and the applications around them, engineered with the harness that keeps them safe to run.",
+      serviceIndexes: [2, 3, 5],
+    },
+    {
+      label: "03 / Production",
+      title: "Production & Reliability",
+      lead: "Enterprise integration, high-throughput serving, and the evaluation discipline that keeps quality measurable.",
+      serviceIndexes: [0, 4, 6],
+    },
+  ],
+  ja: [
+    {
+      label: "01 / モデル",
+      title: "モデルと学習",
+      lead: "重みのレベルから取り組みます。ゼロからの事前学習と、オープン・クローズドモデルの領域特化の微調整。",
+      serviceIndexes: [1],
+    },
+    {
+      label: "02 / エージェント",
+      title: "エージェントシステム",
+      lead: "エージェント、RAG、その周辺アプリケーションを、安全に運用するためのハーネスとともに設計します。",
+      serviceIndexes: [2, 3, 5],
+    },
+    {
+      label: "03 / 本番運用",
+      title: "本番運用と信頼性",
+      lead: "エンタープライズ連携、高スループット推論、そして品質を測定可能に保つ評価の仕組み。",
+      serviceIndexes: [0, 4, 6],
     },
   ],
 };
@@ -659,7 +733,7 @@ export const homeContent: Record<Language, HomeContent> = {
       },
     ],
     primaryCta: "Talk to BitLabs",
-    secondaryCta: "More Info",
+    secondaryCta: "Explore our capabilities",
     fullStackLabel: "End to end",
     fullStackTitle: "We are not AI model wrappers",
     fullStackLead:
@@ -754,6 +828,11 @@ export const homeContent: Record<Language, HomeContent> = {
       "Controlled model access, tool use, and sensitive data handling",
       "Release checks for regulated, high-accountability environments",
     ],
+    researchLabel: "Research",
+    researchTitle: "The lab behind the delivery",
+    researchBody:
+      "Our production work is grounded in ongoing research on pre-training, fine-tuning, inference, and agent reliability.",
+    researchCtaLabel: "Explore our research",
   },
   ja: {
     location: "東京のディープテックAIラボ",
@@ -785,7 +864,7 @@ export const homeContent: Record<Language, HomeContent> = {
       },
     ],
     primaryCta: "BitLabsに相談する",
-    secondaryCta: "詳細を見る",
+    secondaryCta: "対応領域を見る",
     fullStackLabel: "エンドツーエンド",
     fullStackTitle: "私たちは、AIモデルのラッパーではありません",
     fullStackLead:
@@ -880,6 +959,11 @@ export const homeContent: Record<Language, HomeContent> = {
       "モデル利用、ツール実行、機密データの統制",
       "説明責任が求められる環境向けのリリース確認",
     ],
+    researchLabel: "研究",
+    researchTitle: "デリバリーを支えるラボ",
+    researchBody:
+      "私たちの本番開発は、事前学習、ファインチューニング、推論、エージェント信頼性に関する継続的な研究に支えられています。",
+    researchCtaLabel: "研究内容を見る",
   },
 };
 
@@ -1051,6 +1135,10 @@ export const servicesPageContent: Record<Language, ServicesPageContent> = {
     title: "Deep-tech AI, built, trained, evaluated, and shipped to production",
     body:
       "We build, scale, integrate, and deploy enterprise AI at production level. We pre-train and fine-tune the models, build the agents, and evaluate everything before it ships, not just once, but release after release.",
+    ctaTitle: "Have a model to train or an agent to ship?",
+    ctaBody:
+      "Tell us your goal and constraints, and we'll reply with a practical next step within one business day.",
+    ctaLabel: "Talk to BitLabs",
   },
   ja: {
     metadataTitle: "サービス",
@@ -1060,6 +1148,10 @@ export const servicesPageContent: Record<Language, ServicesPageContent> = {
     title: "ディープテックAIを、構築し、学習させ、評価し、本番へ届ける",
     body:
       "エンタープライズAIを本番レベルで構築・拡張・連携・導入します。モデルを自ら事前学習・微調整し、エージェントを構築し、出荷前だけでなくリリースのたびに評価し続けます。",
+    ctaTitle: "学習させたいモデル、本番に載せたいエージェントはありますか？",
+    ctaBody:
+      "目標と制約をお知らせください。1営業日以内に、現実的な次の一歩をご提案します。",
+    ctaLabel: "BitLabsに相談する",
   },
 };
 
