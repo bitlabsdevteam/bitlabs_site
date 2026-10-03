@@ -1,213 +1,121 @@
 "use client";
-
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useRef, useState } from "react";
-import { BitLabsLogo } from "@/components/bitlabs-logo";
-import { useLanguage } from "@/components/language-provider";
-import { navLinks } from "@/lib/site-content";
-
-const languageOptions = [
-  { value: "en" as const, label: "ENG" },
-  { value: "ja" as const, label: "JP" },
-];
-
-function LanguageToggle({ compact = false }: { compact?: boolean }) {
-  const { language, setLanguage } = useLanguage();
-  const languageMenuLabel = language === "en" ? "Select language" : "言語を選択";
-
-  return (
-    <div
-      className="flex w-fit items-center gap-1 rounded-full border border-border bg-secondary/60 p-1"
-      role="group"
-      aria-label={languageMenuLabel}
-    >
-      {languageOptions.map((option) => {
-        const active = language === option.value;
-        return (
-          <button
-            key={option.value}
-            type="button"
-            onClick={() => setLanguage(option.value)}
-            className={`rounded-full px-3 ${compact ? "py-2" : "py-1.5"} text-xs font-semibold tracking-[0.16em] transition-colors ${
-              active
-                ? "bg-foreground text-background"
-                : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-            }`}
-            aria-pressed={active}
-          >
-            {option.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-function MenuIcon({ open }: { open: boolean }) {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      aria-hidden="true"
-    >
-      {open ? (
-        <>
-          <line x1="4" y1="4" x2="16" y2="16" />
-          <line x1="16" y1="4" x2="4" y2="16" />
-        </>
-      ) : (
-        <>
-          <line x1="3" y1="6" x2="17" y2="6" />
-          <line x1="3" y1="10" x2="17" y2="10" />
-          <line x1="3" y1="14" x2="17" y2="14" />
-        </>
-      )}
-    </svg>
-  );
-}
-
+import { useEffect, useRef, useState } from "react";
+import { BitLabsLogo } from "./bitlabs-logo";
+import { useLanguage } from "./language-provider";
+import { editorial, localizedPath } from "@/lib/editorial-content";
 export function SiteHeader() {
-  const pathname = usePathname();
   const { language } = useLanguage();
-  const localizedNavLinks = navLinks[language];
-  const homeAriaLabel = language === "en" ? "BitLabs home" : "BitLabs ホーム";
-
-  const [menuOpen, setMenuOpen] = useState(false);
-  const reduceMotion = useReducedMotion();
-  const toggleRef = useRef<HTMLButtonElement>(null);
-  const mobileNavId = useId();
-
-  const openLabel = language === "en" ? "Open menu" : "メニューを開く";
-  const closeLabel = language === "en" ? "Close menu" : "メニューを閉じる";
-  // The menu is dismissed via each link's onClick, the backdrop, and Escape.
-
-  // Escape closes the menu and returns focus to the toggle button.
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const button = useRef<HTMLButtonElement>(null);
+  const copy = editorial[language];
+  const path = pathname.replace(/^\/ja(?=\/|$)/, "") || "/";
   useEffect(() => {
-    if (!menuOpen) {
-      return;
-    }
-    const onKeyDown = (event: KeyboardEvent) => {
+    function key(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setMenuOpen(false);
-        toggleRef.current?.focus();
+        setOpen(false);
+        button.current?.focus();
       }
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [menuOpen]);
-
+    }
+    if (open) document.addEventListener("keydown", key);
+    return () => document.removeEventListener("keydown", key);
+  }, [open]);
+  function links() {
+    return ["/services", "/research", "/about", "/contact"].map((href, i) => (
+      <Link
+        key={href}
+        href={localizedPath(language, href)}
+        className={i === 3 ? "nav-cta" : ""}
+        aria-current={
+          path === href || path.startsWith(href + "/") ? "page" : undefined
+        }
+        onClick={() => setOpen(false)}
+      >
+        {copy.nav[i]}
+      </Link>
+    ));
+  }
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto flex w-full max-w-[1180px] items-center justify-between gap-3 px-4 py-4 md:gap-4 md:px-8">
-        <Link href="/" aria-label={homeAriaLabel} className="inline-flex items-center">
+    <header className="site-header">
+      <div className="header-inner shell">
+        <Link
+          href={localizedPath(language)}
+          aria-label={language === "en" ? "BitLabs home" : "BitLabs ホーム"}
+        >
           <BitLabsLogo />
         </Link>
-
-        {/* Desktop: horizontal pill nav + language toggle */}
-        <div className="hidden items-center gap-4 md:flex md:flex-wrap md:justify-end">
-          <nav className="relative flex items-center gap-1 rounded-full border border-border bg-secondary/60 p-1.5 text-sm">
-            {localizedNavLinks.map((item) => {
-              const active = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  aria-current={active ? "page" : undefined}
-                  className={`relative shrink-0 rounded-full px-4 py-1.5 transition-colors ${
-                    active
-                      ? "text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {item.label}
-                  {active ? (
-                    <motion.span
-                      layoutId="active-nav-underline"
-                      className="absolute inset-x-4 bottom-0.5 h-0.5 rounded-full bg-foreground"
-                      transition={{ type: "spring", stiffness: 450, damping: 38 }}
-                    />
-                  ) : null}
-                </Link>
-              );
-            })}
-          </nav>
-          <LanguageToggle />
-        </div>
-
-        {/* Mobile: language toggle + hamburger disclosure button */}
-        <div className="flex items-center gap-2 md:hidden">
-          <LanguageToggle compact />
-          <button
-            ref={toggleRef}
-            type="button"
-            onClick={() => setMenuOpen((value) => !value)}
-            aria-expanded={menuOpen}
-            aria-controls={mobileNavId}
-            aria-label={menuOpen ? closeLabel : openLabel}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-secondary/60 text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-          >
-            <MenuIcon open={menuOpen} />
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile disclosure panel: vertical, full-width tap targets */}
-      <AnimatePresence>
-        {menuOpen ? (
-          <>
-            {/* Backdrop closes the menu on outside tap. */}
-            <motion.button
-              type="button"
-              aria-hidden="true"
-              tabIndex={-1}
-              onClick={() => setMenuOpen(false)}
-              className="fixed inset-0 z-30 cursor-default bg-foreground/30 md:hidden"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: reduceMotion ? 0 : 0.18 }}
-            />
-            <motion.nav
-              id={mobileNavId}
-              className="relative z-40 border-t border-border bg-background/95 px-4 pb-4 pt-2 backdrop-blur-xl md:hidden"
-              initial={reduceMotion ? false : { opacity: 0, height: 0 }}
-              animate={reduceMotion ? {} : { opacity: 1, height: "auto" }}
-              exit={reduceMotion ? {} : { opacity: 0, height: 0 }}
-              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-              style={{ overflow: "hidden" }}
+        <nav
+          className="desktop-nav"
+          aria-label={language === "en" ? "Primary" : "メイン"}
+        >
+          {links()}
+        </nav>
+        <nav
+          className="language-nav"
+          aria-label={language === "en" ? "Language" : "言語"}
+        >
+          {(["en", "ja"] as const).map((locale) => (
+            <a
+              key={locale}
+              href={localizedPath(locale, path)}
+              hrefLang={locale}
+              lang={locale}
+              aria-current={language === locale ? "page" : undefined}
+              onClick={(event) => {
+                if (window.location.hash)
+                  event.currentTarget.href =
+                    localizedPath(locale, path) + window.location.hash;
+                setOpen(false);
+              }}
             >
-              <ul className="flex flex-col gap-1">
-                {localizedNavLinks.map((item) => {
-                  const active = pathname === item.href;
-                  return (
-                    <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        aria-current={active ? "page" : undefined}
-                        onClick={() => setMenuOpen(false)}
-                        className={`flex min-h-[48px] items-center rounded-xl border px-4 text-base transition-colors ${
-                          active
-                            ? "border-border bg-accent text-foreground"
-                            : "border-transparent text-muted-foreground hover:bg-accent/60 hover:text-foreground"
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </motion.nav>
-          </>
-        ) : null}
-      </AnimatePresence>
+              {locale === "en" ? "EN" : "日本語"}
+            </a>
+          ))}
+        </nav>
+        <button
+          ref={button}
+          type="button"
+          className="menu-toggle"
+          aria-expanded={open}
+          aria-controls="mobile-navigation"
+          aria-label={
+            language === "en"
+              ? open
+                ? "Close menu"
+                : "Open menu"
+              : open
+                ? "メニューを閉じる"
+                : "メニューを開く"
+          }
+          onClick={() => setOpen(!open)}
+        >
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 22 22"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            aria-hidden="true"
+          >
+            {open ? (
+              <path d="m5 5 12 12M17 5 5 17" />
+            ) : (
+              <path d="M3 7h16M3 15h16" />
+            )}
+          </svg>
+        </button>
+      </div>
+      <nav
+        id="mobile-navigation"
+        className="mobile-nav shell"
+        hidden={!open}
+        aria-label={language === "en" ? "Mobile primary" : "モバイルメイン"}
+      >
+        {links()}
+      </nav>
     </header>
   );
 }

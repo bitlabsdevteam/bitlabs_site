@@ -1,60 +1,86 @@
 import { expect, test } from "@playwright/test";
-
-test.describe("homepage themed hero", () => {
-  test("renders the themed hero with title, eyebrow, and CTA", async ({ page }) => {
-    await page.goto("/", { waitUntil: "domcontentloaded" });
-
+for (const locale of ["en", "ja"] as const) {
+  const root = locale === "en" ? "" : "/ja";
+  test(`${locale} hero is stable, readable, and links to work and contact`, async ({
+    page,
+  }) => {
+    await page.goto(root || "/");
     const hero = page.locator("#hero");
-    await expect(hero).toBeVisible();
-
+    await expect(hero.getByRole("heading", { level: 1 })).toContainText(
+      locale === "en" ? "Research depth." : "AI研究の深さを、",
+    );
     await expect(
-      page.getByRole("heading", { level: 1, name: /Enterprise AI, engineered to be/i }),
-    ).toBeVisible();
-
-    // Primary CTA leads to the contact form.
-    const primaryCta = hero.getByRole("link", { name: /talk to bitlabs/i });
-    await expect(primaryCta).toBeVisible();
-    await expect(primaryCta).toHaveAttribute("href", "/about#contact-form");
-
-    // Secondary CTA scrolls to the capabilities section.
-    const cta = hero.getByRole("link", { name: /explore our capabilities/i });
-    await expect(cta).toBeVisible();
-    await expect(cta).toHaveAttribute("href", "#capabilities");
-
-    // CTA scrolls to the capabilities section on the same page.
-    await cta.click();
-    await expect(page.locator("#capabilities")).toBeInViewport();
-
-    // The legacy 3D cinematic stage is fully removed.
-    await expect(page.locator(".landing-transformer-scene")).toHaveCount(0);
+      hero.getByRole("link", {
+        name: locale === "en" ? "Discuss your project" : "プロジェクトのご相談",
+      }),
+    ).toHaveAttribute("href", `${root}/contact`);
+    await hero
+      .getByRole("link", {
+        name: locale === "en" ? "Explore our work" : "取り組みを見る",
+      })
+      .click();
+    await expect(page.locator("#demonstrations")).toBeInViewport();
+    await expect(page.locator("html")).toHaveAttribute("lang", locale);
   });
-
-  test("is dark-only with no theme toggle", async ({ page }) => {
-    await page.goto("/", { waitUntil: "domcontentloaded" });
-
-    // The site is dark-only: <html> always carries the `dark` class.
-    await expect(page.locator("html")).toHaveClass(/(^|\s)dark(\s|$)/);
-
-    // The light/dark toggle has been removed.
-    await expect(page.locator('button[aria-label*="theme" i]')).toHaveCount(0);
+  test(`${locale} workflow supports approval and rejection without network actions`, async ({
+    page,
+  }) => {
+    let requests = 0;
+    page.on("request", (req) => {
+      if (req.method() === "POST") requests++;
+    });
+    await page.goto(`${root}/research/bounded-agent-workflow`);
+    await page
+      .getByRole("button", {
+        name: locale === "en" ? "Simulate approval" : "承認を試す",
+      })
+      .click();
+    await expect(page.getByRole("status")).toContainText(
+      locale === "en" ? "No order was placed" : "発注は行っていません",
+    );
+    await page
+      .getByRole("button", {
+        name: locale === "en" ? "Reset example" : "リセット",
+      })
+      .click();
+    await page
+      .getByRole("button", {
+        name: locale === "en" ? "Simulate rejection" : "却下を試す",
+      })
+      .click();
+    await expect(page.getByRole("status")).toContainText(
+      locale === "en" ? "No action was taken" : "操作は行っていません",
+    );
+    expect(requests).toBe(0);
   });
-
-  test("renders the Japanese hero copy when language is switched", async ({ page }) => {
-    await page.goto("/", { waitUntil: "domcontentloaded" });
-    await page.getByRole("button", { name: "JP" }).click();
-
-    await expect(page.locator("#hero")).toBeVisible();
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  });
-
-  test("keeps the hero within the viewport without horizontal overflow", async ({ page }) => {
-    await page.goto("/", { waitUntil: "domcontentloaded" });
-
-    const overflow = await page.evaluate(() => ({
-      clientWidth: document.documentElement.clientWidth,
-      scrollWidth: document.documentElement.scrollWidth,
-    }));
-
-    expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth + 2);
-  });
+}
+test("language links preserve equivalent routes and legacy anchors", async ({
+  page,
+}) => {
+  await page.goto("/about#contact-form");
+  await page.getByRole("link", { name: "日本語", exact: true }).click();
+  await expect(page).toHaveURL(/\/ja\/about#contact-form$/);
+  await expect(page.locator("#contact-form")).toBeInViewport();
+  await page.getByRole("link", { name: "EN", exact: true }).click();
+  await expect(page).toHaveURL(/\/about#contact-form$/);
+});
+test("reduced motion keeps all content visible and disables motion", async ({
+  page,
+  browserName,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await expect(page.locator("#hero h1")).toBeVisible();
+  expect(
+    await page
+      .locator(".system-diagram")
+      .evaluate((el) => getComputedStyle(el).animationName),
+  ).toBe("none");
+  // Safari uses Option-Tab to include links when full keyboard access is off.
+  await page.keyboard.press(browserName === "webkit" ? "Alt+Tab" : "Tab");
+  await expect(
+    page.getByRole("link", { name: "Skip to content" }),
+  ).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("main")).toBeFocused();
 });

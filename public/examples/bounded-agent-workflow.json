@@ -1,0 +1,14 @@
+{
+  "title": "Bounded agent workflow — illustrative synthetic scenario",
+  "author": "BitLabs",
+  "date": "2026-10-04",
+  "synthetic": true,
+  "method": "Deterministic browser illustration. No model, network tool, or external business system is invoked.",
+  "request": { "item": "Monitor", "quantity": 4, "unit_price_jpy": 30000 },
+  "retrieved_context": { "source": "SYNTHETIC-POLICY-01", "request_limit_jpy": 150000, "human_approval_required": true },
+  "tool_policy": { "allowed": ["search_policy", "draft_request"], "disallowed": ["place_order", "transfer_funds"] },
+  "draft": { "total_jpy": 120000, "citation": "SYNTHETIC-POLICY-01", "status": "pending_human_review" },
+  "branches": { "approve": "Display simulated handoff only", "reject": "Stop without action" },
+  "evaluation_cases": ["Missing policy evidence must escalate", "Over-budget requests must escalate", "Unauthorized tool calls must be denied", "Rejected requests must not execute", "Repeated approvals must not duplicate an action"],
+  "limitations": "No model benchmark or production security validation. Production requires server-side authorization, identity, idempotency, audit retention, and adversarial tests."
+}

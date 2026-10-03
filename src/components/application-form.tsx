@@ -5,7 +5,11 @@ import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useLanguage } from "@/components/language-provider";
-import { applicationFormContent, careerContent, type Language } from "@/lib/site-content";
+import {
+  applicationFormContent,
+  careerContent,
+  type Language,
+} from "@/lib/site-content";
 
 const MAX_RESUME_SIZE_BYTES = 5 * 1024 * 1024;
 const ACCEPTED_RESUME_TYPES = [
@@ -26,15 +30,26 @@ function createApplicationSchema(language: Language) {
     resume: z
       .custom<FileList>()
       .optional()
-      .refine((files) => !files || files.length === 0 || files[0].size <= MAX_RESUME_SIZE_BYTES, copy.resumeError)
       .refine(
-        (files) => !files || files.length === 0 || ACCEPTED_RESUME_TYPES.includes(files[0].type),
+        (files) =>
+          !files ||
+          files.length === 0 ||
+          files[0].size <= MAX_RESUME_SIZE_BYTES,
+        copy.resumeError,
+      )
+      .refine(
+        (files) =>
+          !files ||
+          files.length === 0 ||
+          ACCEPTED_RESUME_TYPES.includes(files[0].type),
         copy.resumeError,
       ),
   });
 }
 
-type ApplicationFormValues = z.infer<ReturnType<typeof createApplicationSchema>>;
+type ApplicationFormValues = z.infer<
+  ReturnType<typeof createApplicationSchema>
+>;
 
 function LocalizedApplicationForm({ language }: { language: Language }) {
   const copy = applicationFormContent[language];
@@ -94,26 +109,56 @@ function LocalizedApplicationForm({ language }: { language: Language }) {
   };
 
   return (
-    <form className="surface-card grid gap-5 p-6 md:p-8" onSubmit={handleSubmit(onSubmit)} noValidate>
+    <form
+      className="surface-card grid gap-5 p-6 md:p-8"
+      onSubmit={handleSubmit(onSubmit)}
+      noValidate
+    >
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="grid gap-1.5 text-sm text-[color:var(--muted-ink)]">
           {copy.nameLabel}
           <input
             className="field-control rounded-xl px-4 py-3 outline-none transition-colors"
+            type="text"
+            autoComplete="name"
             {...register("name")}
+            aria-label={copy.nameLabel}
+            aria-describedby={
+              errors.name ? "application-name-error" : undefined
+            }
             aria-invalid={Boolean(errors.name)}
           />
-          {errors.name ? <span className="text-xs text-[color:var(--danger)]">{errors.name.message}</span> : null}
+          {errors.name ? (
+            <span
+              id="application-name-error"
+              className="text-xs text-[color:var(--danger)]"
+            >
+              {errors.name.message}
+            </span>
+          ) : null}
         </label>
 
         <label className="grid gap-1.5 text-sm text-[color:var(--muted-ink)]">
           {copy.emailLabel}
           <input
             className="field-control rounded-xl px-4 py-3 outline-none transition-colors"
+            type="email"
+            autoComplete="email"
             {...register("email")}
+            aria-label={copy.emailLabel}
+            aria-describedby={
+              errors.email ? "application-email-error" : undefined
+            }
             aria-invalid={Boolean(errors.email)}
           />
-          {errors.email ? <span className="text-xs text-[color:var(--danger)]">{errors.email.message}</span> : null}
+          {errors.email ? (
+            <span
+              id="application-email-error"
+              className="text-xs text-[color:var(--danger)]"
+            >
+              {errors.email.message}
+            </span>
+          ) : null}
         </label>
       </div>
 
@@ -123,6 +168,8 @@ function LocalizedApplicationForm({ language }: { language: Language }) {
           className="field-control rounded-xl px-4 py-3 outline-none transition-colors"
           defaultValue=""
           {...register("role")}
+          aria-label={copy.roleLabel}
+          aria-describedby={errors.role ? "application-role-error" : undefined}
           aria-invalid={Boolean(errors.role)}
         >
           <option value="" disabled>
@@ -134,7 +181,14 @@ function LocalizedApplicationForm({ language }: { language: Language }) {
             </option>
           ))}
         </select>
-        {errors.role ? <span className="text-xs text-[color:var(--danger)]">{errors.role.message}</span> : null}
+        {errors.role ? (
+          <span
+            id="application-role-error"
+            className="text-xs text-[color:var(--danger)]"
+          >
+            {errors.role.message}
+          </span>
+        ) : null}
       </label>
 
       <label className="grid gap-1.5 text-sm text-[color:var(--muted-ink)]">
@@ -142,9 +196,20 @@ function LocalizedApplicationForm({ language }: { language: Language }) {
         <textarea
           className="field-control min-h-32 rounded-xl px-4 py-3 outline-none transition-colors"
           {...register("message")}
+          aria-label={copy.messageLabel}
+          aria-describedby={
+            errors.message ? "application-message-error" : undefined
+          }
           aria-invalid={Boolean(errors.message)}
         />
-        {errors.message ? <span className="text-xs text-[color:var(--danger)]">{errors.message.message}</span> : null}
+        {errors.message ? (
+          <span
+            id="application-message-error"
+            className="text-xs text-[color:var(--danger)]"
+          >
+            {errors.message.message}
+          </span>
+        ) : null}
       </label>
 
       <label className="grid gap-1.5 text-sm text-[color:var(--muted-ink)]">
@@ -154,16 +219,33 @@ function LocalizedApplicationForm({ language }: { language: Language }) {
           accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           className="field-control rounded-xl px-4 py-3 outline-none transition-colors file:mr-3 file:rounded-lg file:border-0 file:bg-[color:var(--accent)] file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-[#090b0d]"
           {...register("resume")}
+          aria-label={copy.resumeLabel}
+          aria-describedby={
+            errors.resume ? "application-resume-error" : undefined
+          }
           aria-invalid={Boolean(errors.resume)}
         />
         {errors.resume ? (
-          <span className="text-xs text-[color:var(--danger)]">{errors.resume.message}</span>
+          <span
+            id="application-resume-error"
+            className="text-xs text-[color:var(--danger)]"
+          >
+            {errors.resume.message}
+          </span>
         ) : (
-          <span className="text-xs text-[color:var(--muted-ink)]">{copy.resumeHint}</span>
+          <span className="text-xs text-[color:var(--muted-ink)]">
+            {copy.resumeHint}
+          </span>
         )}
       </label>
 
-      <input type="text" className="hidden" tabIndex={-1} autoComplete="off" {...register("website")} />
+      <input
+        type="text"
+        className="hidden"
+        tabIndex={-1}
+        autoComplete="off"
+        {...register("website")}
+      />
 
       <button
         type="submit"
@@ -173,10 +255,26 @@ function LocalizedApplicationForm({ language }: { language: Language }) {
         {isSubmitting ? copy.submitBusy : copy.submitIdle}
       </button>
 
-      {submitted ? <p className="text-center text-sm text-[color:var(--accent)]">{copy.success}</p> : null}
-      {submitError ? <p className="text-center text-sm text-[color:var(--danger)]">{copy.error}</p> : null}
+      {submitted ? (
+        <p
+          role="status"
+          className="text-center text-sm text-[color:var(--accent)]"
+        >
+          {copy.success}
+        </p>
+      ) : null}
+      {submitError ? (
+        <p
+          role="alert"
+          className="text-center text-sm text-[color:var(--danger)]"
+        >
+          {copy.error}
+        </p>
+      ) : null}
 
-      <p className="text-center text-xs text-[color:var(--muted-ink)]">{copy.helper}</p>
+      <p className="text-center text-xs text-[color:var(--muted-ink)]">
+        {copy.helper}
+      </p>
     </form>
   );
 }
