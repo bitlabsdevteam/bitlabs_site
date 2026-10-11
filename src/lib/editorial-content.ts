@@ -23,6 +23,7 @@ type Copy = {
   nav: [string, string, string, string];
   cta: string;
   explore: string;
+  introVideo: { label: string; duration: string; close: string; title: string };
   allServices: string;
   readExample: string;
   eyebrow: string;
@@ -77,6 +78,12 @@ export const editorial: Record<Locale, Copy> = {
     nav: ["Services", "Research", "About", "Discuss your project"],
     cta: "Discuss your project",
     explore: "Explore our work",
+    introVideo: {
+      label: "Watch the intro",
+      duration: "3:20",
+      close: "Close video",
+      title: "BitLabs introduction video",
+    },
     allServices: "Explore services",
     readExample: "Read the annotated workflow",
     eyebrow: "AI research & engineering · Tokyo",
@@ -289,6 +296,12 @@ export const editorial: Record<Locale, Copy> = {
     nav: ["サービス", "研究", "会社情報", "プロジェクトのご相談"],
     cta: "プロジェクトのご相談",
     explore: "取り組みを見る",
+    introVideo: {
+      label: "紹介動画を見る",
+      duration: "3:20 · English",
+      close: "動画を閉じる",
+      title: "BitLabs 紹介動画",
+    },
     allServices: "サービスを見る",
     readExample: "解説付きワークフローを読む",
     eyebrow: "AI研究開発・エンジニアリング · 東京",
