@@ -6,6 +6,7 @@ import { SystemDiagram } from "./system-diagram";
 import { WorkflowDemo } from "./workflow-demo";
 import { ContactForm } from "./contact-form";
 import { ApplicationForm } from "./application-form";
+import { IntroVideo } from "./intro-video";
 export function Arrow() {
   return (
     <svg
@@ -111,6 +112,7 @@ export function HomePage({ locale }: { locale: Locale }) {
               {c.explore}
               <Arrow />
             </a>
+            <IntroVideo locale={locale} />
           </div>
         </div>
         <SystemDiagram locale={locale} />
