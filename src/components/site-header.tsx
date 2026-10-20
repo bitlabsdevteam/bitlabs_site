@@ -23,17 +23,23 @@ export function SiteHeader() {
     return () => document.removeEventListener("keydown", key);
   }, [open]);
   function links() {
-    return ["/services", "/research", "/about", "/contact"].map((href, i) => (
+    return [
+      { href: "/", label: language === "en" ? "Home" : "ホーム" },
+      { href: "/services", label: copy.nav[0] },
+      { href: "/research", label: copy.nav[1] },
+      { href: "/about", label: copy.nav[2] },
+      { href: "/contact", label: copy.nav[3] },
+    ].map(({ href, label }) => (
       <Link
         key={href}
         href={localizedPath(language, href)}
-        className={i === 3 ? "nav-cta" : ""}
+        className={href === "/contact" ? "nav-cta" : ""}
         aria-current={
           path === href || path.startsWith(href + "/") ? "page" : undefined
         }
         onClick={() => setOpen(false)}
       >
-        {copy.nav[i]}
+        {label}
       </Link>
     ));
   }
