@@ -414,16 +414,143 @@ code {
   line-height: 1.7;
   max-width: 50ch;
 }
-@keyframes diagram-arrive {
-  from {
-    transform: translateY(10px);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
+/* Motion lives inside the original figure: no sizing or layout changes. */
 .system-diagram {
-  animation: diagram-arrive 650ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  --diagram-turn: 0deg;
+  --diagram-tilt: 0deg;
+  --diagram-scroll: 0px;
+  overflow: clip;
+  perspective: 1000px;
+}
+.diagram-emblem {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  perspective: 240px;
+}
+.diagram-cube {
+  --cube-edge: 28px;
+  position: absolute;
+  width: var(--cube-edge);
+  height: var(--cube-edge);
+  top: calc(50% - var(--cube-edge) / 2);
+  left: calc(50% - var(--cube-edge) / 2);
+  transform-style: preserve-3d;
+  display: none;
+}
+.diagram-cube-face {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--accent);
+  background: rgb(204 185 138 / 5%);
+  box-shadow: inset 0 0 10px rgb(204 185 138 / 7%);
+  transform: rotateY(0deg) translateZ(calc(var(--cube-edge) / 2));
+}
+.diagram-cube-face:nth-child(2) {
+  transform: rotateY(90deg) translateZ(calc(var(--cube-edge) / 2));
+}
+.diagram-cube-face:nth-child(3) {
+  transform: rotateY(180deg) translateZ(calc(var(--cube-edge) / 2));
+}
+.diagram-cube-face:nth-child(4) {
+  transform: rotateY(270deg) translateZ(calc(var(--cube-edge) / 2));
+}
+.diagram-cube-face:nth-child(5) {
+  transform: rotateX(90deg) translateZ(calc(var(--cube-edge) / 2));
+}
+.diagram-cube-face:nth-child(6) {
+  transform: rotateX(-90deg) translateZ(calc(var(--cube-edge) / 2));
+}
+@keyframes diagram-orbit {
+  from { transform: rotateX(-24deg) rotateY(30deg) rotateZ(-8deg); }
+  to { transform: rotateX(-24deg) rotateY(390deg) rotateZ(-8deg); }
+}
+@keyframes diagram-signal {
+  0%, 12% { opacity: 0; transform: translateY(-2px); }
+  20%, 48% { opacity: 1; }
+  58%, 100% { opacity: 0; transform: translateY(20px); }
+}
+@keyframes diagram-light {
+  0%, 18% { background-position: 150% 0; }
+  65%, 100% { background-position: -150% 0; }
+}
+@keyframes diagram-breathe {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; box-shadow: 0 0 12px rgb(204 185 138 / 40%); }
+}
+@keyframes diagram-reveal {
+  from { opacity: 0.35; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .system-diagram:where([data-reduced-motion="false"][data-active]) {
+    .diagram-flow {
+      transform-style: preserve-3d;
+      transform: rotateX(var(--diagram-tilt)) rotateY(var(--diagram-turn));
+    }
+    .diagram-boundary {
+      transform-style: preserve-3d;
+      transform: translate3d(0, calc(var(--diagram-scroll) * 0.35), 0);
+      box-shadow: 0 12px 24px -16px rgb(0 0 0 / 65%);
+    }
+    .diagram-input,
+    .diagram-output {
+      transform: translate3d(0, calc(var(--diagram-scroll) * -0.35), 12px);
+      box-shadow: 0 8px 14px -10px rgb(0 0 0 / 80%);
+    }
+    .diagram-model {
+      position: relative;
+      transform-style: preserve-3d;
+      transform: translate3d(0, calc(var(--diagram-scroll) * -0.3), 20px);
+      background: linear-gradient(125deg, #2a2e23, #1e221d 70%);
+      box-shadow: 0 14px 22px -14px rgb(0 0 0 / 85%);
+    }
+    .diagram-model::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(105deg, transparent 25%, rgb(204 185 138 / 10%) 48%, transparent 72%);
+      background-size: 250% 100%;
+      animation: diagram-light 8s ease-in-out infinite;
+    }
+    .diagram-pair {
+      transform: translate3d(0, calc(var(--diagram-scroll) * -0.15), 10px);
+    }
+    .diagram-pair span {
+      background: #20251e;
+      box-shadow: 0 7px 12px -10px rgb(0 0 0 / 70%);
+    }
+    .diagram-emblem svg { visibility: hidden; }
+    .diagram-cube {
+      display: block;
+      animation: diagram-orbit 18s linear infinite;
+    }
+    .diagram-connector::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -1px;
+      width: 3px;
+      height: 5px;
+      border-radius: 2px;
+      background: var(--accent);
+      box-shadow: 0 0 6px rgb(204 185 138 / 65%);
+      animation: diagram-signal 5s ease-in-out infinite;
+    }
+    .diagram-boundary > .diagram-connector::before { animation-delay: 0.65s; }
+    .diagram-model + .diagram-connector::before { animation-delay: 1.3s; }
+    .diagram-boundary + .diagram-connector::before { animation-delay: 1.95s; }
+    .diagram-dot { animation: diagram-breathe 5s ease-in-out infinite; }
+    .diagram-input { animation: diagram-reveal 1.2s ease-out both; }
+    .diagram-boundary { animation: diagram-reveal 1.5s 0.1s ease-out both; }
+    .diagram-output { animation: diagram-reveal 1.2s 0.3s ease-out both; }
+  }
+  .system-diagram:not([data-active="true"]) *,
+  .system-diagram:not([data-active="true"]) *::before,
+  .system-diagram:not([data-active="true"]) *::after {
+    animation-play-state: paused;
+  }
 }
 .section {
   padding-block: 84px;
