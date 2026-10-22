@@ -54,6 +54,8 @@ type ApplicationFormValues = z.infer<
 function LocalizedApplicationForm({ language }: { language: Language }) {
   const copy = applicationFormContent[language];
   const roles = careerContent[language].roles;
+  const visaTitle = careerContent[language].visaTitle;
+  const visaBody = careerContent[language].visaBody;
   const schema = useMemo(() => createApplicationSchema(language), [language]);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState(false);
@@ -161,6 +163,15 @@ function LocalizedApplicationForm({ language }: { language: Language }) {
           ) : null}
         </label>
       </div>
+
+      <p className="visa-note" role="note">
+        <strong>
+          {visaTitle}
+          {language === "ja" ? "。" : "."}
+        </strong>
+        {language === "ja" ? "" : " "}
+        {visaBody}
+      </p>
 
       <label className="grid gap-1.5 text-sm text-[color:var(--muted-ink)]">
         {copy.roleLabel}

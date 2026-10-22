@@ -43,6 +43,9 @@ type CareerContent = {
   rolesTitle: string;
   rolesBody: string;
   focusLabel: string;
+  visaShort: string;
+  visaTitle: string;
+  visaBody: string;
   roles: CareerRole[];
   applyLabel: string;
   applyTitle: string;
@@ -168,10 +171,14 @@ export const careerContent: Record<Language, CareerContent> = {
       "Research and engineering under one roof, in the heart of Tokyo",
     ],
     rolesLabel: "Open roles",
-    rolesTitle: "AI Engineer & AI Researcher",
+    rolesTitle: "AI Engineer, AI Researcher & Forward Deployed Engineer",
     rolesBody:
       "We're hiring across engineering and research. Both roles work closely together, so the lines blur by design.",
     focusLabel: "What you'll focus on",
+    visaShort: "No visa sponsorship",
+    visaTitle: "Visa sponsorship is not currently offered",
+    visaBody:
+      "BitLabs does not currently sponsor work visas for any open role. Candidates must already have the legal right to work in Japan to be considered.",
     roles: [
       {
         title: "AI Engineer",
@@ -199,6 +206,19 @@ export const careerContent: Record<Language, CareerContent> = {
           "Publish internal lab notes that inform what we build next",
         ],
       },
+      {
+        title: "Forward Deployed Engineer (FDE)",
+        type: "Full-time / Contract",
+        location: "Tokyo, Japan",
+        summary:
+          "Work directly with client teams to take an AI system from first discovery call to a production rollout, and carry what you learn back into our products.",
+        focus: [
+          "Embed with client engineering and domain teams to scope the problem, design the system, and build it on site",
+          "Own deployments end to end: proof of concept, security review, rollout, and adoption in real workflows",
+          "Ship reusable pieces such as agents, tool integrations, and evaluation suites that clients run in production",
+          "Turn repeatable deployment patterns into documented playbooks and feed field findings to our research and engineering teams",
+        ],
+      },
     ],
     applyLabel: "Apply",
     applyTitle: "Passionate about AI? Let's talk",
@@ -223,10 +243,14 @@ export const careerContent: Record<Language, CareerContent> = {
       "研究とエンジニアリングを一つのチームで、東京の中心で行える",
     ],
     rolesLabel: "募集職種",
-    rolesTitle: "AIエンジニア・AIリサーチャー",
+    rolesTitle: "AIエンジニア・AIリサーチャー・フォワードデプロイドエンジニア",
     rolesBody:
       "エンジニアリングと研究の両面で採用しています。両職種は密接に連携するため、境界はあえて明確にしていません。",
     focusLabel: "主な業務内容",
+    visaShort: "ビザスポンサーシップなし",
+    visaTitle: "現在、ビザのスポンサーシップは提供していません",
+    visaBody:
+      "BitLabsは現在、いずれの募集職種についても就労ビザのスポンサーシップを行っておりません。日本で就労する法的資格をすでにお持ちの方のみ選考の対象となります。",
     roles: [
       {
         title: "AIエンジニア",
@@ -252,6 +276,19 @@ export const careerContent: Record<Language, CareerContent> = {
           "トランスフォーマー設計、学習効率、評価手法の研究",
           "アイデアをPoCとして検証し、本番投入前に効果を確認",
           "社内ラボノートを公開し、次に構築するものの指針とする",
+        ],
+      },
+      {
+        title: "フォワードデプロイドエンジニア（FDE）",
+        type: "正社員・業務委託",
+        location: "東京都",
+        summary:
+          "クライアントチームと直接連携し、最初のヒアリングから本番導入までAIシステムを一貫して届け、得られた知見を自社プロダクトへ還元します。",
+        focus: [
+          "クライアントのエンジニア・業務チームに入り込み、課題の整理、システム設計、現場での構築を行う",
+          "PoC、セキュリティレビュー、展開、実業務への定着まで、導入を一貫して担当",
+          "クライアントが本番で運用するエージェント、ツール連携、評価スイートなどの再利用可能な部品を出荷",
+          "繰り返し使える導入パターンをプレイブックとして文書化し、現場の知見を研究・開発チームへ共有",
         ],
       },
     ],

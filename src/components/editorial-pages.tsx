@@ -474,10 +474,14 @@ export function CareerPage({ locale }: { locale: Locale }) {
         }
         body={
           ja
-            ? "東京のBitLabsでは、モデル開発、エージェント、アプリケーションに取り組むAIエンジニアとAIリサーチャーを募集しています。"
-            : "BitLabs is looking for AI Engineers and AI Researchers to work on models, agents, and applications in Tokyo."
+            ? "東京のBitLabsでは、モデル開発、エージェント、クライアント導入に取り組むAIエンジニア、AIリサーチャー、フォワードデプロイドエンジニアを募集しています。"
+            : "BitLabs is looking for AI Engineers, AI Researchers, and Forward Deployed Engineers to work on models, agents, and client deployments in Tokyo."
         }
       />
+      <aside className="visa-notice" role="note">
+        <strong>{c.visaTitle}</strong>
+        <p>{c.visaBody}</p>
+      </aside>
       <section className="section">
         <h2>
           {ja
@@ -491,6 +495,7 @@ export function CareerPage({ locale }: { locale: Locale }) {
                 {role.type} · {role.location}
               </span>
               <h3>{role.title}</h3>
+              <span className="visa-badge">{c.visaShort}</span>
               <p>{role.summary}</p>
               <ul>
                 {role.focus.map((item) => (

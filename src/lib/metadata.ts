@@ -31,8 +31,8 @@ export function pageMetadata(
     contact: c.contactIntro,
     career:
       locale === "en"
-        ? "Explore AI engineering and research roles at BitLabs in Tokyo."
-        : "東京のBitLabsでAIエンジニア・AIリサーチャーとして働く。",
+        ? "Explore AI engineering, research, and forward deployed engineering roles at BitLabs in Tokyo. Visa sponsorship is not currently offered."
+        : "東京のBitLabsでAIエンジニア・AIリサーチャー・FDEとして働く。現在、ビザのスポンサーシップは提供していません。",
   };
   const title = detail?.title ?? titles[page];
   const description = detail?.description ?? descriptions[page];
