@@ -1547,3 +1547,111 @@ html[lang="ja"] .desktop-nav {
     }
   }
 }
+.showreel-section {
+  padding-top: 0;
+}
+.showreel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+.showreel-head h2 {
+  margin: 0;
+}
+.showreel-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #000;
+}
+.showreel-video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+.showreel-center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: #20231d;
+  cursor: pointer;
+}
+.showreel-center-icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition:
+    opacity 200ms,
+    transform 200ms;
+}
+.showreel-frame[data-playing="true"] .showreel-center-icon {
+  opacity: 0;
+  transform: scale(0.85);
+}
+.showreel-frame[data-playing="true"]:hover .showreel-center-icon,
+.showreel-center:focus-visible .showreel-center-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+.showreel-center:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -4px;
+}
+.showreel-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 16px 16px 0;
+  background: linear-gradient(transparent, rgb(0 0 0 / 0.55));
+  pointer-events: none;
+}
+.showreel-sound {
+  pointer-events: auto;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid rgb(255 255 255 / 0.5);
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.45);
+  color: #fff;
+  cursor: pointer;
+}
+.showreel-sound:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.showreel-sound:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.showreel-progress {
+  width: 100%;
+  height: 3px;
+  background: rgb(255 255 255 / 0.25);
+}
+.showreel-progress > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left;
+}
+@media (max-width: 640px) {
+  .showreel-head {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

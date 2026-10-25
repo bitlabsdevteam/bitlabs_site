@@ -7,6 +7,7 @@ import { WorkflowDemo } from "./workflow-demo";
 import { ContactForm } from "./contact-form";
 import { ApplicationForm } from "./application-form";
 import { IntroVideo } from "./intro-video";
+import { Showreel } from "./showreel";
 export function Arrow() {
   return (
     <svg
@@ -117,6 +118,7 @@ export function HomePage({ locale }: { locale: Locale }) {
         </div>
         <SystemDiagram locale={locale} />
       </section>
+      <Showreel locale={locale} />
       <section className="section needs-section">
         <h2>{c.needsTitle}</h2>
         <div className="needs-list">
