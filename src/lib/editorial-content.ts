@@ -24,6 +24,15 @@ type Copy = {
   cta: string;
   explore: string;
   introVideo: { label: string; duration: string; close: string; title: string };
+  showreel: {
+    eyebrow: string;
+    title: string;
+    play: string;
+    pause: string;
+    soundOn: string;
+    soundOff: string;
+    replay: string;
+  };
   allServices: string;
   readExample: string;
   eyebrow: string;
@@ -83,6 +92,15 @@ export const editorial: Record<Locale, Copy> = {
       duration: "3:20",
       close: "Close video",
       title: "BitLabs introduction video",
+    },
+    showreel: {
+      eyebrow: "Showreel · 0:21",
+      title: "BitLabs in motion",
+      play: "Play showreel",
+      pause: "Pause showreel",
+      soundOn: "Turn sound on",
+      soundOff: "Mute",
+      replay: "Replay",
     },
     allServices: "Explore services",
     readExample: "Read the annotated workflow",
@@ -301,6 +319,15 @@ export const editorial: Record<Locale, Copy> = {
       duration: "3:20 · English",
       close: "動画を閉じる",
       title: "BitLabs 紹介動画",
+    },
+    showreel: {
+      eyebrow: "ショーリール · 0:21",
+      title: "動きで見る BitLabs",
+      play: "ショーリールを再生",
+      pause: "ショーリールを一時停止",
+      soundOn: "音声をオンにする",
+      soundOff: "ミュート",
+      replay: "もう一度再生",
     },
     allServices: "サービスを見る",
     readExample: "解説付きワークフローを読む",
