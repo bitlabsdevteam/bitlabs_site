@@ -718,22 +718,6 @@ code {
   margin-top: 18px;
   font-size: 13px;
 }
-.capability-list {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 36px;
-}
-.capability-list article {
-  border-top: 1px solid var(--accent);
-  padding-top: 25px;
-}
-.capability-list h3 {
-  margin-bottom: 14px;
-}
-.capability-list p {
-  min-height: 5.3em;
-  font-size: 15px;
-}
 dl {
   margin: 0;
 }
@@ -832,6 +816,81 @@ dd {
   margin-top: 30px;
   font-size: 18px;
   line-height: 1.8;
+}
+.product-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 0 36px;
+}
+.product-strip a {
+  display: block;
+  border-top: 1px solid var(--accent);
+  padding: 25px 0 30px;
+  color: inherit;
+}
+.product-strip h3 {
+  margin-bottom: 12px;
+}
+.product-strip p {
+  font-size: 15px;
+  color: var(--muted-ink);
+}
+.product-strip svg {
+  margin-top: 14px;
+}
+.product-strip a:hover h3 {
+  color: var(--accent);
+}
+.product-layer {
+  border-top: 1px solid var(--line);
+  padding-block: 60px;
+}
+.product-layer .lead {
+  max-width: 70ch;
+  margin: 20px 0 14px;
+}
+.product-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 48px 60px;
+  margin-top: 40px;
+}
+.product-card {
+  border-top: 1px solid var(--accent);
+  padding-top: 25px;
+}
+.product-card h3 {
+  margin-bottom: 12px;
+}
+.product-card > p {
+  font-size: 15px;
+}
+.product-stages-label {
+  margin-top: 22px;
+  font-size: 12px;
+  color: var(--accent);
+}
+.product-stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.product-stages li {
+  border: 1px solid var(--line);
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--muted-ink);
+}
+.product-stages li + li::before {
+  content: "→" / "";
+  margin-right: 6px;
+  color: var(--accent);
+}
+.product-card .text-link {
+  margin-top: 24px;
 }
 .service-index {
   display: flex;
@@ -1167,9 +1226,6 @@ html[lang="ja"] .desktop-nav {
   .diagram-model svg {
     width: 40px;
   }
-  .capability-list {
-    gap: 24px;
-  }
   .delivery-list {
     grid-template-columns: 1fr 1fr;
   }
@@ -1244,19 +1300,6 @@ html[lang="ja"] .desktop-nav {
   }
   .section-intro h2 {
     max-width: 24ch;
-  }
-  .capability-list {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-  .capability-list p {
-    min-height: 0;
-  }
-  .capability-list article {
-    padding-top: 22px;
-  }
-  .capability-list dl {
-    margin-top: 18px;
   }
   .demo-steps {
     grid-template-columns: 1fr;

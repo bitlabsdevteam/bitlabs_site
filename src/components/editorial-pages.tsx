@@ -140,25 +140,19 @@ export function HomePage({ locale }: { locale: Locale }) {
       </section>
       <section id="capabilities" className="section">
         <div className="section-intro">
-          <h2>{c.capabilitiesTitle}</h2>
-          <p>
-            {ja
-              ? "AIネイティブな設計とは、モデルの振る舞い、コンテキスト、評価、ツールの権限、人の監督を業務フローの一部として扱うことです。"
-              : "For us, AI-native design means building workflows around model behavior, context, evaluation, tool access, and human oversight."}
-          </p>
+          <h2>{c.productsTitle}</h2>
+          <p>{c.productsIntro}</p>
         </div>
-        <div className="capability-list">
-          {c.capabilities.map((item) => (
-            <article key={item.id}>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-              <dl>
-                <dt>{c.deliverLabel}</dt>
-                <dd>{item.deliver}</dd>
-                <dt>{c.evaluateLabel}</dt>
-                <dd>{item.evaluate}</dd>
-              </dl>
-            </article>
+        <div className="product-strip">
+          {c.products.map((p) => (
+            <Link
+              key={p.id}
+              href={`${localizedPath(locale, "/services")}#${p.id}`}
+            >
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+              <Arrow />
+            </Link>
           ))}
         </div>
         <Link
@@ -238,6 +232,36 @@ export function ServicesPage({ locale }: { locale: Locale }) {
           </a>
         ))}
       </nav>
+      <section className="product-layer" aria-labelledby="products-title">
+        <h2 id="products-title">{c.productsTitle}</h2>
+        <p className="lead">{c.productsIntro}</p>
+        <p className="status-label">{c.productsNote}</p>
+        <div className="product-cards">
+          {c.products.map((p) => (
+            <article id={p.id} className="product-card" key={p.id}>
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+              <p className="product-stages-label">{c.stagesLabel}</p>
+              <ol className="product-stages">
+                {p.stages.map((stage) => (
+                  <li key={stage}>{stage}</li>
+                ))}
+              </ol>
+              <dl>
+                <dt>{c.deliverLabel}</dt>
+                <dd>{p.deliver}</dd>
+                <dt>{c.evaluateLabel}</dt>
+                <dd>{p.evaluate}</dd>
+              </dl>
+              <a className="text-link" href={`#${p.serviceId}`}>
+                {c.deliveredUnderLabel}{" "}
+                {c.services.find((x) => x.id === p.serviceId)?.title}
+                <Arrow />
+              </a>
+            </article>
+          ))}
+        </div>
+      </section>
       <div className="services-list">
         {c.services.map((s) => (
           <section id={s.id} className="service-detail" key={s.id}>
