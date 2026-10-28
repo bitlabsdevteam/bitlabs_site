@@ -19,6 +19,7 @@ export function localizedPath(locale: Locale, path = "/") {
 }
 type Item = { title: string; body: string };
 type Service = Item & { id: string; deliver: string; evaluate: string };
+type Product = Service & { stages: string[]; serviceId: string };
 type Copy = {
   nav: [string, string, string, string];
   cta: string;
@@ -42,8 +43,6 @@ type Copy = {
   needs: Item[];
   workTitle: string;
   workIntro: string;
-  capabilitiesTitle: string;
-  capabilities: Service[];
   deliveryTitle: string;
   delivery: Item[];
   securityTitle: string;
@@ -63,6 +62,12 @@ type Copy = {
   privacy: string;
   servicesTitle: string;
   servicesIntro: string;
+  productsTitle: string;
+  productsIntro: string;
+  productsNote: string;
+  stagesLabel: string;
+  deliveredUnderLabel: string;
+  products: Product[];
   services: Service[];
   problemLabel: string;
   deliverLabel: string;
@@ -126,35 +131,6 @@ export const editorial: Record<Locale, Copy> = {
     workTitle: "Make the engineering visible.",
     workIntro:
       "An illustrative workflow shows how we think about context, permissions, and accountability. It uses synthetic data and is not a client case study or a performance benchmark.",
-    capabilitiesTitle: "From model behavior to everyday use.",
-    capabilities: [
-      {
-        id: "agents",
-        title: "Agents & applications",
-        body: "When a workflow spans documents, systems, and decisions.",
-        deliver:
-          "Context retrieval, tool integrations, and interfaces with human oversight.",
-        evaluate:
-          "Task completion, source grounding, and permission boundaries.",
-      },
-      {
-        id: "models",
-        title: "Models & training",
-        body: "When general models do not meet domain, cost, or latency needs.",
-        deliver:
-          "Data preparation, model adaptation, and training pipelines where access and licensing permit.",
-        evaluate:
-          "Held-out quality, resource use, and comparison with a simpler baseline.",
-      },
-      {
-        id: "production",
-        title: "Production engineering",
-        body: "When an AI system must fit existing operations.",
-        deliver:
-          "Deployment architecture, monitoring, release controls, and handover documentation.",
-        evaluate: "Reliability, access control, recovery, and operating cost.",
-      },
-    ],
     deliveryTitle: "Agree on what good looks like. Then build toward it.",
     delivery: [
       {
@@ -241,16 +217,16 @@ export const editorial: Record<Locale, Copy> = {
       "We use the details you provide to respond to your inquiry. Please avoid including credentials, personal datasets, or confidential documents.",
     servicesTitle: "AI engineering around your business requirements.",
     servicesIntro:
-      "Choose the starting point that fits your problem. We define scope and evaluation together, then connect the required model, application, and infrastructure work.",
+      "Choose the starting point that fits your problem. We define scope and evaluation together, then connect the required model, application, and infrastructure work. For agents and models, the path is build, evaluate, monitor, then deploy: release happens only after evaluation and monitoring are in place.",
     services: [
       {
         id: "ai-agents",
         title: "AI Agent Solutions",
         body: "Multi-step work across documents and business systems, where automation needs clear boundaries.",
         deliver:
-          "Workflow design, retrieval, tool integrations, context and harness engineering, approval steps, and task traces. OpenClaw customization where appropriate.",
+          "Workflow design, retrieval, tool integrations, context and harness engineering, approval steps, and task traces. Before release: an evaluation suite built from real tasks, tracing and monitoring with alert thresholds, and a release gate. OpenClaw customization where appropriate.",
         evaluate:
-          "Completion and escalation behavior, source grounding, tool authorization, and recovery from failed actions.",
+          "Completion and escalation behavior, source grounding, tool authorization, and recovery from failed actions. After release: drift, failure rate, escalation rate, and cost are monitored against the baseline.",
       },
       {
         id: "enterprise-ai",
@@ -266,7 +242,7 @@ export const editorial: Record<Locale, Copy> = {
         title: "LLM/SLM Training & Fine-tuning",
         body: "Domain-specific quality, model size, or operating cost requirements that a general model may not meet.",
         deliver:
-          "Data preparation, training or fine-tuning pipelines, model comparison, and inference optimization. Pre-training requires suitable data and compute; weight-level adaptation requires model access and licensing. Closed models depend on provider-supported options.",
+          "Data preparation, training or fine-tuning pipelines (including LoRA and QLoRA adapters), model comparison, and inference optimization. Pre-training requires suitable data and compute; weight-level adaptation requires model access and licensing. Closed models depend on provider-supported options.",
         evaluate:
           "Held-out task quality, baseline comparison, regressions, latency, memory, and training and serving costs.",
       },
@@ -287,6 +263,82 @@ export const editorial: Record<Locale, Copy> = {
           "Cloud or private deployment design, least-privilege access, secrets management, release pipelines, monitoring, recovery plans, and operational documentation.",
         evaluate:
           "Access boundaries, load behavior, rollback and recovery, monitoring coverage, and operating cost.",
+      },
+    ],
+    productsTitle: "What we build",
+    productsIntro:
+      "Five kinds of AI systems we design and deliver, each delivered under one of our services.",
+    productsNote:
+      "Illustrative architectures, not client deployments or performance claims.",
+    stagesLabel: "Typical stages",
+    deliveredUnderLabel: "Delivered under:",
+    products: [
+      {
+        id: "p-autonomous-agents",
+        title: "Autonomous agents",
+        body: "Agents that plan multi-step work, call permitted tools, and check their own progress within defined limits.",
+        stages: ["Plan & tools", "Approval gate", "Evaluate", "Monitor", "Deploy"],
+        deliver:
+          "Planning and tool-use harness, scoped credentials, step budgets, and escalation to a person. An evaluation suite and trace monitoring come first; release follows once both pass.",
+        evaluate:
+          "Task completion, tool authorization, behavior after failed steps, and when the agent stops or escalates, checked before release and monitored in production.",
+        serviceId: "ai-agents",
+      },
+      {
+        id: "p-workflow-agents",
+        title: "Workflow automation agents",
+        body: "Agents embedded in recurring processes such as intake, triage, and document handling, with people approving consequential steps.",
+        stages: ["Trigger & act", "Human review", "Evaluate", "Monitor", "Deploy"],
+        deliver:
+          "Process mapping, system integrations, routing rules, review queues, and an audit trail for every action. Evaluation on real samples and monitoring dashboards precede deployment.",
+        evaluate:
+          "Routing accuracy on real samples, exception handling, review load, and recovery from failed actions, tracked after release as well.",
+        serviceId: "ai-agents",
+      },
+      {
+        id: "p-voice-agents",
+        title: "Voice agents",
+        body: "Spoken interfaces for support, intake, or internal tools, with a clear handoff to a person.",
+        stages: [
+          "Speech in",
+          "Language model",
+          "Tools & data",
+          "Speech out",
+          "Handoff",
+        ],
+        deliver:
+          "Speech recognition and synthesis integration, turn-taking and interruption handling, tool access, transcripts with retention controls, and human handoff.",
+        evaluate:
+          "Recognition accuracy on your vocabulary, task completion, response latency against an agreed budget, and handoff behavior.",
+        serviceId: "ai-applications",
+      },
+      {
+        id: "p-llm-fine-tuning",
+        title: "LLM fine-tuning",
+        body: "Adapting a model to a domain when better context or prompting does not meet quality, cost, or latency needs.",
+        stages: ["Data curation", "Adaptation", "Held-out evaluation", "Release gate"],
+        deliver:
+          "Dataset preparation, parameter-efficient fine-tuning with LoRA (low-rank adapters) or QLoRA (adapters trained on a quantized base model to reduce GPU memory), or full fine-tuning, where access and licensing permit. Baseline comparison and model packaging.",
+        evaluate:
+          "Held-out quality against a simpler baseline, regressions, adapter versus full fine-tuning trade-offs, and serving cost.",
+        serviceId: "model-training",
+      },
+      {
+        id: "p-gpu-inference",
+        title: "GPU inference stack",
+        body: "Serving infrastructure for open-weight models when latency, throughput, or data-residency needs rule out a hosted API.",
+        stages: [
+          "Model weights",
+          "Batching & KV cache",
+          "GPU serving",
+          "Routing & scaling",
+          "Monitoring",
+        ],
+        deliver:
+          "Serving-engine selection, quantization and batching configuration, multi-GPU layout, load testing that reports prefill and decode separately, autoscaling, and observability on cloud or private hardware.",
+        evaluate:
+          "Prefill latency (time to first token) and decode latency (per token) at p95 and p97, plus throughput, measured on your workload. Also memory use, cost per request, and behavior under load and failure.",
+        serviceId: "cloud-deployment",
       },
     ],
     problemLabel: "Suitable problems",
@@ -353,33 +405,6 @@ export const editorial: Record<Locale, Copy> = {
     workTitle: "設計の考え方を、見える形に。",
     workIntro:
       "合成データを用いた説明用ワークフローで、コンテキスト、権限、責任の境界を示します。顧客事例や性能の実測結果ではありません。",
-    capabilitiesTitle: "モデルの振る舞いから、日々の業務まで。",
-    capabilities: [
-      {
-        id: "agents",
-        title: "エージェントとアプリケーション",
-        body: "文書、システム、人の判断にまたがる業務に。",
-        deliver:
-          "情報検索、ツール連携、人が確認できるインターフェースを構築します。",
-        evaluate: "タスクの達成、回答の根拠、権限の境界を検証します。",
-      },
-      {
-        id: "models",
-        title: "モデル開発と学習",
-        body: "汎用モデルでは専門性、コスト、遅延の要件を満たせないときに。",
-        deliver:
-          "データ整備、モデル調整、利用権限とライセンスに応じた学習基盤を提供します。",
-        evaluate:
-          "未学習データでの品質、計算資源、より単純な手法との比較で判断します。",
-      },
-      {
-        id: "production",
-        title: "本番システムの設計と運用",
-        body: "AIを既存の運用体制に組み込むために。",
-        deliver: "導入構成、監視、リリース管理、引き継ぎ文書を整備します。",
-        evaluate: "信頼性、アクセス制御、復旧手順、運用コストを検証します。",
-      },
-    ],
     deliveryTitle: "目指す品質を共有し、実装で確かめる。",
     delivery: [
       {
@@ -466,16 +491,16 @@ export const editorial: Record<Locale, Copy> = {
       "お送りいただいた情報は、お問い合わせへの対応に使用します。認証情報、個人データ、機密文書は記載しないでください。",
     servicesTitle: "事業の要件に合わせたAIエンジニアリング。",
     servicesIntro:
-      "課題に合う出発点を選び、対象範囲と評価方法を一緒に定めます。必要なモデル、アプリケーション、基盤の開発をつなぎます。",
+      "課題に合う出発点を選び、対象範囲と評価方法を一緒に定めます。必要なモデル、アプリケーション、基盤の開発をつなぎます。エージェントやモデルは、構築、評価、監視を経てから本番へ。評価と監視の体制が整った後にリリースします。",
     services: [
       {
         id: "ai-agents",
         title: "AIエージェントソリューション",
         body: "文書や業務システムをまたぐ複数の処理を、明確な権限の範囲で自動化したい場合。",
         deliver:
-          "業務設計、検索、ツール連携、コンテキストとハーネスの設計、承認手順、処理ログ。要件に応じてOpenClawのカスタマイズにも対応します。",
+          "業務設計、検索、ツール連携、コンテキストとハーネスの設計、承認手順、処理ログ。リリース前に、実際のタスクに基づく評価セット、アラート基準付きのトレースと監視、リリース判定を整備します。要件に応じてOpenClawのカスタマイズにも対応します。",
         evaluate:
-          "タスクの達成とエスカレーション、情報の根拠、ツールの認可、処理失敗からの復旧。",
+          "タスクの達成とエスカレーション、情報の根拠、ツールの認可、処理失敗からの復旧。リリース後も、品質の乖離、失敗率、エスカレーション率、コストをベースラインと比較して監視します。",
       },
       {
         id: "enterprise-ai",
@@ -491,7 +516,7 @@ export const editorial: Record<Locale, Copy> = {
         title: "LLM・SLMの事前学習と微調整",
         body: "専門領域の品質、モデルサイズ、運用コストなど、汎用モデルで満たしにくい要件がある場合。",
         deliver:
-          "データ整備、事前学習・追加学習のパイプライン、モデル比較、推論最適化。事前学習には適切なデータと計算資源が必要です。重みの調整はアクセス権とライセンスに依存し、非公開モデルでは提供元が対応する方法に限られます。",
+          "データ整備、事前学習・追加学習のパイプライン（LoRA・QLoRAアダプターを含む）、モデル比較、推論最適化。事前学習には適切なデータと計算資源が必要です。重みの調整はアクセス権とライセンスに依存し、非公開モデルでは提供元が対応する方法に限られます。",
         evaluate:
           "未学習のタスクでの品質、基準手法との比較、品質低下、遅延、メモリ、学習と推論のコスト。",
       },
@@ -512,6 +537,82 @@ export const editorial: Record<Locale, Copy> = {
           "クラウド・プライベート環境の設計、最小権限、シークレット管理、リリース基盤、監視、復旧計画、運用文書。",
         evaluate:
           "アクセス境界、負荷への対応、ロールバックと復旧、監視範囲、運用コスト。",
+      },
+    ],
+    productsTitle: "私たちが構築するもの",
+    productsIntro:
+      "設計・提供している5種類のAIシステムです。それぞれ、当社のサービスの一つとして提供します。",
+    productsNote:
+      "説明用のアーキテクチャであり、顧客の導入事例や性能の主張ではありません。",
+    stagesLabel: "典型的な構成",
+    deliveredUnderLabel: "提供サービス：",
+    products: [
+      {
+        id: "p-autonomous-agents",
+        title: "自律型エージェント",
+        body: "複数ステップの作業を計画し、許可されたツールを呼び出し、定められた範囲内で自ら進捗を確認するエージェント。",
+        stages: ["計画とツール", "承認ゲート", "評価", "監視", "デプロイ"],
+        deliver:
+          "計画とツール利用のハーネス、権限を絞った認証情報、ステップ上限、担当者へのエスカレーション。まず評価セットとトレース監視を整え、両方を通過してからリリースします。",
+        evaluate:
+          "タスクの完了、ツールの認可、失敗したステップ後の挙動、停止・エスカレーションの判断。リリース前に検証し、本番では継続して監視します。",
+        serviceId: "ai-agents",
+      },
+      {
+        id: "p-workflow-agents",
+        title: "業務自動化エージェント",
+        body: "受付、仕分け、文書処理などの定常業務に組み込み、重要な判断は人が承認するエージェント。",
+        stages: ["トリガーと実行", "人による確認", "評価", "監視", "デプロイ"],
+        deliver:
+          "業務の整理、システム連携、振り分けルール、確認キュー、すべての操作の監査記録。実データでの評価と監視ダッシュボードをデプロイの前に整えます。",
+        evaluate:
+          "実データのサンプルでの振り分け精度、例外処理、確認の負荷、失敗した操作からの復旧。リリース後も追跡します。",
+        serviceId: "ai-agents",
+      },
+      {
+        id: "p-voice-agents",
+        title: "音声エージェント",
+        body: "問い合わせ対応、受付、社内ツール向けの音声インターフェース。担当者への引き継ぎを明確にします。",
+        stages: [
+          "音声入力",
+          "言語モデル",
+          "ツールとデータ",
+          "音声出力",
+          "引き継ぎ",
+        ],
+        deliver:
+          "音声認識・合成の統合、発話の切り替えと割り込みの処理、ツール連携、保存期間を管理した書き起こし、担当者への引き継ぎ。",
+        evaluate:
+          "お客様固有の用語での認識精度、タスクの完了、合意した基準に対する応答遅延、引き継ぎの挙動。",
+        serviceId: "ai-applications",
+      },
+      {
+        id: "p-llm-fine-tuning",
+        title: "LLMファインチューニング",
+        body: "コンテキストやプロンプトの改善では品質・コスト・遅延の要件を満たせない場合に、モデルを領域に適応させます。",
+        stages: ["データ整備", "モデル適応", "ホールドアウト評価", "リリース判定"],
+        deliver:
+          "データセット準備、アクセスとライセンスが許す範囲で、LoRA（低ランクアダプター）やQLoRA（量子化したベースモデル上でアダプターを学習し、GPUメモリを抑える方式）によるパラメータ効率的なファインチューニング、または全体のファインチューニング。ベースライン比較とモデルのパッケージ化。",
+        evaluate:
+          "より単純なベースラインと比較したホールドアウト品質、性能の退行、アダプターと全体ファインチューニングのトレードオフ、提供コスト。",
+        serviceId: "model-training",
+      },
+      {
+        id: "p-gpu-inference",
+        title: "GPU推論基盤",
+        body: "遅延、スループット、データの所在地の要件によりホスト型APIが使えない場合の、オープンウェイトモデル向け推論基盤。",
+        stages: [
+          "モデル重み",
+          "バッチ処理とKVキャッシュ",
+          "GPU推論サーバー",
+          "ルーティングとスケール",
+          "監視",
+        ],
+        deliver:
+          "推論エンジンの選定、量子化とバッチ処理の設定、マルチGPU構成、プリフィルとデコードを分けて報告する負荷試験、オートスケール、クラウドまたはプライベート環境での可観測性。",
+        evaluate:
+          "お客様の業務負荷で測定した、プリフィル遅延（最初のトークンまでの時間）とデコード遅延（トークンごと）のp95・p97、およびスループット。あわせてメモリ使用量、リクエストあたりのコスト、負荷や障害時の挙動。",
+        serviceId: "cloud-deployment",
       },
     ],
     problemLabel: "対象となる課題",
